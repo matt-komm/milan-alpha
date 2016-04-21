@@ -1,0 +1,32 @@
+init:
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+branches:
+  only:
+    - master
+
+environment:
+  matrix:
+    - os: Visual Studio 2015
+
+clone_folder: c:\projects\milan
+
+before_build:
+  - cmd: |
+        mkdir c:\projects\milan\build
+        cd c:\projects\milan\build
+        cmake -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=c:\projects\milan\release ..
+
+build_script:
+  - cmd: |
+        cd c:\projects\milan\build
+        cmake --build . --config Debug --target install
+
+test_script:
+  - cmd: |
+        PATH=c:\projects\milan\release\bin;c:\projects\milan\release\bin\test;c:\projects\milan\release\lib;%PATH%
+        cd c:\projects\milan\build
+        ctest -V -C Debug
+
+    
+

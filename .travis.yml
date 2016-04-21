@@ -1,0 +1,49 @@
+language: cpp
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9']
+      env: COMPILER=g++-4.9
+      
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5']
+      env: COMPILER=g++-5
+      
+    - os: linux
+      compiler: clang
+      env: COMPILER=clang++
+      
+    - os: osx
+      compiler: clang
+      env: COMPILER=clang++
+
+before_script:
+  - export BASEDIR=$PWD
+  - mkdir build
+  - cd build
+    cmake -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=$BASEDIR/release ..
+
+script: 
+  - cmake --build . --config Debug --target install
+  - export LD_LIBRARY_PATH=$BASEDIR/release/bin:$BASEDIR/release/bin/test:$BASEDIR/release/lib:$LD_LIBRARY_PATH
+  - ctest -V -C Debug
+  
+branches:
+  only:
+    - master
+    
+notifications:
+  email:
+    recipients:
+      - mkomm@cern.ch
+    on_success: change
+    on_failure: always
+
