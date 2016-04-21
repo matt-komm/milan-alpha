@@ -29,7 +29,7 @@ before_script:
   - export BASEDIR=$PWD
   - mkdir build
   - cd build
-    cmake -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=$BASEDIR/release ..
+  - cmake -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=$BASEDIR/release ..
 
 script: 
   - cmake --build . --config Debug --target install
