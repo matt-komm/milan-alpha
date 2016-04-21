@@ -6,6 +6,20 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.7']
+      env: COMPILER=g++-4.7
+  - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8']
+      env: COMPILER=g++-4.8
+  - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
       env: COMPILER=g++-4.9
       
@@ -14,8 +28,32 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5']
-      env: COMPILER=g++-5
+          packages: ['g++-5.0']
+      env: COMPILER=g++-5.0
+      
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5.1']
+      env: COMPILER=g++-5.1
+      
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5.2']
+      env: COMPILER=g++-5.2
+      
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5.3']
+      env: COMPILER=g++-5.3
       
     - os: linux
       compiler: clang
@@ -34,7 +72,7 @@ before_script:
 script: 
   - cmake --build . --config Debug --target install
   - export LD_LIBRARY_PATH=$BASEDIR/release/bin:$BASEDIR/release/bin/test:$BASEDIR/release/lib:$LD_LIBRARY_PATH
-  - ctest -V -C Debug
+  - ctest -C Debug || ctest -V -C Debug
   
 branches:
   only:
