@@ -5,4 +5,5 @@ include(cmake/Copy.cmake)
 include(cmake/Tests.cmake)
 
 add_subdirectory(external)
-add_subdirectory(test)
+
+add_subdirectory(core)

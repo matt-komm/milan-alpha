@@ -42,7 +42,7 @@ if (ENABLE_TEST)
         
         install(
             TARGETS gtest-${TEST_NAME}
-            RUNTIME DESTINATION bin/test
+            RUNTIME DESTINATION bin/tests
             LIBRARY DESTINATION lib
         )
     endmacro(add_gtest)
