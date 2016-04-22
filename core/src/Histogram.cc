@@ -3,8 +3,4 @@
 namespace milan
 {
 
-Histogram::Histogram()
-{
-}
-
 }
