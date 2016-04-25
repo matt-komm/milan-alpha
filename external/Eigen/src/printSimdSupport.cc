@@ -7,6 +7,39 @@ int main()
 {
     std::cout<<"Summary of Eigen config"<<std::endl;
     std::cout<<"-----------------------"<<std::endl;
+    if (EIGEN_COMP_GNUC)
+    {
+        std::cout<<" * compiler is gcc"<<std::endl;
+    }
+    if (EIGEN_COMP_CLANG)
+    {
+        std::cout<<" * compiler is clang"<<std::endl;
+    }
+    if (EIGEN_COMP_LLVM)
+    {
+        std::cout<<" * compiler backend is llvm"<<std::endl;
+    }
+    if (EIGEN_COMP_ICC)
+    {
+        std::cout<<" * compiler is icc"<<std::endl;
+    }
+    if (EIGEN_OS_UNIX)
+    {
+        std::cout<<" * os is unix variant"<<std::endl;
+    }
+    if (EIGEN_OS_LINUX)
+    {
+        std::cout<<" * os is linux based"<<std::endl;
+    }
+    if (EIGEN_OS_MAC)
+    {
+        std::cout<<" * os is OSX"<<std::endl;
+    }
+    if (EIGEN_ALIGN)
+    {
+        std::cout<<" * use aligned arrays"<<std::endl;
+    }
+    
     #ifdef EIGEN_VECTORIZE
     std::cout<<" * use vectorization"<<std::endl;
     #else
