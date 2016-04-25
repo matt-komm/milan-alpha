@@ -1,9 +1,12 @@
 include_directories(SYSTEM include)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-
 add_executable(printSimdSupport
     src/printSimdSupport.cc
+)
+install(
+    TARGETS printSimdSupport
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
 )
 
 add_subdirectory(tests)
