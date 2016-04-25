@@ -40,7 +40,7 @@ matrix:
       
     - os: linux
       compiler: clang
-      env: CONFIG=Debug
+      env: CONFIG=Release
      
     - os: osx
       compiler: clang
