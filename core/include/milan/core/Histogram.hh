@@ -1,8 +1,9 @@
 #ifndef __MILAN_CORE_HISTOGRAM_H__
 #define __MILAN_CORE_HISTOGRAM_H__
 
-#include <cstddef>
-#include <vector>
+#include "milan/core/Types.hh"
+
+#include "Eigen/Eigen"
 
 namespace milan
 {
@@ -10,23 +11,19 @@ namespace milan
 class Histogram
 {
     protected:
-        const std::size_t _N;
-    
-        std::vector<float> _content;
+        Eigen::VectorXf _content;
+        Eigen::VectorXf _uncertainty2;
     public:
-        Histogram(std::size_t N):
-            _N(N),
-            _content(0,N)
+        Histogram(const sizetype& N):
+            _content(Eigen::VectorXf::Zero(N)),
+            _uncertainty2(Eigen::VectorXf::Zero(N))
         {
-            _content.reserve(N);
         }
         
-        Histogram& operator*=(float factor)
+        Histogram& operator*=(const float32& factor)
         {
-            for (unsigned int i = 0; i < _N; ++i)
-            {
-                _content[i]*=factor;
-            }
+            _content*=factor;
+            _uncertainty2*=factor*factor;
             return *this;
         }
 };

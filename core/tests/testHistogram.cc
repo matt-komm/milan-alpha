@@ -7,6 +7,5 @@ TEST(Histogram, construction)
     using namespace milan;
     Histogram hist(10000);
     hist*=5.0f;
-    //EXPECT_EQ(0,0);
 }
 
