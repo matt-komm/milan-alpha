@@ -36,19 +36,19 @@ matrix:
       
     - os: linux
       compiler: clang
-      env: COMPILER=clang CONFIG=Debug
+      env: COMPILER=clang++ CONFIG=Debug
       
     - os: linux
       compiler: clang
-      env: COMPILER=clang CONFIG=Release
+      env: COMPILER=clang++ CONFIG=Release
      
     - os: osx
       compiler: clang
-      env: COMPILER=clang CONFIG=Debug
+      env: COMPILER=clang++ CONFIG=Debug
       
     - os: osx
       compiler: clang
-      env: COMPILER=clang CONFIG=Release
+      env: COMPILER=clang++ CONFIG=Release
       
 
 before_script:
