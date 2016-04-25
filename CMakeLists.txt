@@ -20,7 +20,10 @@ endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 if (ENABLE_TEST)
     set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-unused-parameter ${CMAKE_CXX_FLAGS}")
 endif (ENABLE_TEST)
-    
+   
+message(STATUS "Compiler id: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Compiler name: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 
 add_subdirectory(external)
 
