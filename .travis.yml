@@ -18,27 +18,19 @@ matrix:
       env: CONFIG=Debug
       
     - os: linux
-      compiler: gcc-5.0
+      compiler: gcc-5
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5.0']
-      env: CONFIG=Debug
-      
-    - os: linux
-      compiler: gcc-5.3
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5.3']
+          packages: ['g++-5']
       env: CONFIG=Debug
         
     - os: linux
-      compiler: gcc-5.3
+      compiler: gcc-5
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5.3']
+          packages: ['g++-5']
       env: CONFIG=Release
       
     - os: linux
@@ -46,7 +38,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['clang++-3.3']
+          packages: ['clang-3.3']
       env: CONFIG=Debug
       
     - os: linux
@@ -54,7 +46,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['clang++-3.5']
+          packages: ['clang-3.5']
       env: CONFIG=Debug
         
     - os: linux
@@ -63,6 +55,14 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['clang++-3.5']
+      env: CONFIG=Release
+      
+    - os: linux
+      compiler: clang-3.8
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-3.8']
       env: CONFIG=Release
       
     - os: osx
