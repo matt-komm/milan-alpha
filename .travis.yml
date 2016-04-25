@@ -2,7 +2,6 @@ language: cpp
 matrix:
   include:
     - os: linux
-      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -10,7 +9,6 @@ matrix:
       env: COMPILER=g++-4.7 CONFIG=Debug
 
     - os: linux
-      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -18,7 +16,6 @@ matrix:
       env: COMPILER=g++-4.9 CONFIG=Debug
       
     - os: linux
-      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -26,41 +23,52 @@ matrix:
       env: COMPILER=g++-5.0 CONFIG=Debug
       
     - os: linux
-      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5.3']
-      env: 
-        - COMPILER=g++-5.3 CONFIG=Debug
-        - COMPILER=g++-5.3 CONFIG=Release
+      env: COMPILER=g++-5.3 CONFIG=Debug
+        
+    - os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5.3']
+      env: COMPILER=g++-5.3 CONFIG=Release
       
     - os: linux
-      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang++-3.3']
       env: COMPILER=clang++-3.3 CONFIG=Debug
       
     - os: linux
-      compiler: clang
-      env: 
-        - COMPILER=clang++-3.5 CONFIG=Debug
-        - COMPILER=clang++-3.5 CONFIG=Release
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang++-3.5']
+      env: COMPILER=clang++-3.5 CONFIG=Debug
+        
+    - os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang++-3.5']
+      env: COMPILER=clang++-3.5 CONFIG=Release
       
     - os: osx
-      compiler: clang
-      env: COMPILER=clang++-3.3 CONFIG=Debug
+      env: COMPILER=clang++ CONFIG=Debug
       
     - os: osx
-      compiler: clang
-      env: 
-        - COMPILER=clang++-3.5 CONFIG=Debug
-        - COMPILER=clang++-3.5 CONFIG=Release
+      env: COMPILER=clang++ CONFIG=Release
       
 
 before_script:
   - export BASEDIR=$PWD
   - mkdir build
   - cd build
-  - cmake -D CMAKE_BUILD_TYPE=$CONFIG -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=$BASEDIR/release ..
+  - cmake -D CMAKE_CXX_COMPILER `which $COMPILER` -D CMAKE_BUILD_TYPE=$CONFIG -D ENABLE_TEST=ON -D CMAKE_INSTALL_PREFIX=$BASEDIR/release ..
 
 script: 
   - cmake --build . --config $CONFIG --target install
