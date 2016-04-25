@@ -4,6 +4,19 @@ include(cmake/DetectOS.cmake)
 include(cmake/Copy.cmake)
 include(cmake/Tests.cmake)
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mavx")
+endif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mavx")
+endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+
+
 if (ENABLE_TEST)
     set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-unused-parameter ${CMAKE_CXX_FLAGS}")
 endif (ENABLE_TEST)
@@ -11,5 +24,9 @@ endif (ENABLE_TEST)
 
 add_subdirectory(external)
 
+include_directories(
+    SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
+    SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
+)
 
 add_subdirectory(core)
