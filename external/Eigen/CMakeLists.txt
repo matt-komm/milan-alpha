@@ -1,10 +1,10 @@
 include_directories(SYSTEM include)
 
-add_executable(printSimdSupport
-    src/printSimdSupport.cc
+add_executable(printEigenConfig
+    src/printEigenConfig.cc
 )
 install(
-    TARGETS printSimdSupport
+    TARGETS printEigenConfig
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
 )
