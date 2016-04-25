@@ -47,7 +47,7 @@ template<unsigned int N, class ETYPE, class PTYPE> void speedTestDynamic(const c
             eigen_b[j]=i-j+2;
             eigen_c[j]=0.2*i;
         }
-        eigen_d += eigen_a+0.5*eigen_b+eigen_c/0.5;     
+        eigen_d += eigen_a+0.5*eigen_b-eigen_c/0.5;     
         
     }
     double eigen_secs = double(std::clock() - eigen_begin) / CLOCKS_PER_SEC;
@@ -76,7 +76,7 @@ template<unsigned int N, class ETYPE, class PTYPE> void speedTestDynamic(const c
             plain_b[j]=i-j+2;
             plain_c[j]=0.2*i;
 
-            plain_d[j] += plain_a[j]+0.5*plain_b[j]+plain_c[j]/0.5;     
+            plain_d[j] += plain_a[j]+0.5*plain_b[j]-plain_c[j]/0.5;     
         }
         delete[] plain_a;
         delete[] plain_b;
