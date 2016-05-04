@@ -13,7 +13,7 @@ template<unsigned int N, class ETYPE, class PTYPE> void speedTestDynamic(const c
     //benchmark how many iterations will give a run time of ~0.5s
     std::clock_t eigen_begin = std::clock();
     unsigned int toys = 0;
-    while (double(std::clock()-eigen_begin)/CLOCKS_PER_SEC<1.0)
+    while (double(std::clock()-eigen_begin)/CLOCKS_PER_SEC<0.5)
     {
         for (unsigned int i = 0; i < 10; ++i)
         {
