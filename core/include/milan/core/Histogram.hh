@@ -6,6 +6,7 @@
 #include "milan/core/Exception.hh"
 
 #include <array>
+#include <cmath>
 
 namespace milan
 {

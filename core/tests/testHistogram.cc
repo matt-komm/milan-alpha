@@ -11,7 +11,7 @@ TEST(Histogram1, construction)
     typedef Binning<float32> BinningF;
     
     sizetype N = 10;
-    Histogram1F hist({BinningF(N,-1,1)});
+    Histogram1F hist{{BinningF(N,-1,1)}};
     EXPECT_EQ(hist.getBinning(0).size(),N);
     for (sizetype i = 0; i < N+2; ++i)
     {
@@ -40,7 +40,7 @@ TEST(Histogram2, construction)
     typedef Binning<float32> BinningF;
     
     sizetype N = 10;
-    Histogram1F hist({BinningF(N,-1,1),BinningF(N*2,-1,1)});
+    Histogram1F hist{{BinningF(N,-1,1),BinningF(N*2,-1,1)}};
     EXPECT_EQ(hist.getBinning(0).size(),N);
     EXPECT_EQ(hist.getBinning(1).size(),N*2);
     for (sizetype i = 0; i < N+2; ++i)
