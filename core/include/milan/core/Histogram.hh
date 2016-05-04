@@ -14,19 +14,26 @@ namespace milan
 template<class TYPE, sizetype DIM>
 class Histogram
 {
+    public:
+        typedef Binning<TYPE> B;
     protected:
         std::array<Binning<TYPE>,DIM> _binning;
         
         std::vector<TYPE> _content;
         std::vector<TYPE> _error2;
     public:
-        Histogram(const std::array<Binning<TYPE>,DIM>& binning):
-            _binning(binning)
+        template<class... ARGS>
+        Histogram(ARGS&&... args):
+            _binning{{std::forward<ARGS>(args)...}}
         {
+            static_assert(
+                DIM==sizeof...(args),
+                "Histogram needs to be initialized with same number of binning objects as there are dimensions"
+            );
             sizetype N = 1;
             for (sizetype idim = 0; idim < DIM; ++idim)
             {
-                N*=binning[idim].size()+2;
+                N*=_binning[idim].size()+2;
             }
             _content = std::vector<TYPE>(N,0);
             _error2 = std::vector<TYPE>(N,0);
