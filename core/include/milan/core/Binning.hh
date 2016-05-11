@@ -10,13 +10,12 @@
 namespace milan
 {
 
-template<class TYPE>
 class Binning
 {
     protected:
-        std::vector<TYPE> _binEdges;
+        std::vector<float64> _binEdges;
     public:
-        Binning(const sizetype& N, const TYPE& start, const TYPE& end):
+        Binning(const sizetype& N, const float64& start, const float64& end):
             _binEdges(N)
         {
             if (end<=start)
@@ -29,7 +28,7 @@ class Binning
             }
         }
         
-        Binning(const std::vector<TYPE> binEdges):
+        Binning(const std::vector<float64> binEdges):
             _binEdges(binEdges)
         {
             for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
@@ -46,7 +45,7 @@ class Binning
             return _binEdges.size();
         }
         
-        sizetype findBin(const TYPE& value) const
+        sizetype findBin(const float64& value) const
         {
             /*
             TODO: binary search

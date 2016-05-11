@@ -3,15 +3,15 @@
 #include "gtest/gtest.h"
 
 
-TEST(Histogram1, construction)
+TEST(Histogram1D, construction)
 {
     using namespace milan;
     
-    typedef Histogram<float32,1> Histogram1F;
-    typedef Binning<float32> BinningF;
+    typedef Histogram<1> Histogram1D;
+
     
     sizetype N = 10;
-    Histogram1F hist({BinningF(N,-1,1)});
+    Histogram1D hist({Binning(N,-1,1)});
     EXPECT_EQ(hist.getBinning(0).size(),N);
     hist.getContent({0});
     for (sizetype i = 0; i < N+2; ++i)
@@ -37,15 +37,14 @@ TEST(Histogram1, construction)
     }
 }
 
-TEST(Histogram2, construction)
+TEST(Histogram2D, construction)
 {
     using namespace milan;
     
-    typedef Histogram<float32,2> Histogram1F;
-    typedef Binning<float32> BinningF;
-    
+    typedef Histogram<2> Histogram2D;
+
     sizetype N = 10;
-    Histogram1F hist({BinningF(N,-1,1),BinningF(N*2,-1,1)});
+    Histogram2D hist({Binning(N,-1,1),Binning(N*2,-1,1)});
     EXPECT_EQ(hist.getBinning(0).size(),N);
     EXPECT_EQ(hist.getBinning(1).size(),N*2);
 

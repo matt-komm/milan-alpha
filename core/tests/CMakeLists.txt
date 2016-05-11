@@ -5,3 +5,9 @@ add_gtest(
     #DEPS
 )
 
+add_gtest(
+    NAME milan-core-HistogramFunction
+    SOURCES testHistogramFunction.cc
+    LIBRARIES milan-core
+    #DEPS
+)
