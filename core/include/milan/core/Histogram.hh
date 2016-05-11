@@ -144,10 +144,9 @@ class Histogram:
             return *this;
         }
         
-        virtual HistogramFunctionInterface<DIM>* clone() const
+        virtual std::shared_ptr<HistogramFunctionInterface<DIM>> clone() const
         {
-            Histogram<DIM>* clonedHist = new Histogram<DIM>(_binning);
-            return clonedHist;
+            return std::make_shared<Histogram<DIM>>(_binning);
         }
 };
 
