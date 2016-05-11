@@ -60,11 +60,11 @@ class AddHist:
     public HistogramFunctionInterface<DIM>
 {
     protected:
-        HistogramFunction<DIM>* _lhs;
-        HistogramFunction<DIM>* _rhs;
+        HistogramFunctionInterface<DIM>* _lhs;
+        HistogramFunctionInterface<DIM>* _rhs;
         
     public:
-        AddHist(HistogramFunction<DIM>* lhs, HistogramFunction<DIM>* rhs):
+        AddHist(HistogramFunctionInterface<DIM>* lhs, HistogramFunctionInterface<DIM>* rhs):
             _lhs(lhs),
             _rhs(rhs)
         {
@@ -73,7 +73,7 @@ class AddHist:
         virtual Histogram<DIM> getHistogram() const
         {
             Histogram<DIM> hist = _lhs->getHistogram();
-            hist+=_rhs->getHistogram();
+            //hist+=_rhs->getHistogram();
             return hist;
         }
         
@@ -82,6 +82,12 @@ class AddHist:
             return std::make_shared<AddHist<DIM>>(_lhs,_rhs);
         }
 };
+
+template<sizetype DIM>
+HistogramFunction<DIM> operator+(HistogramFunctionInterface<DIM>& lhs, HistogramFunctionInterface<DIM>& rhs)
+{
+    return AddHist<DIM>(&lhs,&rhs);
+}
 
 }
 
