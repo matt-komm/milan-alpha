@@ -129,8 +129,12 @@ class Histogram:
             return getGlobalBinFromIndex(findIndexFromValue(value));
         }
         
-        Histogram<DIM>& add(const Histogram<DIM>& histogram, bool checkBinning=true)
+        Histogram<DIM>& add(const Histogram<DIM>& histogram)
         {
+            for (sizetype ibin = 0; ibin < _content.size(); ++ibin)
+            {
+                _content[ibin]+=histogram._content[ibin];
+            }
             return *this;
         }
         
@@ -146,7 +150,9 @@ class Histogram:
         
         virtual std::shared_ptr<HistogramFunctionInterface<DIM>> clone() const
         {
-            return std::make_shared<Histogram<DIM>>(_binning);
+            std::shared_ptr<Histogram<DIM>> histClone = std::make_shared<Histogram<DIM>>(_binning);
+            histClone->_content=_content;
+            return histClone;
         }
 };
 

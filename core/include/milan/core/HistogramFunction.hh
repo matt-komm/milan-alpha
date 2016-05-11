@@ -68,12 +68,13 @@ class AddHist:
             _lhs(lhs),
             _rhs(rhs)
         {
+            //TODO: check binning already here & not during getHistogram()
         }
         
         virtual Histogram<DIM> getHistogram() const
         {
             Histogram<DIM> hist = _lhs->getHistogram();
-            //hist+=_rhs->getHistogram();
+            hist.add(_rhs->getHistogram());
             return hist;
         }
         
