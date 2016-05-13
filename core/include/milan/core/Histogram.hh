@@ -15,7 +15,7 @@ namespace milan
 
 template<sizetype DIM>
 class Histogram:
-    public HistogramFunctionInterface<DIM>
+    public HistogramInterface<DIM>
 {
     protected:
         const std::vector<Binning> _binning;
@@ -121,7 +121,7 @@ class Histogram:
             {
                 index[idim]=_binning[idim].findBin(value[idim]);
             }
-            return std::move(index);
+            return index;
         }
         
         inline sizetype findGlobalBinFromValue(const std::vector<double>& value) const
@@ -138,22 +138,25 @@ class Histogram:
             return *this;
         }
         
-        Histogram<DIM>& multiply(const double& factor)
+        virtual Histogram<DIM> get() const
         {
             return *this;
         }
         
-        virtual Histogram<DIM> getHistogram() const
-        {
-            return *this;
-        }
         
-        virtual std::shared_ptr<HistogramFunctionInterface<DIM>> clone() const
+        virtual std::shared_ptr<HistogramInterface<DIM>> clone() const
         {
             std::shared_ptr<Histogram<DIM>> histClone = std::make_shared<Histogram<DIM>>(_binning);
+            std::cout<<"clone hist: "<<this<<" -> "<<histClone.get()<<std::endl;
             histClone->_content=_content;
             return histClone;
         }
+        /*
+        virtual std::shared_ptr<HistogramInterface<DIM>> move() const
+        {
+            return std::shared_ptr<Histogram<DIM>>(*this);
+        }
+        */
 };
 
 }
