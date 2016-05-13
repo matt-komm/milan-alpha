@@ -30,18 +30,16 @@ class HistogramFunction:
     public HistogramInterface<DIM>
 {
     protected:
-        std::shared_ptr<HistogramInterface<DIM>> _histFct;
+        std::shared_ptr<const HistogramInterface<DIM>> _histFct;
     public:
         HistogramFunction<DIM>(HistogramInterface<DIM>&& hist):
             _histFct(hist.clone())
         {
-            std::cout<<"by move: "<<&hist<<" -> "<<_histFct.get()<<std::endl;
         }
         
         HistogramFunction<DIM>(const HistogramInterface<DIM>& hist):
             _histFct(hist.clone())
         {
-            std::cout<<"by const ref: "<<&hist<<" -> "<<_histFct.get()<<std::endl;
         }
     
         virtual Histogram<DIM> get() const
@@ -73,13 +71,13 @@ class AddHist:
     public HistogramInterface<DIM>
 {
     protected:
-        const HistogramInterface<DIM>& _lhs;
-        const HistogramInterface<DIM>& _rhs;
+        const std::shared_ptr<HistogramInterface<DIM>> _lhs;
+        const std::shared_ptr<HistogramInterface<DIM>> _rhs;
         
     public:
         AddHist(const HistogramInterface<DIM>& lhs, const HistogramInterface<DIM>& rhs):
-            _lhs(lhs),
-            _rhs(rhs)
+            _lhs(lhs.clone()),
+            _rhs(rhs.clone())
         {
             //std::cout<<"LHS: "<<_lhs.get()<<", RHS: "<<_rhs.get()<<std::endl;
             
@@ -88,14 +86,15 @@ class AddHist:
         
         virtual Histogram<DIM> get() const
         {
-            Histogram<DIM> hist = _lhs.get();
-            hist.add(_rhs.get());
+            std::cout<<"LHS: "<<_lhs.get()<<", RHS: "<<_rhs.get()<<std::endl;
+            Histogram<DIM> hist = _lhs->get();
+            hist.add(_rhs->get());
             return hist;
         }
         
         virtual std::shared_ptr<HistogramInterface<DIM>> clone() const
         {
-            return std::make_shared<AddHist<DIM>>(_lhs,_rhs);
+            return std::make_shared<AddHist<DIM>>(*_lhs,*_rhs);
         }
 };
 

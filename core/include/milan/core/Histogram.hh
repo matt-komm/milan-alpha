@@ -143,20 +143,13 @@ class Histogram:
             return *this;
         }
         
-        
         virtual std::shared_ptr<HistogramInterface<DIM>> clone() const
         {
             std::shared_ptr<Histogram<DIM>> histClone = std::make_shared<Histogram<DIM>>(_binning);
-            std::cout<<"clone hist: "<<this<<" -> "<<histClone.get()<<std::endl;
             histClone->_content=_content;
             return histClone;
         }
-        /*
-        virtual std::shared_ptr<HistogramInterface<DIM>> move() const
-        {
-            return std::shared_ptr<Histogram<DIM>>(*this);
-        }
-        */
+        
 };
 
 }

@@ -56,6 +56,9 @@ TEST(HistogramFunction, assign)
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
     EXPECT_EQ(histFct4.get().getContent({1}),4);
     
+    
+    ///HistogramFunction1D hist = Histogram1D();
+    
     /*
     
     Histogram1D hist2({Binning(50,-1,1)});
