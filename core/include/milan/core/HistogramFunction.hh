@@ -3,7 +3,7 @@
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
-
+#include "milan/core/Operators.hh"
 
 #include <iostream>
 #include <memory>
@@ -15,6 +15,8 @@ template<sizetype DIM>
 class HistogramFunction:
     public HistogramInterface<DIM>
 {
+    public:
+        typedef HistogramInterface<DIM> Inteface;
     protected:
         std::shared_ptr<const HistogramInterface<DIM>> _histFct;
     public:
@@ -55,13 +57,15 @@ class HistogramFunction:
         {
             return std::make_shared<const HistogramFunction<DIM>>(*_histFct);
         }
-        
-        HistogramFunction<DIM> operator+(const HistogramInterface<DIM>& histFct) const;
 };
 
+template<sizetype DIM>
+HistogramFunction<DIM> operator+(const HistogramInterface<DIM>& lhs, const HistogramInterface<DIM>& rhs)
+{
+    return AddOperator<HistogramInterface<1>,Histogram<1>>(lhs,rhs);
 }
 
-#include "milan/core/Operators.hh"
+}
 
 
 #endif

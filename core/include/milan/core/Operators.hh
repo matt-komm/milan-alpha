@@ -12,42 +12,48 @@ namespace milan
 
 
 //TODO: make this more templatized so that one can also use it for others eg parameters or continious functions
-template<sizetype DIM>
-class AddHist:
-    public HistogramInterface<DIM>
+template<class INTERFACE, class RESULT>
+class AddOperator:
+    public INTERFACE
 {
     protected:
-        const std::shared_ptr<const HistogramInterface<DIM>> _lhs;
-        const std::shared_ptr<const HistogramInterface<DIM>> _rhs;
+        const std::shared_ptr<const INTERFACE> _lhs;
+        const std::shared_ptr<const INTERFACE> _rhs;
         
     public:
-        AddHist(const HistogramInterface<DIM>& lhs, const HistogramInterface<DIM>& rhs):
+        AddOperator(const INTERFACE& lhs, const INTERFACE& rhs):
             _lhs(lhs.clone()),
             _rhs(rhs.clone())
         {
             //TODO: check binning here
         }
         
-        virtual Histogram<DIM> get() const
+        virtual RESULT get() const
         {
-            Histogram<DIM> hist = _lhs->get();
+            RESULT hist = _lhs->get();
             hist.add(_rhs->get());
             return hist;
         }
         
-        virtual std::shared_ptr<const HistogramInterface<DIM>> clone() const
+        virtual std::shared_ptr<const INTERFACE> clone() const
         {
-            return std::make_shared<AddHist<DIM>>(*_lhs,*_rhs);
+            return std::make_shared<AddOperator<INTERFACE,RESULT>>(*_lhs,*_rhs);
         }
 };
 
-template<sizetype DIM>
-HistogramFunction<DIM> HistogramFunction<DIM>::operator+(const HistogramInterface<DIM>& histFct) const
-{
-    return AddHist<DIM>(*this, histFct);
-}
+
+
+//typedef AddOperator<HistogramInterface<1>,Histogram<1>> AddHist;
+
 
 }
+/*
+template<class BASE>
+BASE operator+(const BASE& lhs, const BASE& rhs)
+{
+    return milan::AddOperator<BASE,Histogram<1>>(lhs, rhs);
+}
+*/
 
 
 #endif
