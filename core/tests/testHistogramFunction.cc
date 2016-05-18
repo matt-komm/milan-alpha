@@ -15,7 +15,7 @@ TEST(HistogramFunction, clone)
     hist.setContent({1},1.0);
     EXPECT_EQ(hist.getContent({1}),1);
     
-    std::shared_ptr<HistogramInterface1D> histClone = hist.clone();
+    std::shared_ptr<const HistogramInterface1D> histClone = hist.clone();
     EXPECT_EQ(hist.getContent({1}),1);
     EXPECT_EQ(histClone->get().getContent({1}),1);
     
@@ -40,9 +40,6 @@ TEST(HistogramFunction, assign)
     
     Histogram1D hist2({Binning(50,-1,1)});
     hist2.setContent({1},2.0);
-    
-    std::cout<<"created hist1: "<<&hist1<<std::endl;
-    std::cout<<"created hist2: "<<&hist2<<std::endl;
 
     HistogramFunction1D histFct1 = hist1;
     HistogramFunction1D histFct2 = hist2;
@@ -54,7 +51,8 @@ TEST(HistogramFunction, assign)
     EXPECT_EQ(histFct3.get().getContent({1}),3);
     
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
-    EXPECT_EQ(histFct4.get().getContent({1}),4);
+    Histogram1D result = histFct4.get();
+    EXPECT_EQ(result.getContent({1}),4);
     
     
     ///HistogramFunction1D hist = Histogram1D();

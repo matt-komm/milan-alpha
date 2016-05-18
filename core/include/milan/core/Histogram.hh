@@ -4,7 +4,7 @@
 #include "milan/core/Types.hh"
 #include "milan/core/Binning.hh"
 #include "milan/core/Exception.hh"
-#include "milan/core/HistogramFunction.hh"
+#include "milan/core/HistogramInterface.hh"
 
 #include <array>
 #include <cmath>
@@ -143,7 +143,7 @@ class Histogram:
             return *this;
         }
         
-        virtual std::shared_ptr<HistogramInterface<DIM>> clone() const
+        virtual std::shared_ptr<const HistogramInterface<DIM>> clone() const
         {
             std::shared_ptr<Histogram<DIM>> histClone = std::make_shared<Histogram<DIM>>(_binning);
             histClone->_content=_content;
