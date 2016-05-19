@@ -29,7 +29,7 @@ class HistogramFunction:
             _histFct(std::move(hist._histFct))
         {
         }
-    
+        /*
         HistogramFunction<DIM>(HistogramInterface<DIM>&& hist):
             _histFct(hist.clone())
         {
@@ -39,8 +39,13 @@ class HistogramFunction:
             _histFct(hist.clone())
         {
         }
+        */
         
-        //TODO: prevent deletion
+
+        HistogramFunction<DIM>(const std::shared_ptr<const HistogramInterface<DIM>>& hist):
+            _histFct(hist)
+        {
+        }
         /*
         HistogramFunction<DIM>(const HistogramInterface<DIM>* hist):
             _histFct(hist)
@@ -52,17 +57,19 @@ class HistogramFunction:
         {
             return _histFct->get();
         }
-        
+        /*
         virtual std::shared_ptr<const HistogramInterface<DIM>> clone() const
         {
-            return std::make_shared<const HistogramFunction<DIM>>(*_histFct);
+            return std::make_shared<const HistogramFunction<DIM>>(_histFct);
         }
+        */
 };
 
 template<sizetype DIM>
 HistogramFunction<DIM> operator+(const HistogramInterface<DIM>& lhs, const HistogramInterface<DIM>& rhs)
 {
-    return AddOperator<HistogramInterface<1>,Histogram<1>>(lhs,rhs);
+    std::shared_ptr<const HistogramInterface<DIM>> res = std::make_shared<AddOperator<HistogramInterface<1>,Histogram<1>>>(lhs,rhs);
+    return res;
 }
 
 }

@@ -11,3 +11,10 @@ add_gtest(
     LIBRARIES milan-core
     #DEPS
 )
+
+add_gtest(
+    NAME milan-core-Ptr
+    SOURCES testPtr.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
