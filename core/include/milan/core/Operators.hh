@@ -4,40 +4,33 @@
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
 #include "milan/core/HistogramFunction.hh"
+#include "milan/core/Ptr.hh"
 
 namespace milan
 {
 
-//template<class
-
-
-//TODO: make this more templatized so that one can also use it for others eg parameters or continious functions
+//TODO: eventually make an OperatorInterface
 template<class INTERFACE, class RESULT>
 class AddOperator:
     public INTERFACE
 {
     protected:
-        const std::shared_ptr<const INTERFACE> _lhs;
-        const std::shared_ptr<const INTERFACE> _rhs;
+        const Ptr<const INTERFACE> _lhs;
+        const Ptr<const INTERFACE> _rhs;
         
     public:
-        AddOperator(const INTERFACE& lhs, const INTERFACE& rhs):
-            _lhs(lhs.clone()),
-            _rhs(rhs.clone())
+        AddOperator(const Ptr<const INTERFACE>& lhs, const Ptr<const INTERFACE>& rhs):
+            _lhs(lhs),
+            _rhs(rhs)
         {
-            //TODO: check binning here
+            //TODO: check compatibility (e.g. binning for Histograms) here
         }
         
         virtual RESULT get() const
         {
-            RESULT hist = _lhs->get();
-            hist.add(_rhs->get());
+            RESULT hist = _lhs.get()->get();
+            hist.add(_rhs.get()->get());
             return hist;
-        }
-        
-        virtual std::shared_ptr<const INTERFACE> clone() const
-        {
-            return std::make_shared<AddOperator<INTERFACE,RESULT>>(*_lhs,*_rhs);
         }
 };
 

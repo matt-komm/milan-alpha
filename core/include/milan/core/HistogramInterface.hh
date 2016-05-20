@@ -18,6 +18,10 @@ class HistogramInterface
     public:
         virtual Histogram<DIM> get() const = 0;
         //virtual std::shared_ptr<const HistogramInterface<DIM>> clone() const = 0;
+        
+        virtual ~HistogramInterface()
+        {
+        }
 };
 
 }

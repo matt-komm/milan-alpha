@@ -7,7 +7,7 @@ TEST(Ptr_shared, access)
 {
     using namespace milan;
     int value = 0;
-    Ptr<int> ptr(Ptr<int>::SHARE,&value);
+    Ptr<int> ptr(PtrStorage::SHARE,&value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -23,7 +23,7 @@ TEST(Ptr_owned, access)
 {
     using namespace milan;
     int* value = new int(0);
-    Ptr<int> ptr(Ptr<int>::OWN,value);
+    Ptr<int> ptr(PtrStorage::OWN,value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -39,7 +39,7 @@ TEST(Ptr_shared, access_constptr)
 {
     using namespace milan;
     int value = 0;
-    const Ptr<int> ptr(Ptr<int>::SHARE,&value);
+    const Ptr<int> ptr(PtrStorage::SHARE,&value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -52,7 +52,7 @@ TEST(Ptr_owned, access_constptr)
 {
     using namespace milan;
     int* value = new int(0);
-    const Ptr<int> ptr(Ptr<int>::OWN,value);
+    const Ptr<int> ptr(PtrStorage::OWN,value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -65,7 +65,7 @@ TEST(Ptr_shared, access_constvalue)
 {
     using namespace milan;
     int value = 0;
-    Ptr<const int> ptr(Ptr<const int>::SHARE,&value);
+    Ptr<const int> ptr(PtrStorage::SHARE,&value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -78,7 +78,7 @@ TEST(Ptr_owned, access_constvalue)
 {
     using namespace milan;
     int* value = new int(0);
-    Ptr<const int> ptr(Ptr<const int>::OWN,value);
+    Ptr<const int> ptr(PtrStorage::OWN,value);
     
     EXPECT_EQ(bool(ptr),true);
     EXPECT_EQ(ptr.use_count(),1);
@@ -91,7 +91,7 @@ TEST(Ptr_shared, sharing_copy)
 {
     using namespace milan;
     int v1 = 0;
-    Ptr<int> p1(Ptr<int>::SHARE,&v1);
+    Ptr<int> p1(PtrStorage::SHARE,&v1);
     
     {
         Ptr<int> p2(p1);
@@ -109,7 +109,7 @@ TEST(Ptr_owned, sharing_copy)
 {
     using namespace milan;
     int* v1 = new int(0);
-    Ptr<int> p1(Ptr<int>::OWN,v1);
+    Ptr<int> p1(PtrStorage::OWN,v1);
     
     {
         Ptr<int> p2(p1);
@@ -127,7 +127,7 @@ TEST(Ptr_shared, sharing_reset)
 {
     using namespace milan;
     int v1 = 0;
-    Ptr<int> p1(Ptr<int>::SHARE,&v1);
+    Ptr<int> p1(PtrStorage::SHARE,&v1);
     
     {
         Ptr<int> p2(p1);
@@ -150,7 +150,7 @@ TEST(Ptr_owned, sharing_reset)
 {
     using namespace milan;
     int* v1 = new int(0);
-    Ptr<int> p1(Ptr<int>::OWN,v1);
+    Ptr<int> p1(PtrStorage::OWN,v1);
     
     {
         Ptr<int> p2(p1);

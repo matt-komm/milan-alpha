@@ -1,4 +1,5 @@
 OPTION(ENABLE_TEST "Build tests" OFF)
+OPTION(ENABLE_MEMTEST "Run memcheck" OFF)
 OPTION(ENABLE_VERBOSE_TEST "verbose tests" OFF)
 
 include (CMakeParseArguments)
@@ -37,9 +38,13 @@ if (ENABLE_TEST)
             add_dependencies(gtest-${TEST_NAME} ${TEST_DEPS})
         endif (NOT ${TEST_DEPS} STREQUAL "")
         add_test(${TEST_NAME} gtest-${TEST_NAME} --gtest_color=yes)
-        #add_test(memtest-${TEST_NAME} valgrind --tool=memcheck --leak-check=summary ${CMAKE_CURRENT_BINARY_DIR}/gtest-${TEST_NAME} > /dev/null)
+        if (ENABLE_MEMTEST)
+            add_test(
+                NAME memtest-${TEST_NAME} 
+                COMMAND ${PROJECT_SOURCE_DIR}/cmake/memcheck.py ${CMAKE_CURRENT_BINARY_DIR}/gtest-${TEST_NAME}
+            )
+        endif (ENABLE_MEMTEST)
         add_dependencies(runtests gtest-${TEST_NAME})
-        
         install(
             TARGETS gtest-${TEST_NAME}
             RUNTIME DESTINATION bin/tests

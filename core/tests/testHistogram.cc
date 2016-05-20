@@ -8,7 +8,6 @@ TEST(Histogram1D, construction)
     using namespace milan;
     
     typedef Histogram<1> Histogram1D;
-
     
     sizetype N = 10;
     Histogram1D hist({Binning(N,-1,1)});

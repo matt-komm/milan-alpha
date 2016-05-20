@@ -7,37 +7,39 @@
 namespace milan
 {
 
+enum class PtrStorage
+{
+    OWN,
+    SHARE
+};
+
 template<class TYPE>
 class Ptr
 {
     public:
-        enum Storage
-        {
-            OWN,
-            SHARE
-        };
+
         
     protected:
         TYPE* _data;
-        Storage _storage;
+        PtrStorage _storage;
         sizetype* _refs;
         
     public:
-        Ptr(Storage storage, TYPE* data=nullptr):
+        Ptr(PtrStorage storage, TYPE* data=nullptr):
             _data(data),
             _storage(storage),
             _refs(new sizetype(1))
         {
         }
         
-        inline static Ptr<TYPE>&& makeShared(TYPE* data=nullptr)
+        inline static Ptr<TYPE> makeShared(TYPE* data=nullptr)
         {
-            return Ptr(SHARE,data);
+            return Ptr<TYPE>(PtrStorage::SHARE,data);
         }
         
-        static Ptr<TYPE>&& makeOwned(TYPE* data=nullptr)
+        inline static Ptr<TYPE> makeOwned(TYPE* data=nullptr)
         {
-            return Ptr(OWN,data);
+            return Ptr<TYPE>(PtrStorage::OWN,data);
         }
         
         Ptr(const Ptr<TYPE>& ptr):
@@ -47,6 +49,14 @@ class Ptr
         {
             ++(*_refs);
         }
+        
+        //TODO: fix ref counting for const & non-const
+        template<class UPCAST> Ptr<UPCAST> castTo()
+        {
+            Ptr<UPCAST> ptr(_storage,_data);
+            return ptr;
+        }
+
         
         inline TYPE& operator*()
         {
@@ -83,7 +93,7 @@ class Ptr
             if ((*_refs)==1)
             {
                 delete _refs;
-                if (_storage==OWN and _data!=nullptr)
+                if (_storage==PtrStorage::OWN and _data!=nullptr)
                 {
                     delete _data;
                 }
@@ -101,7 +111,7 @@ class Ptr
             if ((*_refs)==1)
             {
                 delete _refs;
-                if (_storage==OWN and _data!=nullptr)
+                if (_storage==PtrStorage::OWN and _data!=nullptr)
                 {
                     delete _data;
                 }

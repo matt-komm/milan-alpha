@@ -4,6 +4,7 @@
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
 #include "milan/core/Operators.hh"
+#include "milan/core/Ptr.hh"
 
 #include <iostream>
 #include <memory>
@@ -18,7 +19,7 @@ class HistogramFunction:
     public:
         typedef HistogramInterface<DIM> Inteface;
     protected:
-        std::shared_ptr<const HistogramInterface<DIM>> _histFct;
+        Ptr<const HistogramInterface<DIM>> _histFct;
     public:
         HistogramFunction<DIM>(const HistogramFunction<DIM>& hist):
             _histFct(hist._histFct)
@@ -42,20 +43,19 @@ class HistogramFunction:
         */
         
 
-        HistogramFunction<DIM>(const std::shared_ptr<const HistogramInterface<DIM>>& hist):
+        HistogramFunction<DIM>(const Ptr<const HistogramInterface<DIM>>& hist):
             _histFct(hist)
         {
         }
-        /*
+        
         HistogramFunction<DIM>(const HistogramInterface<DIM>* hist):
-            _histFct(hist)
+            _histFct(PtrStorage::SHARE,hist)
         {
         }
-        */
-    
+        
         virtual Histogram<DIM> get() const
         {
-            return _histFct->get();
+            return _histFct.get()->get();
         }
         /*
         virtual std::shared_ptr<const HistogramInterface<DIM>> clone() const
@@ -63,14 +63,23 @@ class HistogramFunction:
             return std::make_shared<const HistogramFunction<DIM>>(_histFct);
         }
         */
+        
+        HistogramFunction<DIM> operator+(const HistogramFunction<DIM>& rhs) const;
 };
 
 template<sizetype DIM>
-HistogramFunction<DIM> operator+(const HistogramInterface<DIM>& lhs, const HistogramInterface<DIM>& rhs)
+HistogramFunction<DIM> HistogramFunction<DIM>::operator+(const HistogramFunction<DIM>& rhs) const
 {
-    std::shared_ptr<const HistogramInterface<DIM>> res = std::make_shared<AddOperator<HistogramInterface<1>,Histogram<1>>>(lhs,rhs);
+    AddOperator<HistogramInterface<DIM>,Histogram<DIM>>* op = new AddOperator<HistogramInterface<DIM>,Histogram<DIM>>(
+        this->_histFct,
+        rhs._histFct
+    );
+    Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,op);
     return res;
 }
+
+
+
 
 }
 
