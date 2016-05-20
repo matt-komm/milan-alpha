@@ -50,13 +50,16 @@ class Ptr
             ++(*_refs);
         }
         
-        //TODO: fix ref counting for const & non-const
-        template<class UPCAST> Ptr<UPCAST> castTo()
+        Ptr& operator=(const Ptr<TYPE>& ptr)
         {
-            Ptr<UPCAST> ptr(_storage,_data);
-            return ptr;
+            reset();
+            delete _refs;
+            _data=ptr._data;
+            _storage=ptr._storage;
+            _refs=ptr._refs;
+            ++(*_refs);
+            return *this;
         }
-
         
         inline TYPE& operator*()
         {
@@ -92,16 +95,19 @@ class Ptr
         {
             if ((*_refs)==1)
             {
-                delete _refs;
+                //if this is the last Ptr managing _data, destroy it
+                delete _refs; 
                 if (_storage==PtrStorage::OWN and _data!=nullptr)
                 {
                     delete _data;
                 }
-            } 
+            }
             else if ((*_refs)>1)
             {
+                //this is not the last Ptr managing _data, decrement _refs
                 --(*_refs);
             }
+            //create new _ref to decouple from other Ptrs still managing _data
             _refs = new sizetype(1);
             _data=data;
         }
@@ -110,6 +116,7 @@ class Ptr
         {
             if ((*_refs)==1)
             {
+                //delete _refs before _data to prevent memleak if destructor of data throws
                 delete _refs;
                 if (_storage==PtrStorage::OWN and _data!=nullptr)
                 {

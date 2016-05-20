@@ -53,9 +53,13 @@ TEST(HistogramFunction, assign)
     EXPECT_EQ(histFct3.get().getContent({1}),3);
     
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
+    
     EXPECT_EQ(histFct4.get().getContent({1}),4);
     hist1.setContent({1},3.0);
     EXPECT_EQ(histFct4.get().getContent({1}),8);
+    
+    histFct4 = histFct1+histFct4;
+    EXPECT_EQ(histFct4.get().getContent({1}),11);
     
     ///HistogramFunction1D hist = Histogram1D();
     

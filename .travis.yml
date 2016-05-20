@@ -69,7 +69,7 @@ script:
   - cmake --build . --config $CONFIG --target install
   - export LD_LIBRARY_PATH=$BASEDIR/release/bin:$BASEDIR/release/bin/tests:$BASEDIR/release/lib:$LD_LIBRARY_PATH
   - $BASEDIR/release/bin/printEigenConfig
-  - (ctest -C $CONFIG && $BASEDIR/release/bin/tests/gtest-external-Eigen) || ctest -V -C $CONFIG
+  - ctest -C $CONFIG || ctest -V -C $CONFIG
   
 branches:
   only:

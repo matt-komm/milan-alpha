@@ -2,7 +2,6 @@
 
 #include "gtest/gtest.h"
 
-
 TEST(Ptr_shared, access)
 {
     using namespace milan;
@@ -169,5 +168,12 @@ TEST(Ptr_owned, sharing_reset)
     EXPECT_EQ(p1.use_count(),1);
 }
 
-
+TEST(Ptr_shared, copy)
+{
+    using namespace milan;
+    int value = 0;
+    Ptr<int> ptr1(PtrStorage::SHARE,&value);
+    Ptr<int> ptr2(ptr1);
+    EXPECT_EQ(ptr1.get(),ptr2.get());
+}
 

@@ -18,3 +18,10 @@ add_gtest(
     #LIBRARIES milan-core
     #DEPS
 )
+
+add_gtest(
+    NAME milan-core-Parameter
+    SOURCES testParameter.cc
+    #LIBRARIES milan-core
+    #DEPS
+)

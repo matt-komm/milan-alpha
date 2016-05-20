@@ -30,7 +30,19 @@ class HistogramFunction:
             _histFct(std::move(hist._histFct))
         {
         }
-
+        
+        HistogramFunction<DIM>& operator=(const HistogramFunction<DIM>& hist)
+        {
+            _histFct = hist._histFct;
+            return *this;
+        }
+        /*
+        HistogramFunction<DIM> operator=(HistogramFunction<DIM>&& hist)
+        {
+            _histFct = std::move(hist._histFct);
+            return *this;
+        }
+        */
         HistogramFunction<DIM>(const Ptr<const HistogramInterface<DIM>>& hist):
             _histFct(hist)
         {
