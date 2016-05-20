@@ -52,18 +52,10 @@ matrix:
      
     - os: osx
       compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind']
-      env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
+      env: COMPILER=clang++ CONFIG=Debug OPTIONS=""
       
     - os: osx
       compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind']
       env: COMPILER=clang++ CONFIG=Release OPTIONS=""
       
 
