@@ -8,7 +8,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.7']
-      env: COMPILER=g++-4.7 CONFIG=Debug
+      env: COMPILER=g++-4.7 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
 
     - os: linux
       compiler: gcc-4.9
@@ -16,7 +16,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
-      env: COMPILER=g++-4.9 CONFIG=Debug
+      env: COMPILER=g++-4.9 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
       compiler: gcc-5
@@ -24,7 +24,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: COMPILER=g++-5 CONFIG=Debug
+      env: COMPILER=g++-5 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
         
     - os: linux
       compiler: gcc-5
@@ -32,23 +32,23 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: COMPILER=g++-5 CONFIG=Release
+      env: COMPILER=g++-5 CONFIG=Release OPTIONS=""
       
     - os: linux
       compiler: clang
-      env: COMPILER=clang++ CONFIG=Debug
+      env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
       compiler: clang
-      env: COMPILER=clang++ CONFIG=Release
+      env: COMPILER=clang++ CONFIG=Release OPTIONS=""
      
     - os: osx
       compiler: clang
-      env: COMPILER=clang++ CONFIG=Debug
+      env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: osx
       compiler: clang
-      env: COMPILER=clang++ CONFIG=Release
+      env: COMPILER=clang++ CONFIG=Release OPTIONS=""
       
 
 before_script:
