@@ -42,6 +42,7 @@ if (ENABLE_TEST)
             add_test(
                 NAME memtest-${TEST_NAME} 
                 COMMAND ${PROJECT_SOURCE_DIR}/cmake/memcheck.py ${CMAKE_CURRENT_BINARY_DIR}/gtest-${TEST_NAME}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             )
         endif (ENABLE_MEMTEST)
         add_dependencies(runtests gtest-${TEST_NAME})
