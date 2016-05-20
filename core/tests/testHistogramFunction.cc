@@ -43,8 +43,8 @@ TEST(HistogramFunction, assign)
     Histogram1D hist2({Binning(50,-1,1)});
     hist2.setContent({1},2.0);
 
-    HistogramFunction1D histFct1 = &hist1;
-    HistogramFunction1D histFct2 = &hist2;
+    HistogramFunction1D histFct1 = hist1.ref();
+    HistogramFunction1D histFct2 = hist2.copy();
     
     EXPECT_EQ(histFct1.get().getContent({1}),1);
     EXPECT_EQ(histFct2.get().getContent({1}),2);
@@ -53,9 +53,9 @@ TEST(HistogramFunction, assign)
     EXPECT_EQ(histFct3.get().getContent({1}),3);
     
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
-    Histogram1D result = histFct4.get();
-    EXPECT_EQ(result.getContent({1}),4);
-
+    EXPECT_EQ(histFct4.get().getContent({1}),4);
+    hist1.setContent({1},3.0);
+    EXPECT_EQ(histFct4.get().getContent({1}),8);
     
     ///HistogramFunction1D hist = Histogram1D();
     

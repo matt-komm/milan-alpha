@@ -34,19 +34,7 @@ class AddOperator:
         }
 };
 
-
-
-//typedef AddOperator<HistogramInterface<1>,Histogram<1>> AddHist;
-
-
 }
-/*
-template<class BASE>
-BASE operator+(const BASE& lhs, const BASE& rhs)
-{
-    return milan::AddOperator<BASE,Histogram<1>>(lhs, rhs);
-}
-*/
 
 
 #endif
