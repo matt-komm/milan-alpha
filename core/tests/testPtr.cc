@@ -197,7 +197,7 @@ TEST(Ptr_shared, assign)
     EXPECT_EQ(ptr1.get(),ptr2.get());
 }
 
-TEST(Ptr_own, assign)
+TEST(Ptr_owned, assign)
 {
     using namespace milan;
     Ptr<int> ptr1(PtrStorage::OWN,new int(1));
@@ -225,9 +225,76 @@ TEST(Ptr_mixed, assign)
     EXPECT_EQ(ptr1.storage(),PtrStorage::SHARE);
 }
 
+TEST(Ptr_shared, move)
+{
+    using namespace milan;
+    int value1 = 1;
+    int value2 = 2;
+    Ptr<int> ptr1(PtrStorage::SHARE,&value1);
+    {
+        Ptr<int> ptr2(PtrStorage::SHARE,&value2);
+        EXPECT_EQ(ptr1.get(),&value1);
+        EXPECT_EQ(ptr2.get(),&value2);
+        
+        ptr1=std::move(ptr2);
+        EXPECT_EQ(ptr1.get(),&value2);
+        EXPECT_EQ(ptr2.get(),nullptr);
+        EXPECT_EQ(ptr1.use_count(),1);
+        EXPECT_EQ(ptr2.use_count(),1);
+        
+        Ptr<int> ptr3(ptr1);
+        EXPECT_EQ(ptr1.use_count(),2);
+        EXPECT_EQ(ptr2.use_count(),1);
+    }
+    EXPECT_EQ(bool(ptr1),true);
+    EXPECT_EQ(ptr1.get(),&value2);
+    EXPECT_EQ(ptr1.use_count(),1);
+}
 
+TEST(Ptr_owned, move)
+{
+    using namespace milan;
+    int* value1 = new int(1);
+    int* value2 = new int(2);
+    Ptr<int> ptr1(PtrStorage::OWN,value1);
+    {
+        Ptr<int> ptr2(PtrStorage::OWN,value2);
+        EXPECT_EQ(ptr1.get(),value1);
+        EXPECT_EQ(ptr2.get(),value2);
+        
+        ptr1=std::move(ptr2);
+        EXPECT_EQ(ptr1.get(),value2);
+        EXPECT_EQ(ptr2.get(),nullptr);
+        EXPECT_EQ(ptr1.use_count(),1);
+        EXPECT_EQ(ptr2.use_count(),1);
+        
+        Ptr<int> ptr3(ptr1);
+        EXPECT_EQ(ptr1.use_count(),2);
+        EXPECT_EQ(ptr2.use_count(),1);
+    }
+    EXPECT_EQ(bool(ptr1),true);
+    EXPECT_EQ(ptr1.get(),value2);
+    EXPECT_EQ(ptr1.use_count(),1);
+}
 
-
+TEST(Ptr_mixed, move)
+{
+    using namespace milan;
+    int value1 = 1;
+    Ptr<int> ptr1(PtrStorage::SHARE,&value1);
+    Ptr<int> ptr2(PtrStorage::OWN,new int(2));
+    Ptr<int> ptr3(PtrStorage::SHARE,&value1);
+    ptr1=std::move(ptr2);
+    EXPECT_EQ(*ptr1,2);
+    EXPECT_EQ(ptr1.storage(),PtrStorage::OWN);
+    EXPECT_EQ(ptr2.get(),nullptr);
+    EXPECT_EQ(ptr1.use_count(),1);
+    EXPECT_EQ(ptr2.use_count(),1);
+    
+    ptr1=std::move(ptr3);
+    EXPECT_EQ(*ptr1,1);
+    EXPECT_EQ(ptr1.storage(),PtrStorage::SHARE);
+}
 
 
 

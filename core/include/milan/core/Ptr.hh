@@ -24,7 +24,7 @@ class Ptr
     protected:
         TYPE* _data;
         PtrStorage _storage;
-        sizetype* _refs;
+        sizetype* _refs; //TODO: need to be thread-safe, e.g. atomics
         
     public:
         Ptr(PtrStorage storage, TYPE* data=nullptr):
@@ -44,6 +44,31 @@ class Ptr
             return Ptr<TYPE>(PtrStorage::OWN,data);
         }
         
+        Ptr(Ptr<TYPE>&& ptr):
+            _data(ptr._data),
+            _storage(ptr._storage),
+            _refs(ptr._refs)
+        {
+            //decouple old Ptr from ref counting. Do not need to increment refs
+            ptr._refs=new sizetype(1);
+            ptr._data=nullptr;
+        }
+        
+        Ptr& operator=(Ptr<TYPE>&& ptr)
+        {
+            reset();
+            delete _refs;
+            _data=ptr._data;
+            _storage=ptr._storage;
+            _refs=ptr._refs;
+            
+            //decouple old Ptr from ref counting. Do not need to increment refs
+            ptr._refs=new sizetype(1);
+            ptr._data=nullptr;
+            
+            return *this;
+        }
+        
         Ptr(const Ptr<TYPE>& ptr):
             _data(ptr._data),
             _storage(ptr._storage),
@@ -52,7 +77,7 @@ class Ptr
             ++(*_refs);
         }
         
-        Ptr<TYPE>& operator=(const Ptr<TYPE>& ptr)        
+        Ptr& operator=(const Ptr<TYPE>& ptr)        
         {
             reset();
             delete _refs;
