@@ -4,6 +4,8 @@
 #include "milan/core/Types.hh"
 #include "milan/core/Exception.hh"
 
+#include <type_traits>
+
 namespace milan
 {
 
@@ -50,7 +52,7 @@ class Ptr
             ++(*_refs);
         }
         
-        Ptr& operator=(const Ptr<TYPE>& ptr)
+        Ptr<TYPE>& operator=(const Ptr<TYPE>& ptr)        
         {
             reset();
             delete _refs;
@@ -60,6 +62,12 @@ class Ptr
             ++(*_refs);
             return *this;
         }
+        
+        inline PtrStorage storage() const
+        {
+            return _storage;
+        }
+        
         
         inline TYPE& operator*()
         {

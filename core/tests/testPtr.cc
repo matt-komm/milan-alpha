@@ -177,3 +177,60 @@ TEST(Ptr_shared, copy)
     EXPECT_EQ(ptr1.get(),ptr2.get());
 }
 
+TEST(Ptr_owned, copy)
+{
+    using namespace milan;
+    int* value = new int(0);
+    Ptr<int> ptr1(PtrStorage::OWN,value);
+    Ptr<int> ptr2(ptr1);
+    EXPECT_EQ(ptr1.get(),ptr2.get());
+}
+
+TEST(Ptr_shared, assign)
+{
+    using namespace milan;
+    int value1 = 1;
+    int value2 = 2;
+    Ptr<int> ptr1(PtrStorage::SHARE,&value1);
+    Ptr<int> ptr2(PtrStorage::SHARE,&value2);
+    ptr1=ptr2;
+    EXPECT_EQ(ptr1.get(),ptr2.get());
+}
+
+TEST(Ptr_own, assign)
+{
+    using namespace milan;
+    Ptr<int> ptr1(PtrStorage::OWN,new int(1));
+    Ptr<int> ptr2(PtrStorage::OWN,new int(2));
+    ptr1=ptr2;
+    EXPECT_EQ(ptr1.get(),ptr2.get());
+    EXPECT_EQ(ptr1.storage(),ptr2.storage());
+}
+
+TEST(Ptr_mixed, assign)
+{
+    using namespace milan;
+    int value1 = 1;
+    Ptr<int> ptr1(PtrStorage::SHARE,&value1);
+    Ptr<int> ptr2(PtrStorage::OWN,new int(2));
+    Ptr<int> ptr3(PtrStorage::SHARE,&value1);
+    ptr1=ptr2;
+    EXPECT_EQ(ptr1.get(),ptr2.get());
+    EXPECT_EQ(ptr1.storage(),ptr2.storage());
+    EXPECT_EQ(ptr1.storage(),PtrStorage::OWN);
+    
+    ptr1=ptr3;
+    EXPECT_EQ(ptr1.get(),ptr3.get());
+    EXPECT_EQ(ptr1.storage(),ptr3.storage());
+    EXPECT_EQ(ptr1.storage(),PtrStorage::SHARE);
+}
+
+
+
+
+
+
+
+
+
+
