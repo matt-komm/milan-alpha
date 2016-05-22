@@ -46,20 +46,20 @@ TEST(HistogramFunction, assign)
     HistogramFunction1D histFct1 = hist1.ref();
     HistogramFunction1D histFct2 = hist2.copy();
     
-    EXPECT_EQ(histFct1.get().getContent({1}),1);
-    EXPECT_EQ(histFct2.get().getContent({1}),2);
+    EXPECT_EQ(histFct1.getResult().getContent({1}),1);
+    EXPECT_EQ(histFct2.getResult().getContent({1}),2);
     
     HistogramFunction1D histFct3 = histFct1+histFct2;
-    EXPECT_EQ(histFct3.get().getContent({1}),3);
+    EXPECT_EQ(histFct3.getResult().getContent({1}),3);
     
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
     
-    EXPECT_EQ(histFct4.get().getContent({1}),4);
+    EXPECT_EQ(histFct4.getResult().getContent({1}),4);
     hist1.setContent({1},3.0);
-    EXPECT_EQ(histFct4.get().getContent({1}),8);
+    EXPECT_EQ(histFct4.getResult().getContent({1}),8);
     
     histFct4 = histFct1+histFct4;
-    EXPECT_EQ(histFct4.get().getContent({1}),11);
+    EXPECT_EQ(histFct4.getResult().getContent({1}),11);
     
     ///HistogramFunction1D hist = Histogram1D();
     

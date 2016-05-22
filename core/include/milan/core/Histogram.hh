@@ -41,6 +41,11 @@ class Histogram:
             _error2 = std::vector<double>(N,0);
         }
         
+        virtual sizetype size() const
+        {
+            return _content.size();
+        }
+        
         inline double getContent(const std::vector<sizetype>& index) const
         {
             return _content[getGlobalBinFromIndex(index)];
@@ -49,11 +54,6 @@ class Histogram:
         inline void setContent(const std::vector<sizetype>& index, const double& value)
         {
             _content[getGlobalBinFromIndex(index)] = value;
-        }
-        
-        inline double getContent(const sizetype& globalIndex) const
-        {
-            return _content[globalIndex];
         }
         
         inline void setContent(const sizetype& globalIndex, const double& value)
@@ -130,18 +130,19 @@ class Histogram:
             return getGlobalBinFromIndex(findIndexFromValue(value));
         }
         
-        Histogram<DIM>& add(const Histogram<DIM>& histogram)
+        virtual Histogram<DIM> getResult() const
         {
-            for (sizetype ibin = 0; ibin < _content.size(); ++ibin)
-            {
-                _content[ibin]+=histogram._content[ibin];
-            }
             return *this;
         }
         
-        virtual Histogram<DIM> get() const
+        virtual double getContent(sizetype index) const
         {
-            return *this;
+            return _content[index];
+        }
+        
+        virtual double getError2(sizetype index) const
+        {
+            return _error2[index];
         }
         
         Ptr<const HistogramInterface<DIM>> copy() const
@@ -156,6 +157,17 @@ class Histogram:
         {
             Ptr<const HistogramInterface<DIM>> res(PtrStorage::SHARE,this);
             return res;
+        }
+        
+        Histogram<DIM> operator+(const Histogram<DIM>& rhs) const
+        {
+            Histogram<DIM> result = *this;
+            for (sizetype ibin = 0; ibin < rhs._content.size(); ++ibin)
+            {
+                result._content[ibin]+=rhs._content[ibin];
+                result._error2[ibin]+=rhs._error2[ibin];
+            }
+            return result;
         }
         
 };

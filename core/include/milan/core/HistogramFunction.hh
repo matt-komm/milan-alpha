@@ -3,7 +3,7 @@
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
-#include "milan/core/Operators.hh"
+#include "milan/core/HistogramOperators.hh"
 #include "milan/core/Ptr.hh"
 
 #include <iostream>
@@ -16,8 +16,6 @@ template<sizetype DIM>
 class HistogramFunction:
     public HistogramInterface<DIM>
 {
-    public:
-        typedef HistogramInterface<DIM> Inteface;
     protected:
         Ptr<const HistogramInterface<DIM>> _histFct;
     public:
@@ -48,9 +46,24 @@ class HistogramFunction:
         {
         }
         
-        virtual Histogram<DIM> get() const
+        virtual sizetype size() const
         {
-            return _histFct.get()->get();
+            return _histFct.get()->size();
+        }
+        
+        virtual Histogram<DIM> getResult() const
+        {
+            return _histFct.get()->getResult();
+        }
+        
+        virtual double getContent(sizetype index) const
+        {
+            return _histFct.get()->getContent(index);
+        }
+        
+        virtual double getError2(sizetype index) const
+        {
+            return _histFct.get()->getError2(index);
         }
         
         HistogramFunction<DIM> operator+(const HistogramFunction<DIM>& rhs) const;
@@ -59,7 +72,7 @@ class HistogramFunction:
 template<sizetype DIM>
 HistogramFunction<DIM> HistogramFunction<DIM>::operator+(const HistogramFunction<DIM>& rhs) const
 {
-    AddOperator<HistogramInterface<DIM>,Histogram<DIM>>* op = new AddOperator<HistogramInterface<DIM>,Histogram<DIM>>(
+    HistogramAddOperator<DIM>* op = new HistogramAddOperator<DIM>(
         this->_histFct,
         rhs._histFct
     );

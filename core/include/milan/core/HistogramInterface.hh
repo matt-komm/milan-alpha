@@ -16,7 +16,10 @@ class HistogramInterface
 {
     protected:
     public:
-        virtual Histogram<DIM> get() const = 0;
+        virtual Histogram<DIM> getResult() const = 0;
+        virtual sizetype size() const = 0;
+        virtual double getContent(sizetype index) const = 0;
+        virtual double getError2(sizetype index) const = 0;
         
         virtual ~HistogramInterface()
         {
