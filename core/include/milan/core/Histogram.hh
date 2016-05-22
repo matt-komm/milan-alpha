@@ -5,6 +5,7 @@
 #include "milan/core/Binning.hh"
 #include "milan/core/Exception.hh"
 #include "milan/core/HistogramInterface.hh"
+#include "milan/core/Parameter.hh"
 #include "milan/core/Ptr.hh"
 
 #include <array>
@@ -162,7 +163,7 @@ class Histogram:
         Histogram<DIM> operator+(const Histogram<DIM>& rhs) const
         {
             Histogram<DIM> result = *this;
-            for (sizetype ibin = 0; ibin < rhs._content.size(); ++ibin)
+            for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {
                 result._content[ibin]+=rhs._content[ibin];
                 result._error2[ibin]+=rhs._error2[ibin];
@@ -170,6 +171,16 @@ class Histogram:
             return result;
         }
         
+        Histogram<DIM> operator*(double factor) const
+        {
+            Histogram<DIM> result = *this;
+            for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
+            {
+                result._content[ibin]*=factor;
+                result._error2[ibin]*=factor;
+            }
+            return result;
+        }
 };
 
 }

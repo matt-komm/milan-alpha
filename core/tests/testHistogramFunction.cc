@@ -1,5 +1,6 @@
 #include "milan/core/Histogram.hh"
 #include "milan/core/HistogramFunction.hh"
+#include "milan/core/Parameter.hh"
 
 #include "gtest/gtest.h"
 
@@ -60,6 +61,16 @@ TEST(HistogramFunction, assign)
     
     histFct4 = histFct1+histFct4;
     EXPECT_EQ(histFct4.getResult().getContent({1}),11);
+    
+    Parameter p1("p1",2);
+    Parameter p2("p1",3);
+    histFct4 = histFct4*p1;
+    EXPECT_EQ(histFct4.getContent(1),22);
+    histFct4 = histFct4*p1*p2;
+    EXPECT_EQ(histFct4.getContent(1),132);
+    
+    p1.setValue(1);
+    EXPECT_EQ(histFct4.getContent(1),33);
     
     ///HistogramFunction1D hist = Histogram1D();
     

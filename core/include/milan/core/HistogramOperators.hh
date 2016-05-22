@@ -4,6 +4,7 @@
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
 #include "milan/core/HistogramFunction.hh"
+#include "milan/core/Parameter.hh"
 #include "milan/core/Ptr.hh"
 
 namespace milan
@@ -43,6 +44,43 @@ class HistogramAddOperator:
         virtual double getError2(sizetype index) const
         {
             return _lhs.get()->getError2(index)+_rhs.get()->getError2(index);
+        }
+};
+
+template<sizetype DIM>
+class ParameterHistogramMultiplicationOperator:
+    public HistogramInterface<DIM>
+{
+    protected:
+        const Ptr<const HistogramInterface<DIM>> _histogram;
+        const Ptr<const Parameter> _parameter;
+        
+        
+    public:
+        ParameterHistogramMultiplicationOperator(const Ptr<const HistogramInterface<DIM>>& histogram,const Ptr<const Parameter>& parameter):
+            _histogram(histogram),
+            _parameter(parameter)
+        {
+        }
+        
+        virtual sizetype size() const
+        {
+            return _histogram.get()->size();
+        }
+        
+        virtual Histogram<DIM> getResult() const
+        {
+            return _histogram.get()->getResult()*_parameter.get()->getValue();
+        }
+        
+        virtual double getContent(sizetype index) const
+        {
+            return _histogram.get()->getContent(index)*_parameter.get()->getValue();
+        }
+        
+        virtual double getError2(sizetype index) const
+        {
+            return _histogram.get()->getError2(index)*_parameter.get()->getValue();
         }
 };
 

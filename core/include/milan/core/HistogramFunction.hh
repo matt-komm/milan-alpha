@@ -67,6 +67,7 @@ class HistogramFunction:
         }
         
         HistogramFunction<DIM> operator+(const HistogramFunction<DIM>& rhs) const;
+        HistogramFunction<DIM> operator*(const Parameter& rhs) const;
 };
 
 template<sizetype DIM>
@@ -75,6 +76,17 @@ HistogramFunction<DIM> HistogramFunction<DIM>::operator+(const HistogramFunction
     HistogramAddOperator<DIM>* op = new HistogramAddOperator<DIM>(
         this->_histFct,
         rhs._histFct
+    );
+    Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,op);
+    return res;
+}
+
+template<sizetype DIM>
+HistogramFunction<DIM> HistogramFunction<DIM>::operator*(const Parameter& parameter) const
+{
+    ParameterHistogramMultiplicationOperator<DIM>* op = new ParameterHistogramMultiplicationOperator<DIM>(
+        this->_histFct,
+        Ptr<const Parameter>(PtrStorage::SHARE,&parameter)
     );
     Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,op);
     return res;

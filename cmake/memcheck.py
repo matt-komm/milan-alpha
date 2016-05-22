@@ -75,7 +75,6 @@ if __name__ == '__main__':
     if p.returncode!=0:
         print "Valgrind exited with status "+str(p.returncode)+". Memleak analysis not run."
         sys.exit(1)
-
     
     e = xml.etree.ElementTree.parse('memcheck.xml').getroot()
     for errorTag in e.findall('error'):
