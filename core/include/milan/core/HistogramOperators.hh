@@ -23,12 +23,17 @@ class HistogramAddOperator:
             _lhs(lhs),
             _rhs(rhs)
         {
-            
+            //TODO: check binning
         }
         
         virtual sizetype size() const
         {
             return _lhs.get()->size();
+        }
+        
+        virtual const std::vector<Binning>& getBinningVector() const
+        {
+            return _lhs.get()->getBinningVector();
         }
         
         virtual Histogram<DIM> getResult() const
@@ -66,6 +71,11 @@ class ParameterHistogramMultiplicationOperator:
         virtual sizetype size() const
         {
             return _histogram.get()->size();
+        }
+        
+        virtual const std::vector<Binning>& getBinningVector() const
+        {
+            return _histogram.get()->getBinningVector();
         }
         
         virtual Histogram<DIM> getResult() const

@@ -91,7 +91,7 @@ class Histogram:
             return _binning[idim];
         }
         
-        inline const std::vector<Binning>& getBinningVector() const
+        virtual const std::vector<Binning>& getBinningVector() const
         {
             return _binning;
         }
@@ -162,6 +162,7 @@ class Histogram:
         
         Histogram<DIM> operator+(const Histogram<DIM>& rhs) const
         {
+            
             Histogram<DIM> result = *this;
             for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {

@@ -66,6 +66,11 @@ class HistogramFunction:
             return _histFct.get()->getError2(index);
         }
         
+        virtual const std::vector<Binning>& getBinningVector() const
+        {
+            return _histFct.get()->getBinningVector();
+        }
+        
         HistogramFunction<DIM> operator+(const HistogramFunction<DIM>& rhs) const;
         HistogramFunction<DIM> operator*(const Parameter& rhs) const;
 };

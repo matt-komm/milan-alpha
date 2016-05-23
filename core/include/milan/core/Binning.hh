@@ -40,6 +40,27 @@ class Binning
             }
         }
         
+        bool operator==(const Binning& binning) const
+        {
+            if (_binEdges.size()!=binning._binEdges.size())
+            {
+                return false;
+            }
+            for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
+            {
+                if (_binEdges[ibin]!=binning._binEdges[ibin])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        inline bool operator!=(const Binning& binning) const
+        {
+            return not ((*this)==binning);
+        }
+        
         inline sizetype size() const
         {
             return _binEdges.size();
