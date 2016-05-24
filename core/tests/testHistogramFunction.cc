@@ -72,28 +72,34 @@ TEST(HistogramFunction, assign)
     p1.setValue(1);
     EXPECT_EQ(histFct4.getContent(1),33);
     
-    ///HistogramFunction1D hist = Histogram1D();
+}
+
+
+TEST(HistogramFunction, precendence)
+{
+    //acutally, operator precedence as in C++ is used. No real need to care about a bug here.
+    using namespace milan;
+    typedef HistogramFunction<1> HistogramFunction1D;
+    typedef Histogram<1> Histogram1D;
     
-    /*
+    
+    Histogram1D hist1({Binning(50,-1,1)});
+    hist1.setContent({1},1.0);
     
     Histogram1D hist2({Binning(50,-1,1)});
     hist2.setContent({1},2.0);
     
-    HistogramFunction1D histFct3 = hist2;
-    EXPECT_EQ(histFct3.getHistogram().getContent({1}),2);
-    
-    HistogramFunction1D addHist1 = histFct2 + hist1;
-    EXPECT_EQ(addHist1.getHistogram().getContent({1}),2);
-    
-    HistogramFunction1D addHist2 = histFct2 + histFct3;
-    EXPECT_EQ(addHist2.getHistogram().getContent({1}),3);
-    
-    HistogramFunction1D addHist3 = histFct1 + histFct2 + histFct3;
-    EXPECT_EQ(addHist3.getHistogram().getContent({1}),3);
-    
-    addHist3+=addHist3;
-    EXPECT_EQ(addHist3.getHistogram().getContent({1}),3);
-    */
-}
+    Parameter p1("p1",2);
 
+    HistogramFunction1D histFct1 = hist1.ref();
+    HistogramFunction1D histFct2 = hist2.ref();
+    
+    HistogramFunction1D result1 = histFct1+histFct2*p1;
+    EXPECT_EQ(result1.getResult().getContent({1}),5);
+    
+    HistogramFunction1D result2 = (histFct1+histFct2)*p1;
+    EXPECT_EQ(result2.getResult().getContent({1}),6);
+    
+    //EXPECT_EQ(histFct2.getResult().getContent({1}),2);
+}
 

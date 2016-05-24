@@ -3,7 +3,6 @@
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
-#include "milan/core/HistogramFunction.hh"
 #include "milan/core/Parameter.hh"
 #include "milan/core/Ptr.hh"
 

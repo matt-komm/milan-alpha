@@ -25,3 +25,17 @@ add_gtest(
     #LIBRARIES milan-core
     #DEPS
 )
+
+add_gtest(
+    NAME milan-core-Likelihood
+    SOURCES testLikelihood.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
+
+add_gtest(
+    NAME milan-core-Projection
+    SOURCES testProjection.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
