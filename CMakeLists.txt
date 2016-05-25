@@ -32,4 +32,9 @@ include_directories(
     SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
 )
 
+include_directories(core/include)
+include_directories(operators/include)
+
 add_subdirectory(core)
+add_subdirectory(operators)
+

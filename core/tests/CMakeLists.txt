@@ -33,9 +33,3 @@ add_gtest(
     #DEPS
 )
 
-add_gtest(
-    NAME milan-core-Projection
-    SOURCES testProjection.cc
-    #LIBRARIES milan-core
-    #DEPS
-)

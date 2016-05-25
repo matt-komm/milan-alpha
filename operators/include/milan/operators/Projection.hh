@@ -1,5 +1,5 @@
-#ifndef __MILAN_CORE_PROJECTIONS_H__
-#define __MILAN_CORE_PROJECTIONS_H__
+#ifndef __MILAN_OPERATORS_PROJECTIONS_H__
+#define __MILAN_OPERATORS_PROJECTIONS_H__
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"

@@ -97,9 +97,10 @@ TEST(HistogramFunction, precendence)
     HistogramFunction1D result1 = histFct1+histFct2*p1;
     EXPECT_EQ(result1.getResult().getContent({1}),5);
     
-    HistogramFunction1D result2 = (histFct1+histFct2)*p1;
-    EXPECT_EQ(result2.getResult().getContent({1}),6);
+    HistogramFunction1D result2 = histFct1*p1+histFct2;
+    EXPECT_EQ(result2.getResult().getContent({1}),4);
     
-    //EXPECT_EQ(histFct2.getResult().getContent({1}),2);
+    HistogramFunction1D result3 = (histFct1+histFct2)*p1;
+    EXPECT_EQ(result3.getResult().getContent({1}),6);
 }
 

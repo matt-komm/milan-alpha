@@ -1,4 +1,4 @@
-#include "milan/core/Projection.hh"
+#include "milan/operators/Projection.hh"
 
 #include "gtest/gtest.h"
 
