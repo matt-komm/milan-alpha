@@ -5,3 +5,9 @@ add_gtest(
     #DEPS
 )
 
+add_gtest(
+    NAME milan-operators-PseudoData
+    SOURCES testPseudoData.cc
+    #LIBRARIES milan-core milan-operators
+    #DEPS
+)
