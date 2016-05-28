@@ -9,16 +9,15 @@
 namespace milan
 {
 
-template<sizetype DIM>
 class HistogramAddOperator:
-    public HistogramInterface<DIM>
+    public HistogramInterface
 {
     protected:
-        const Ptr<const HistogramInterface<DIM>> _lhs;
-        const Ptr<const HistogramInterface<DIM>> _rhs;
+        const Ptr<const HistogramInterface> _lhs;
+        const Ptr<const HistogramInterface> _rhs;
         
     public:
-        HistogramAddOperator(const Ptr<const HistogramInterface<DIM>>& lhs, const Ptr<const HistogramInterface<DIM>>& rhs):
+        HistogramAddOperator(const Ptr<const HistogramInterface>& lhs, const Ptr<const HistogramInterface>& rhs):
             _lhs(lhs),
             _rhs(rhs)
         {
@@ -35,7 +34,7 @@ class HistogramAddOperator:
             return _lhs.get()->getBinningVector();
         }
         
-        virtual Histogram<DIM> getResult() const
+        virtual Histogram getResult() const
         {
             return _lhs.get()->getResult()+_rhs.get()->getResult();
         }
@@ -51,17 +50,16 @@ class HistogramAddOperator:
         }
 };
 
-template<sizetype DIM>
 class ParameterHistogramMultiplicationOperator:
-    public HistogramInterface<DIM>
+    public HistogramInterface
 {
     protected:
-        const Ptr<const HistogramInterface<DIM>> _histogram;
+        const Ptr<const HistogramInterface> _histogram;
         const Ptr<const Parameter> _parameter;
         
         
     public:
-        ParameterHistogramMultiplicationOperator(const Ptr<const HistogramInterface<DIM>>& histogram,const Ptr<const Parameter>& parameter):
+        ParameterHistogramMultiplicationOperator(const Ptr<const HistogramInterface>& histogram,const Ptr<const Parameter>& parameter):
             _histogram(histogram),
             _parameter(parameter)
         {
@@ -77,7 +75,7 @@ class ParameterHistogramMultiplicationOperator:
             return _histogram.get()->getBinningVector();
         }
         
-        virtual Histogram<DIM> getResult() const
+        virtual Histogram getResult() const
         {
             return _histogram.get()->getResult()*_parameter.get()->getValue();
         }

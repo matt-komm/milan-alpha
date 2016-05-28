@@ -9,18 +9,18 @@
 namespace milan
 {
 
-template<sizetype DIM>
 class BinnedLikelihood:
     public LikelihoodInterface
 {
     protected:
-        const Ptr<const HistogramInterface<DIM>> _data;
-        const Ptr<const HistogramInterface<DIM>> _prediction;
+        const Ptr<const HistogramInterface> _data;
+        const Ptr<const HistogramInterface> _prediction;
     public:
-        BinnedLikelihood(const Ptr<const HistogramInterface<DIM>>& data, const Ptr<const HistogramInterface<DIM>>& prediction):
+        BinnedLikelihood(const Ptr<const HistogramInterface>& data, const Ptr<const HistogramInterface>& prediction):
             _data(data),
             _prediction(prediction)
         {
+            //TODO: check binning!
         }
 };
 

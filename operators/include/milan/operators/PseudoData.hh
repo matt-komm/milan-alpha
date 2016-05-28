@@ -9,17 +9,17 @@
 namespace milan
 {
 
-template<sizetype DIM>
 class PseudoData:
-    public HistogramInterface<DIM>
+    public HistogramInterface
 {
     protected:
-        const Ptr<const HistogramInterface<DIM>> _source;
-        Histogram<DIM> _generatedHistogram;
+        const Ptr<const HistogramInterface> _source;
+        Histogram _generatedHistogram;
         
     public:
-        PseudoData(const Ptr<const HistogramInterface<DIM>>& source):
-            _generatedHistogram(source->getBinningVector())
+        PseudoData(const Ptr<const HistogramInterface>& source):
+            _source(source),
+            _generatedHistogram(source.get()->getBinningVector())
         {
             generate();
         }
@@ -33,7 +33,7 @@ class PseudoData:
             }
         }
         
-        virtual Histogram<DIM> getResult() const
+        virtual Histogram getResult() const
         {
             return _generatedHistogram;
         }

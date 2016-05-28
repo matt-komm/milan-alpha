@@ -31,8 +31,8 @@ TEST(HistogramFunction, clone)
 TEST(HistogramFunction, assign)
 {
     using namespace milan;
-    typedef HistogramFunction<1> HistogramFunction1D;
-    typedef Histogram<1> Histogram1D;
+    typedef HistogramFunction HistogramFunction1D;
+    typedef Histogram Histogram1D;
     
     
     Histogram1D hist1({Binning(50,-1,1)});
@@ -79,8 +79,8 @@ TEST(HistogramFunction, precendence)
 {
     //acutally, operator precedence as in C++ is used. No real need to care about a bug here.
     using namespace milan;
-    typedef HistogramFunction<1> HistogramFunction1D;
-    typedef Histogram<1> Histogram1D;
+    typedef HistogramFunction HistogramFunction1D;
+    typedef Histogram Histogram1D;
     
     
     Histogram1D hist1({Binning(50,-1,1)});

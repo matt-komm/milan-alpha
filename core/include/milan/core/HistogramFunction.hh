@@ -12,36 +12,35 @@
 namespace milan
 {
 
-template<sizetype DIM>
 class HistogramFunction:
-    public HistogramInterface<DIM>
+    public HistogramInterface
 {
     protected:
-        Ptr<const HistogramInterface<DIM>> _histFct;
+        Ptr<const HistogramInterface> _histFct;
     public:
-        HistogramFunction<DIM>(const HistogramFunction<DIM>& hist):
+        HistogramFunction(const HistogramFunction& hist):
             _histFct(hist._histFct)
         {
         }
         
-        HistogramFunction<DIM>(HistogramFunction<DIM>&& hist):
+        HistogramFunction(HistogramFunction&& hist):
             _histFct(std::move(hist._histFct))
         {
         }
         
-        HistogramFunction<DIM>& operator=(const HistogramFunction<DIM>& hist)
+        HistogramFunction& operator=(const HistogramFunction& hist)
         {
             _histFct = hist._histFct;
             return *this;
         }
         
-        HistogramFunction<DIM>& operator=(HistogramFunction<DIM>&& hist)
+        HistogramFunction& operator=(HistogramFunction&& hist)
         {
             _histFct = std::move(hist._histFct);
             return *this;
         }
         
-        HistogramFunction<DIM>(const Ptr<const HistogramInterface<DIM>>& hist):
+        HistogramFunction(const Ptr<const HistogramInterface>& hist):
             _histFct(hist)
         {
         }
@@ -51,7 +50,7 @@ class HistogramFunction:
             return _histFct.get()->size();
         }
         
-        virtual Histogram<DIM> getResult() const
+        virtual Histogram getResult() const
         {
             return _histFct.get()->getResult();
         }
@@ -71,29 +70,27 @@ class HistogramFunction:
             return _histFct.get()->getBinningVector();
         }
         
-        HistogramFunction<DIM> operator+(const HistogramFunction<DIM>& rhs) const;
-        HistogramFunction<DIM> operator*(const Parameter& rhs) const;
+        HistogramFunction operator+(const HistogramFunction& rhs) const;
+        HistogramFunction operator*(const Parameter& rhs) const;
 };
 
-template<sizetype DIM>
-HistogramFunction<DIM> HistogramFunction<DIM>::operator+(const HistogramFunction<DIM>& rhs) const
+HistogramFunction HistogramFunction::operator+(const HistogramFunction& rhs) const
 {
-    HistogramAddOperator<DIM>* op = new HistogramAddOperator<DIM>(
+    HistogramAddOperator* op = new HistogramAddOperator(
         this->_histFct,
         rhs._histFct
     );
-    Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,op);
+    Ptr<const HistogramInterface> res(PtrStorage::OWN,op);
     return res;
 }
 
-template<sizetype DIM>
-HistogramFunction<DIM> HistogramFunction<DIM>::operator*(const Parameter& parameter) const
+HistogramFunction HistogramFunction::operator*(const Parameter& parameter) const
 {
-    ParameterHistogramMultiplicationOperator<DIM>* op = new ParameterHistogramMultiplicationOperator<DIM>(
+    ParameterHistogramMultiplicationOperator* op = new ParameterHistogramMultiplicationOperator(
         this->_histFct,
         Ptr<const Parameter>(PtrStorage::SHARE,&parameter)
     );
-    Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,op);
+    Ptr<const HistogramInterface> res(PtrStorage::OWN,op);
     return res;
 }
 

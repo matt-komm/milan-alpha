@@ -15,9 +15,8 @@
 namespace milan
 {
 
-template<sizetype DIM>
 class Histogram:
-    public HistogramInterface<DIM>
+    public HistogramInterface
 {
     protected:
         const std::vector<Binning> _binning;
@@ -28,12 +27,8 @@ class Histogram:
         Histogram(const std::vector<Binning>& binning):
             _binning(binning)
         {   
-            if (binning.size()!=DIM)
-            {
-                milan_throw("Histogram is of dimension ",DIM," but a binning scheme with ",binning.size()," was configured");
-            }
             sizetype N = 1;
-            for (sizetype idim = 0; idim < DIM; ++idim)
+            for (sizetype idim = 0; idim < _binning.size(); ++idim)
             {
                 //add 2 to account for over- & underflow
                 N*=_binning[idim].size()+2;
@@ -86,6 +81,11 @@ class Histogram:
             _error2[getGlobalBinFromIndex(index)] = error2;
         }
         
+        inline void setError2(sizetype index, double error2)
+        {
+            _error2[index]=error2;
+        }
+        
         inline const Binning& getBinning(const sizetype& idim) const
         {
             return _binning[idim];
@@ -100,11 +100,7 @@ class Histogram:
         {
             sizetype globalIndex = 0;
             sizetype offset = 1;
-            if (index.size()!=DIM)
-            {
-                milan_throw("Index dimension ",index.size()," cannot be used to access histogram with dimension ",DIM);
-            }
-            for (sizetype idim = 0; idim < DIM; ++idim)
+            for (sizetype idim = 0; idim < _binning.size(); ++idim)
             {
                 globalIndex+=index[idim]*offset;
                 offset*=_binning[idim].size()+2;
@@ -114,12 +110,8 @@ class Histogram:
         
         inline std::vector<sizetype> findIndexFromValue(const std::vector<double>& value) const
         {
-            if (value.size()!=DIM)
-            {
-                milan_throw("Value dimension ",value.size()," cannot be used to fill histogram with dimension ",DIM);
-            }
-            std::vector<sizetype> index(DIM,0);
-            for (sizetype idim = 0; idim < DIM; ++idim)
+            std::vector<sizetype> index(_binning.size(),0);
+            for (sizetype idim = 0; idim < _binning.size(); ++idim)
             {
                 index[idim]=_binning[idim].findBin(value[idim]);
             }
@@ -131,7 +123,7 @@ class Histogram:
             return getGlobalBinFromIndex(findIndexFromValue(value));
         }
         
-        virtual Histogram<DIM> getResult() const
+        virtual Histogram getResult() const
         {
             return *this;
         }
@@ -146,24 +138,25 @@ class Histogram:
             return _error2[index];
         }
         
-        Ptr<const HistogramInterface<DIM>> copy() const
+        Ptr<const HistogramInterface> copy() const
         {
-            Histogram<DIM>* cloneHist = new Histogram<DIM>(_binning);
+            //TODO: make proper copy
+            Histogram* cloneHist = new Histogram(_binning);
             cloneHist->_content=_content;
-            Ptr<const HistogramInterface<DIM>> res(PtrStorage::OWN,cloneHist);
+            Ptr<const HistogramInterface> res(PtrStorage::OWN,cloneHist);
             return res;
         }
         
-        Ptr<const HistogramInterface<DIM>> ref() const
+        Ptr<const HistogramInterface> ref() const
         {
-            Ptr<const HistogramInterface<DIM>> res(PtrStorage::SHARE,this);
+            Ptr<const HistogramInterface> res(PtrStorage::SHARE,this);
             return res;
         }
         
-        Histogram<DIM> operator+(const Histogram<DIM>& rhs) const
+        Histogram operator+(const Histogram& rhs) const
         {
             
-            Histogram<DIM> result = *this;
+            Histogram result = *this;
             for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {
                 result._content[ibin]+=rhs._content[ibin];
@@ -172,9 +165,9 @@ class Histogram:
             return result;
         }
         
-        Histogram<DIM> operator*(double factor) const
+        Histogram operator*(double factor) const
         {
-            Histogram<DIM> result = *this;
+            Histogram result = *this;
             for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {
                 result._content[ibin]*=factor;

@@ -7,7 +7,7 @@ TEST(Histogram1D, construction)
 {
     using namespace milan;
     
-    typedef Histogram<1> Histogram1D;
+    typedef Histogram Histogram1D;
     
     sizetype N = 10;
     Histogram1D hist({Binning(N,-1,1)});
@@ -40,7 +40,7 @@ TEST(Histogram2D, construction)
 {
     using namespace milan;
     
-    typedef Histogram<2> Histogram2D;
+    typedef Histogram Histogram2D;
 
     sizetype N = 10;
     Histogram2D hist({Binning(N,-1,1),Binning(N*2,-1,1)});
