@@ -16,24 +16,24 @@ class Binning
         std::vector<float64> _binEdges;
     public:
         Binning(const sizetype& N, const float64& start, const float64& end):
-            _binEdges(N)
+            _binEdges(N+1)
         {
             if (end<=start)
             {
                 milan_throw("Attempt to define binning with end<=start: ",end,"<=",start);
             }
-            for (sizetype ibin = 0; ibin < N; ++ibin)
+            for (sizetype ibin = 0; ibin < N+1; ++ibin)
             {
-                _binEdges[ibin]=start+1.0*ibin/(N-1)*(end-start);
+                _binEdges[ibin]=start+1.0*ibin/N*(end-start);
             }
         }
         
-        Binning(const std::vector<float64> binEdges):
+        Binning(const std::initializer_list<float64> binEdges):
             _binEdges(binEdges)
         {
             for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
             {
-                if (_binEdges[ibin]>=binEdges[ibin+1])
+                if (_binEdges[ibin]>=_binEdges[ibin+1])
                 {
                     milan_throw("Binning edges need to be monotonous but found value pair ",_binEdges[ibin],"<=",_binEdges[ibin+1], "at index ",ibin+1);
                 }
@@ -63,7 +63,27 @@ class Binning
         
         inline sizetype size() const
         {
-            return _binEdges.size();
+            return _binEdges.size()-1;
+        }
+        
+        inline float64 getBinCenter(sizetype index) const
+        {
+            return 0.5*(_binEdges[index]+_binEdges[index+1]);
+        }
+        
+        inline float64 getBinLowerEdge(sizetype index) const
+        {
+            return _binEdges[index];
+        }
+        
+        inline float64 getBinUpperEdge(sizetype index) const
+        {
+            return _binEdges[index+1];
+        }
+        
+        inline float64 getBinWidth(sizetype index) const
+        {
+            return _binEdges[index+1]-_binEdges[index];
         }
         
         sizetype findBin(const float64& value) const

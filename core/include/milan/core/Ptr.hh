@@ -24,7 +24,7 @@ class Ptr
     protected:
         TYPE* _data;
         PtrStorage _storage;
-        sizetype* _refs; //TODO: need to be thread-safe, e.g. atomics
+        sizetype* _refs;
         
     public:
         Ptr(PtrStorage storage, TYPE* data=nullptr):

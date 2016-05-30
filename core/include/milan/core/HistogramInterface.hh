@@ -24,6 +24,13 @@ class HistogramInterface
         //TODO: make binning const
         virtual const std::vector<Binning>& getBinningVector() const = 0; //this refers to the resulting type in case of operations!
         
+        virtual sizetype getDimension() const
+        {
+            return this->getBinningVector().size();
+        }
+        
+        
+        
         virtual ~HistogramInterface()
         {
         }
