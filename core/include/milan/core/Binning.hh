@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <limits>
 
 namespace milan
 {
@@ -13,11 +14,15 @@ namespace milan
 class Binning
 {
     protected:
-        std::vector<float64> _binEdges;
+        std::vector<double> _binEdges;
     public:
-        Binning(const sizetype& N, const float64& start, const float64& end):
+        Binning(sizetype N, double start, double end):
             _binEdges(N+1)
         {
+            if (N==0)
+            {
+                milan_throw("Binning scheme with 0 bins is meaningless");
+            }
             if (end<=start)
             {
                 milan_throw("Attempt to define binning with end<=start: ",end,"<=",start);
@@ -28,7 +33,7 @@ class Binning
             }
         }
         
-        Binning(const std::initializer_list<float64> binEdges):
+        Binning(const std::initializer_list<double> binEdges):
             _binEdges(binEdges)
         {
             for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
@@ -48,7 +53,8 @@ class Binning
             }
             for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
             {
-                if (_binEdges[ibin]!=binning._binEdges[ibin])
+                //allow the difference to be equal to epsilon at the most
+                if (std::fabs(_binEdges[ibin]-binning._binEdges[ibin])>std::numeric_limits<double>::epsilon())
                 {
                     return false;
                 }
@@ -66,60 +72,71 @@ class Binning
             return _binEdges.size()-1;
         }
         
-        inline float64 getBinCenter(sizetype index) const
+        inline double getBinCenter(sizetype index) const
         {
-            return 0.5*(_binEdges[index]+_binEdges[index+1]);
+            return 0.5*(_binEdges[index-1]+_binEdges[index]);
         }
         
-        inline float64 getBinLowerEdge(sizetype index) const
+        inline double getBinLowerEdge(sizetype index) const
+        {
+            return _binEdges[index-1];
+        }
+        
+        inline double getBinUpperEdge(sizetype index) const
         {
             return _binEdges[index];
         }
         
-        inline float64 getBinUpperEdge(sizetype index) const
+        inline double getBinWidth(sizetype index) const
         {
-            return _binEdges[index+1];
+            return _binEdges[index]-_binEdges[index-1];
         }
         
-        inline float64 getBinWidth(sizetype index) const
+        sizetype findBin(double value) const
         {
-            return _binEdges[index+1]-_binEdges[index];
-        }
         
-        sizetype findBin(const float64& value) const
-        {
-            /*
-            TODO: binary search
-            first = 0;
-            last = n - 1;
-            middle = (first+last)/2;
-
-            while (first <= last) {
-              if (array[middle] < search)
-                 first = middle + 1;    
-              else if (array[middle] == search) {
-                 printf("%d found at location %d.\n", search, middle+1);
-                 break;
-              }
-              else
-                 last = middle - 1;
-
-              middle = (first + last)/2;
-            }
-               
-            */
             if (_binEdges.front()>value)
             {
                 return 0;
             }
-            for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
+            else if (_binEdges.back()<value)
             {
-                if (_binEdges[ibin]<=value and _binEdges[ibin]>value)
+                return size()+1;
+            }
+            
+            //TODO: binary search
+            /*
+            sizetype first = 1;
+            sizetype last = size()+2;
+            sizetype middle = (first+last)/2;
+
+            while (first <= last) 
+            {
+                if (getBinUpperEdge(middle) < value)
                 {
-                    return ibin+1;
+                    first = middle + 1;
+                }
+                else if (getBinLowerEdge(middle)<=value and getBinUpperEdge(middle)>value)
+                {
+                    return middle;
+                }   
+                else
+                {
+                    last = middle - 1;
+                }
+                middle = (first + last)/2;
+            }
+            */
+            
+            for (sizetype ibin = 1; ibin < _binEdges.size(); ++ibin)
+            {
+                if (getBinLowerEdge(ibin)<=value and getBinUpperEdge(ibin)>value)
+                {
+                    return ibin;
                 }
             }
-            return _binEdges.size()+1;
+            
+            return size()+1;
         }
 };
 

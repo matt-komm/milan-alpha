@@ -19,7 +19,7 @@ class Histogram:
     public HistogramInterface
 {
     protected:
-        const std::vector<Binning> _binning;
+        std::vector<Binning> _binning;
         
         std::vector<double> _content;
         std::vector<double> _error2;
@@ -35,6 +35,36 @@ class Histogram:
             }
             _content = std::vector<double>(N,0);
             _error2 = std::vector<double>(N,0);
+        }
+        
+        Histogram(const Histogram& histogram):
+            _binning(histogram._binning),
+            _content(histogram._content),
+            _error2(histogram._error2)
+        {
+        }
+        
+        Histogram& operator=(const Histogram& histogram)
+        {
+            _binning = histogram._binning;
+            _content = histogram._content;
+            _error2 = histogram._error2;
+            return *this;
+        }
+        
+        Histogram(Histogram&& histogram):
+            _binning(std::move(histogram._binning)),
+            _content(std::move(histogram._content)),
+            _error2(std::move(histogram._error2))
+        {
+        }
+        
+        Histogram& operator=(Histogram&& histogram)
+        {
+            _binning = std::move(histogram._binning);
+            _content = std::move(histogram._content);
+            _error2 = std::move(histogram._error2);
+            return *this;
         }
         
         virtual sizetype size() const
@@ -140,9 +170,7 @@ class Histogram:
         
         Ptr<const HistogramInterface> copy() const
         {
-            //TODO: make proper copy
-            Histogram* cloneHist = new Histogram(_binning);
-            cloneHist->_content=_content;
+            Histogram* cloneHist = new Histogram(*this);
             Ptr<const HistogramInterface> res(PtrStorage::OWN,cloneHist);
             return res;
         }
@@ -155,8 +183,7 @@ class Histogram:
         
         Histogram operator+(const Histogram& rhs) const
         {
-            
-            Histogram result = *this;
+            Histogram result(*this); //copy
             for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {
                 result._content[ibin]+=rhs._content[ibin];
@@ -167,7 +194,7 @@ class Histogram:
         
         Histogram operator*(double factor) const
         {
-            Histogram result = *this;
+            Histogram result(*this); //copy
             for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
             {
                 result._content[ibin]*=factor;
