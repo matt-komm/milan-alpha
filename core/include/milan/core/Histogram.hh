@@ -7,6 +7,7 @@
 #include "milan/core/HistogramInterface.hh"
 #include "milan/core/Parameter.hh"
 #include "milan/core/Ptr.hh"
+#include "milan/core/HistogramFunction.hh"
 
 #include <array>
 #include <cmath>
@@ -16,7 +17,8 @@ namespace milan
 {
 
 class Histogram:
-    public HistogramInterface
+    public HistogramInterface,
+    public PtrInterface<HistogramInterface,Histogram>
 {
     protected:
         std::vector<Binning> _binning;
@@ -113,6 +115,10 @@ class Histogram:
         
         inline void setError2(sizetype index, double error2)
         {
+            if (error2<0.0)
+            {
+                milan_throw("Error2 of a histogram needs to be positive - not ",error2,"!");
+            }
             _error2[index]=error2;
         }
         
@@ -153,11 +159,6 @@ class Histogram:
             return getGlobalBinFromIndex(findIndexFromValue(value));
         }
         
-        virtual Histogram getResult() const
-        {
-            return *this;
-        }
-        
         virtual double getContent(sizetype index) const
         {
             return _content[index];
@@ -166,19 +167,6 @@ class Histogram:
         virtual double getError2(sizetype index) const
         {
             return _error2[index];
-        }
-        
-        Ptr<const HistogramInterface> copy() const
-        {
-            Histogram* cloneHist = new Histogram(*this);
-            Ptr<const HistogramInterface> res(PtrStorage::OWN,cloneHist);
-            return res;
-        }
-        
-        Ptr<const HistogramInterface> ref() const
-        {
-            Ptr<const HistogramInterface> res(PtrStorage::SHARE,this);
-            return res;
         }
         
         Histogram operator+(const Histogram& rhs) const
@@ -202,6 +190,11 @@ class Histogram:
             }
             return result;
         }
+        /*
+        operator HistogramFunction() const
+        {
+            return copy();
+        }*/
 };
 
 }

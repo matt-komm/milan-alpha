@@ -27,19 +27,19 @@ class Ptr
         sizetype* _refs;
         
     public:
-        Ptr(PtrStorage storage, TYPE* data=nullptr):
+        Ptr(PtrStorage storage = PtrStorage::SHARE, TYPE* data = nullptr):
             _data(data),
             _storage(storage),
             _refs(new sizetype(1))
         {
         }
         
-        inline static Ptr<TYPE> makeShared(TYPE* data=nullptr)
+        inline static Ptr<TYPE> makeShared(TYPE* data = nullptr)
         {
             return Ptr<TYPE>(PtrStorage::SHARE,data);
         }
         
-        inline static Ptr<TYPE> makeOwned(TYPE* data=nullptr)
+        inline static Ptr<TYPE> makeOwned(TYPE* data = nullptr)
         {
             return Ptr<TYPE>(PtrStorage::OWN,data);
         }
@@ -103,6 +103,16 @@ class Ptr
         {
             return *_data;
         }
+        
+        inline TYPE* operator->()
+        {
+            return _data;
+        }
+        
+        inline const TYPE* operator->() const
+        {
+            return _data;
+        }
 
         inline TYPE* get()
         {
@@ -112,7 +122,7 @@ class Ptr
         inline const TYPE* get() const
         {
             return _data;
-        }
+        } 
         
         inline sizetype use_count() const
         {
@@ -162,6 +172,30 @@ class Ptr
             }
         }
 };
+
+template<class INTERFACE, class CLASS>
+class PtrInterface
+{
+    public:
+        Ptr<const INTERFACE> copy() const
+        {
+            CLASS* cloneHist = new CLASS(*((CLASS*)this));
+            Ptr<const INTERFACE> res(PtrStorage::OWN,cloneHist);
+            return res;
+        }
+        
+        Ptr<const INTERFACE> ref() const
+        {
+            Ptr<const INTERFACE> res(PtrStorage::SHARE,(CLASS*)this);
+            return res;
+        }
+        
+        operator Ptr<const INTERFACE>() const
+        {
+            return copy();
+        }
+};
+
 
 }
 

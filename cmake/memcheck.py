@@ -65,7 +65,6 @@ if __name__ == '__main__':
             "--xml=yes",
             "--xml-file=memcheck.xml",
             sys.argv[1],
-            
         ],
         stdout=DEVNULL, 
         stderr=DEVNULL

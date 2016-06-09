@@ -36,31 +36,31 @@ TEST(HistogramFunction, assign)
     
     
     Histogram1D hist1({Binning(50,-1,1)});
-    hist1.setContent({1},1.0);
+    hist1.setContent(1,1.0);
     
     //HistogramFunction1D histFct1 = Histogram1D({Binning(50,-1,1)});
     //EXPECT_EQ(histFct1.getHistogram().getContent({1}),0);
     
     Histogram1D hist2({Binning(50,-1,1)});
-    hist2.setContent({1},2.0);
+    hist2.setContent(1,2.0);
 
     HistogramFunction1D histFct1 = hist1.ref();
     HistogramFunction1D histFct2 = hist2.copy();
     
-    EXPECT_DOUBLE_EQ(histFct1.getResult().getContent({1}),1);
-    EXPECT_DOUBLE_EQ(histFct2.getResult().getContent({1}),2);
+    EXPECT_DOUBLE_EQ(histFct1.getContent(1),1);
+    EXPECT_DOUBLE_EQ(histFct2.getContent(1),2);
     
     HistogramFunction1D histFct3 = histFct1+histFct2;
-    EXPECT_DOUBLE_EQ(histFct3.getResult().getContent({1}),3);
+    EXPECT_DOUBLE_EQ(histFct3.getContent(1),3);
     
     HistogramFunction1D histFct4 = histFct1+histFct2+histFct1;
     
-    EXPECT_DOUBLE_EQ(histFct4.getResult().getContent({1}),4);
-    hist1.setContent({1},3.0);
-    EXPECT_DOUBLE_EQ(histFct4.getResult().getContent({1}),8);
+    EXPECT_DOUBLE_EQ(histFct4.getContent(1),4);
+    hist1.setContent(1,3.0);
+    EXPECT_DOUBLE_EQ(histFct4.getContent(1),8);
     
     histFct4 = histFct1+histFct4;
-    EXPECT_DOUBLE_EQ(histFct4.getResult().getContent({1}),11);
+    EXPECT_DOUBLE_EQ(histFct4.getContent(1),11);
     
     Parameter p1("p1",2);
     Parameter p2("p1",3);
@@ -84,10 +84,10 @@ TEST(HistogramFunction, precendence)
     
     
     Histogram1D hist1({Binning(50,-1,1)});
-    hist1.setContent({1},1.0);
+    hist1.setContent(1,1.0);
     
     Histogram1D hist2({Binning(50,-1,1)});
-    hist2.setContent({1},2.0);
+    hist2.setContent(1,2.0);
     
     Parameter p1("p1",2);
 
@@ -95,12 +95,12 @@ TEST(HistogramFunction, precendence)
     HistogramFunction1D histFct2 = hist2.ref();
     
     HistogramFunction1D result1 = histFct1+histFct2*p1;
-    EXPECT_DOUBLE_EQ(result1.getResult().getContent({1}),5);
+    EXPECT_DOUBLE_EQ(result1.getContent(1),5);
     
     HistogramFunction1D result2 = histFct1*p1+histFct2;
-    EXPECT_DOUBLE_EQ(result2.getResult().getContent({1}),4);
+    EXPECT_DOUBLE_EQ(result2.getContent(1),4);
     
     HistogramFunction1D result3 = (histFct1+histFct2)*p1;
-    EXPECT_DOUBLE_EQ(result3.getResult().getContent({1}),6);
+    EXPECT_DOUBLE_EQ(result3.getContent(1),6);
 }
 

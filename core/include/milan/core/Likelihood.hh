@@ -2,13 +2,14 @@
 #define __MILAN_CORE_LIKELIHOOD_H__
 
 #include "milan/core/LikelihoodInterface.hh"
+#include "milan/core/LikelihoodOperators.hh"
 #include "milan/core/Ptr.hh"
 
 namespace milan
 {
 
 class Likelihood:
-    LikelihoodInterface
+    public LikelihoodInterface
 {
     protected:
         Ptr<const LikelihoodInterface> _llInterface;
@@ -17,7 +18,6 @@ class Likelihood:
             _llInterface(ll._llInterface)
         {
         }
-        
         Likelihood(Likelihood&& ll):
             _llInterface(std::move(ll._llInterface))
         {
@@ -40,8 +40,29 @@ class Likelihood:
         {
         }
         
-        //Likelihood operator*(const Likelihood& rhs) const;
+        Likelihood& operator=(const Ptr<const LikelihoodInterface>& llInterface)
+        {
+            _llInterface = llInterface;
+            return *this;
+        }
+        
+        virtual double getNLL() const
+        {
+            return _llInterface->getNLL();
+        }
+        
+        Likelihood operator*(const Likelihood& rhs) const;
 };
+
+Likelihood Likelihood::operator*(const Likelihood& rhs) const
+{
+    MultiplyLikelihoodOperator* op = new MultiplyLikelihoodOperator(
+        this->_llInterface,
+        rhs._llInterface
+    );
+    Ptr<const LikelihoodInterface> res(PtrStorage::OWN,op);
+    return res;
+}
 
 }
 

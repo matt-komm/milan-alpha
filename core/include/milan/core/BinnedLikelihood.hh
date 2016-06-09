@@ -10,7 +10,8 @@ namespace milan
 {
 
 class BinnedLikelihood:
-    public LikelihoodInterface
+    public LikelihoodInterface,
+    public PtrInterface<LikelihoodInterface,BinnedLikelihood>
 {
     protected:
         const Ptr<const HistogramInterface> _data;
@@ -21,6 +22,21 @@ class BinnedLikelihood:
             _prediction(prediction)
         {
             //TODO: check binning!
+        }
+        
+        inline const Ptr<const HistogramInterface>& getData() const
+        {
+            return _data;
+        }
+        
+        inline const Ptr<const HistogramInterface>& getPrediction() const
+        {
+            return _prediction;
+        }
+        
+        virtual double getNLL() const
+        {
+            return 0;
         }
 };
 

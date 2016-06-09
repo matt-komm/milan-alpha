@@ -12,31 +12,44 @@ namespace milan
 class Parameter
 {
     public:
-        constexpr static float64 MIN = std::numeric_limits<float64>::lowest();
-        constexpr static float64 MAX = std::numeric_limits<float64>::max();
+        constexpr static double MIN = std::numeric_limits<float64>::lowest();
+        constexpr static double MAX = std::numeric_limits<float64>::max();
     protected:
         const std::string _name;
-        float64 _value;
-        float64 _min;
-        float64 _max;
+        double _value;
+        double _min;
+        double _max;
+        double _step;
+        
     public:
-        Parameter(std::string name, float64 value=0, float64 min=MIN, float64 max=MAX):
+        Parameter(std::string name, double value=0, double min=MIN, double max=MAX, double step = 0.1):
             _name(name),
             _value(value),
             _min(min),
-            _max(max)
+            _max(max),
+            _step(step)
         {
         }
         
-        inline float64 getValue() const
+        inline double getValue() const
         {
             return _value;
         }
         
-        inline void setValue(float64 value)
+        inline void setValue(double value)
         {
             _value = value;
         }
+        
+        inline double getStep() const
+        {
+            return _step;
+        }
+        
+        inline void setStep(double step)
+        {
+            _step = step;
+        } 
 };
 
 }

@@ -10,7 +10,8 @@ namespace milan
 {
 
 class PseudoData:
-    public HistogramInterface
+    public HistogramInterface,
+    public PtrInterface<HistogramInterface,PseudoData>
 {
     protected:
         const Ptr<const HistogramInterface> _source;

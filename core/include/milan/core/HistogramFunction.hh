@@ -45,14 +45,15 @@ class HistogramFunction:
         {
         }
         
+        HistogramFunction& operator=(const Ptr<const HistogramInterface>& hist)
+        {
+            _histFct = hist;
+            return *this;
+        }
+        
         virtual sizetype size() const
         {
             return _histFct.get()->size();
-        }
-        
-        virtual Histogram getResult() const
-        {
-            return _histFct.get()->getResult();
         }
         
         virtual double getContent(sizetype index) const

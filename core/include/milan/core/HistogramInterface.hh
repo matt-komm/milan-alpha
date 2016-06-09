@@ -10,13 +10,11 @@
 namespace milan
 {
 
-class Histogram;
-
 class HistogramInterface
 {
     protected:
     public:
-        virtual Histogram getResult() const = 0;
+        //virtual Histogram getResult() const = 0;
         virtual sizetype size() const = 0; //this refers to the resulting type in case of operations!
         virtual double getContent(sizetype index) const = 0;
         virtual double getError2(sizetype index) const = 0;

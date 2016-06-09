@@ -1,5 +1,5 @@
-#ifndef __MILAN_CORE_OPERATORS_H__
-#define __MILAN_CORE_OPERATORS_H__
+#ifndef __MILAN_CORE_HISTOGRAMOPERATORS_H__
+#define __MILAN_CORE_HISTOGRAMOPERATORS_H__
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
@@ -32,11 +32,6 @@ class HistogramAddOperator:
         virtual const std::vector<Binning>& getBinningVector() const
         {
             return _lhs.get()->getBinningVector();
-        }
-        
-        virtual Histogram getResult() const
-        {
-            return _lhs.get()->getResult()+_rhs.get()->getResult();
         }
         
         virtual double getContent(sizetype index) const
@@ -72,12 +67,7 @@ class ParameterHistogramMultiplicationOperator:
         
         virtual const std::vector<Binning>& getBinningVector() const
         {
-            return _histogram.get()->getBinningVector();
-        }
-        
-        virtual Histogram getResult() const
-        {
-            return _histogram.get()->getResult()*_parameter.get()->getValue();
+            return _histogram->getBinningVector();
         }
         
         virtual double getContent(sizetype index) const

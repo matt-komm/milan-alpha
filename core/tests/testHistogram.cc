@@ -7,10 +7,9 @@ TEST(Histogram1D, construction)
 {
     using namespace milan;
     
-    typedef Histogram Histogram1D;
     
     sizetype N = 10;
-    Histogram1D hist({Binning(N,-1,1)});
+    Histogram hist({Binning(N,-1,1)});
     EXPECT_EQ(hist.getBinning(0).size(),N);
     hist.getContent({0});
     for (sizetype i = 0; i < N+2; ++i)
@@ -39,11 +38,9 @@ TEST(Histogram1D, construction)
 TEST(Histogram2D, construction)
 {
     using namespace milan;
-    
-    typedef Histogram Histogram2D;
 
     sizetype N = 10;
-    Histogram2D hist({Binning(N,-1,1),Binning(N*2,-1,1)});
+    Histogram hist({Binning(N,-1,1),Binning(N*2,-1,1)});
     EXPECT_EQ(hist.getBinning(0).size(),N);
     EXPECT_EQ(hist.getBinning(1).size(),N*2);
 
@@ -70,6 +67,58 @@ TEST(Histogram2D, construction)
             EXPECT_DOUBLE_EQ(hist.getError2({i,j}),i*0.2+j*0.7);
         }
     }
+}
 
+TEST(Histogram1D, global_binning)
+{
+    using namespace milan;
+    
+    sizetype N = 10;
+    Histogram h({Binning(N,-1,1)});
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        h.setContent({i},i);
+    }
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        EXPECT_DOUBLE_EQ(h.getContent(i),i);
+        h.setContent(i,2*i);
+    }
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        EXPECT_DOUBLE_EQ(h.getContent({i}),2*i);
+    }
+}
+
+TEST(Histogram2D, global_binning)
+{
+    using namespace milan;
+    
+    sizetype N = 1;
+    sizetype M = 2;
+    Histogram h({Binning(N,-1,1),Binning(M,-1,1)});
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        for (sizetype j = 0; j < M+2; ++j)
+        {
+            h.setContent({i,j},i*i+j);
+        }
+    }
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        for (sizetype j = 0; j < M+2; ++j)
+        {
+            EXPECT_DOUBLE_EQ(h.getContent(j*(N+2)+i),i*i+j);
+            h.setContent(j*(N+2)+i,2*i-j*j);
+        }
+    }
+    
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        for (sizetype j = 0; j < M+2; ++j)
+        {
+            EXPECT_DOUBLE_EQ(h.getContent({i,j}),2*i-j*j);
+        }
+    }
 }
 
