@@ -12,6 +12,8 @@
 namespace milan
 {
 
+
+
 class Binning
 {
     protected:
@@ -140,6 +142,22 @@ class Binning
             return size()+1;
         }
 };
+
+bool operator==(const std::vector<Binning>& lhs, const std::vector<Binning>& rhs)
+{
+    if (lhs.size()!=rhs.size())
+    {
+        return false;
+    }
+    for (sizetype idim = 0; idim < lhs.size(); ++idim)
+    {
+        if (lhs[idim]!=rhs[idim])
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 }
 

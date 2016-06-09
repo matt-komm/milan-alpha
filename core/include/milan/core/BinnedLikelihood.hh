@@ -21,7 +21,10 @@ class BinnedLikelihood:
             _data(data),
             _prediction(prediction)
         {
-            //TODO: check binning!
+            if (data->getBinningVector()!=prediction->getBinningVector())
+            {
+                milan_throw("Cannot build BinnedLikelhood: Data and prediction have different binnings");
+            }
         }
         
         inline const Ptr<const HistogramInterface>& getData() const
@@ -37,6 +40,11 @@ class BinnedLikelihood:
         virtual double getNLL() const
         {
             return 0;
+        }
+        
+        inline operator Likelihood() const
+        {
+            return copy();
         }
 };
 

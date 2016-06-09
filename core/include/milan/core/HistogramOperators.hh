@@ -21,7 +21,10 @@ class HistogramAddOperator:
             _lhs(lhs),
             _rhs(rhs)
         {
-            //TODO: check binning
+            if (lhs->getBinningVector()!=rhs->getBinningVector())
+            {
+                milan_throw("Cannot add Histogram: Found mismatching binnings!");
+            }
         }
         
         virtual sizetype size() const

@@ -190,11 +190,11 @@ class Histogram:
             }
             return result;
         }
-        /*
-        operator HistogramFunction() const
+        
+        inline operator HistogramFunction() const
         {
             return copy();
-        }*/
+        }
 };
 
 }

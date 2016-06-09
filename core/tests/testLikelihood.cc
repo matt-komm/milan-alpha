@@ -29,7 +29,7 @@ TEST(BinnedLikelihood, create)
     data2.setContent(1,2.0);
     data2.setError2(1,1.0);
     
-    Likelihood ll2 = BinnedLikelihood(data2.ref(),prediction2.ref()).copy();
+    Likelihood ll2 = BinnedLikelihood(data2.ref(),prediction2.ref());
     
     Likelihood ll = ll1*ll2;
     

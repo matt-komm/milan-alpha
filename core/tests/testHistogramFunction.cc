@@ -45,7 +45,7 @@ TEST(HistogramFunction, assign)
     hist2.setContent(1,2.0);
 
     HistogramFunction1D histFct1 = hist1.ref();
-    HistogramFunction1D histFct2 = hist2.copy();
+    HistogramFunction1D histFct2 = hist2;
     
     EXPECT_DOUBLE_EQ(histFct1.getContent(1),1);
     EXPECT_DOUBLE_EQ(histFct2.getContent(1),2);
