@@ -104,3 +104,35 @@ TEST(HistogramFunction, precendence)
     EXPECT_DOUBLE_EQ(result3.getContent(1),6);
 }
 
+
+TEST(HistogramFunction, diff)
+{
+    //acutally, operator precedence as in C++ is used. No real need to care about a bug here.
+    using namespace milan;
+    typedef HistogramFunction HistogramFunction1D;
+    typedef Histogram Histogram1D;
+    
+    
+    Histogram1D hist1({Binning(50,-1,1)});
+    hist1.setContent(1,1.0);
+    
+    Histogram1D hist2({Binning(50,-1,1)});
+    hist2.setContent(1,2.0);
+    
+    Parameter p1("p1",3);
+
+    HistogramFunction1D histFct1 = hist1.ref();
+    HistogramFunction1D histFct2 = hist2.ref();
+    
+    HistogramFunction1D result1 = histFct1+histFct2*p1; //1+2*p
+    EXPECT_DOUBLE_EQ(result1.getDifferential(1,p1),2);
+    
+    HistogramFunction1D result2 = histFct1*p1+histFct2; //1*p+2
+    EXPECT_DOUBLE_EQ(result2.getDifferential(1,p1),1);
+    
+    HistogramFunction1D result3 = histFct1*p1+histFct2*p1; //1*p+2*p
+    EXPECT_DOUBLE_EQ(result3.getDifferential(1,p1),3);
+    
+    HistogramFunction1D result4 = histFct1*p1+histFct2*p1*p1; //1*p+2*p*p
+    EXPECT_DOUBLE_EQ(result4.getDifferential(1,p1),13); //-> 1 + 2*2*p = 1+2*2*3=13
+}

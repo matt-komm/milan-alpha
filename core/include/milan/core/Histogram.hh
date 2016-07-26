@@ -164,6 +164,11 @@ class Histogram:
             return _content[index];
         }
         
+        virtual double getDifferential(sizetype, const Parameter&) const
+        {
+            return 0.0;
+        }
+        
         virtual double getError2(sizetype index) const
         {
             return _error2[index];

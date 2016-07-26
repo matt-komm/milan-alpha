@@ -50,6 +50,11 @@ class Parameter
         {
             _step = step;
         } 
+        
+        bool operator==(const Parameter& p) const
+        {
+            return _name==p._name;
+        }
 };
 
 }
