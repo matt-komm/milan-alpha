@@ -28,8 +28,8 @@ message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 add_subdirectory(external)
 
 include_directories(
-    SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
-    SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
+    #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
+    #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
 )
 
 include_directories(core/include)
