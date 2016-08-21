@@ -1,0 +1,3 @@
+[submodule "external/cpx"]
+	path = external/cpx
+	url = https://github.com/matt-komm/CPX.git

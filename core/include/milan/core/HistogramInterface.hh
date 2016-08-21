@@ -29,8 +29,6 @@ class HistogramInterface
             return this->getBinningVector().size();
         }
         
-        
-        
         virtual ~HistogramInterface()
         {
         }

@@ -21,6 +21,10 @@ class MultiplyLikelihoodOperator:
         {
         }
         
+        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
+        {
+            return std::vector<Ptr<Parameter>>(0);
+        }
         
         virtual double getNLL() const
         {
