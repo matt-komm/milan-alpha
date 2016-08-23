@@ -4,6 +4,8 @@ include(cmake/DetectOS.cmake)
 include(cmake/Copy.cmake)
 include(cmake/Tests.cmake)
 
+add_definitions(-DOS_${OSNAME})
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     
@@ -30,11 +32,15 @@ add_subdirectory(external)
 include_directories(
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
+    external/cpx/include
 )
 
 include_directories(core/include)
 include_directories(operators/include)
+include_directories(plugins/include)
 
 add_subdirectory(core)
 add_subdirectory(operators)
+add_subdirectory(plugins)
+
 
