@@ -33,7 +33,6 @@ TEST(BinnedLikelihood, create)
     
     Likelihood ll3 = ll1*ll2;
     
-    ll3.getNLL();
-    
+    ll3.getNLL();    
 }
 

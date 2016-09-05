@@ -185,6 +185,17 @@ class Histogram:
             return result;
         }
         
+        Histogram operator-(const Histogram& rhs) const
+        {
+            Histogram result(*this); //copy
+            for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
+            {
+                result._content[ibin]-=rhs._content[ibin];
+                result._error2[ibin]+=rhs._error2[ibin];
+            }
+            return result;
+        }
+        
         Histogram operator*(double factor) const
         {
             Histogram result(*this); //copy
@@ -192,6 +203,17 @@ class Histogram:
             {
                 result._content[ibin]*=factor;
                 result._error2[ibin]*=factor;
+            }
+            return result;
+        }
+    
+        Histogram operator/(double factor) const
+        {
+            Histogram result(*this); //copy
+            for (sizetype ibin = 0; ibin < result._content.size(); ++ibin)
+            {
+                result._content[ibin]/=factor;
+                result._error2[ibin]/=factor;
             }
             return result;
         }

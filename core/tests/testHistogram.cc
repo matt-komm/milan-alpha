@@ -3,6 +3,56 @@
 #include "gtest/gtest.h"
 
 
+TEST(Histogram1D, copy)
+{
+    using namespace milan;
+    sizetype N = 10;
+    Histogram hist({Binning(N,-1,1)});
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        hist.setContent({i},i*0.1);
+        hist.setError({i},i*0.2);
+    }
+    Histogram hist_copy(hist);
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        EXPECT_DOUBLE_EQ(hist_copy.getContent({i}),i*0.1);
+        EXPECT_DOUBLE_EQ(hist_copy.getError({i}),i*0.2);
+    }
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        hist.setContent({i},i*0.3);
+        hist.setError({i},i*0.4);
+        EXPECT_DOUBLE_EQ(hist_copy.getContent({i}),i*0.1);
+        EXPECT_DOUBLE_EQ(hist_copy.getError({i}),i*0.2);
+    }
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        hist_copy.setContent({i},i*0.5);
+        hist_copy.setError({i},i*0.6);
+        EXPECT_DOUBLE_EQ(hist.getContent({i}),i*0.3);
+        EXPECT_DOUBLE_EQ(hist.getError({i}),i*0.4);
+    }
+}
+
+TEST(Histogram1D, move)
+{
+    using namespace milan;
+    sizetype N = 10;
+    Histogram hist({Binning(N,-1,1)});
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        hist.setContent({i},i*0.1);
+        hist.setError({i},i*0.2);
+    }
+    Histogram hist_move(std::move(hist));
+    for (sizetype i = 0; i < N+2; ++i)
+    {
+        EXPECT_DOUBLE_EQ(hist_move.getContent({i}),i*0.1);
+        EXPECT_DOUBLE_EQ(hist_move.getError({i}),i*0.2);
+    }
+}
+
 TEST(Histogram1D, construction)
 {
     using namespace milan;
@@ -14,7 +64,6 @@ TEST(Histogram1D, construction)
     hist.getContent({0});
     for (sizetype i = 0; i < N+2; ++i)
     {
-        
         EXPECT_DOUBLE_EQ(hist.getContent({i}),0);
         EXPECT_DOUBLE_EQ(hist.getError({i}),0);
         
@@ -22,7 +71,6 @@ TEST(Histogram1D, construction)
         hist.setError({i},i*0.2);
         EXPECT_DOUBLE_EQ(hist.getError({i}),i*0.2);
         hist.setError2({i},i*0.2);
-        
     }
     
     for (sizetype i = 0; i < N+2; ++i)
