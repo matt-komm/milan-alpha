@@ -23,12 +23,20 @@ class MultiplyLikelihoodOperator:
         
         virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
         {
-            return std::vector<Ptr<Parameter>>(0);
+            std::vector<Ptr<Parameter>> parameters;
+            std::copy(_lhs->getLagrangeParameters().begin(),_lhs->getLagrangeParameters().end(),std::back_inserter(parameters));
+            std::copy(_rhs->getLagrangeParameters().begin(),_rhs->getLagrangeParameters().end(),std::back_inserter(parameters));
+            return parameters;
         }
         
         virtual double getNLL() const
         {
             return _lhs->getNLL()+_rhs->getNLL();
+        }
+        
+        virtual double getNLLDerivative(const Parameter& p) const
+        {
+            return _lhs->getNLLDerivative(p)+_rhs->getNLLDerivative(p);
         }
 };
 

@@ -13,7 +13,7 @@ class LikelihoodInterface
 {
     protected:
     public:
-        //virtual double getNLLDerivative(const Parameter& p) const = 0;
+        virtual double getNLLDerivative(const Parameter& p) const = 0;
         virtual double getNLL() const = 0;
         
         

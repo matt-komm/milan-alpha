@@ -51,6 +51,11 @@ class Likelihood:
             return _llInterface->getNLL();
         }
         
+        virtual double getNLLDerivative(const Parameter& p) const
+        {
+            return _llInterface->getNLLDerivative(p);
+        }
+        
         Likelihood operator*(const Likelihood& rhs) const;
         
         

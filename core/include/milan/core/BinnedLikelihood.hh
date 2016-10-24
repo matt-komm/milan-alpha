@@ -32,7 +32,8 @@ class BinnedLikelihood:
             }
             for (sizetype i = 0; i < _bbParameters.size(); ++i)
             {
-                _bbParameters[i]=Ptr<Parameter>(PtrStorage::OWN,new Parameter("bb"+std::to_string(i+1),0.0));
+                //BB parameters restricted to -5 .. 5 with 0.02 as step width; use object's address for unique name
+                _bbParameters[i]=Ptr<Parameter>(PtrStorage::OWN,new Parameter(std::to_string((sizetype)this)+"@bb"+std::to_string(i+1),0.0,-5,5,0.02));
             }
         }
         
@@ -56,15 +57,22 @@ class BinnedLikelihood:
             const sizetype N = _prediction->size();
             double nll = 0;
             
-            
             for (sizetype i = 0; i < N; ++i)
             {
-                const double prediction = _prediction->getContent(i);
+                const double raw_prediction = _prediction->getContent(i); //no BB variation
+                const double error = std::sqrt(_prediction->getError2(i));
+                const double prediction = (1+_bbParameters[i]->getValue()*error)*raw_prediction; //with BB variation
                 const double data = _data->getContent(i);
-                //TODO: check correct equation!!!
-                nll+=(data*vdt::fast_log(prediction)-prediction+_bbParameters[i]->getValue()*prediction);
+
+                nll+=data*vdt::fast_log(prediction)-prediction;
+                nll+=0.5*(prediction-raw_prediction)*(prediction-raw_prediction); //Gaussian prior with width=1
             }
             return nll;
+        }
+        
+        virtual double getNLLDerivative(const Parameter&) const
+        {
+            return 0;
         }
         
         inline operator Likelihood() const
