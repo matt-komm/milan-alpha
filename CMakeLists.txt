@@ -33,6 +33,7 @@ include_directories(
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
     external/cpx/include
+    external/vdt/include
 )
 
 include_directories(core/include)

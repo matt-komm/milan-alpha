@@ -52,6 +52,8 @@ class Likelihood:
         }
         
         Likelihood operator*(const Likelihood& rhs) const;
+        
+        
 };
 
 Likelihood Likelihood::operator*(const Likelihood& rhs) const
