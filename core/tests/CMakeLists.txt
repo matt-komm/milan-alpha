@@ -41,3 +41,11 @@ add_gtest(
 )
 
 
+add_gtest(
+    NAME milan-core-MLFitter
+    SOURCES testMLFitter.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
+
+

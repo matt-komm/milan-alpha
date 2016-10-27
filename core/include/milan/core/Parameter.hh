@@ -3,6 +3,8 @@
 
 #include "milan/core/Types.hh"
 
+#include "fadbad/fadiff.h"
+
 #include <string>
 #include <limits>
 
@@ -31,6 +33,18 @@ class Parameter
         {
         }
         
+        double getDifferential(const Parameter& p) const
+        {
+            if (p==*this)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        
         inline double getValue() const
         {
             return _value;
@@ -51,9 +65,14 @@ class Parameter
             _step = step;
         } 
         
-        bool operator==(const Parameter& p) const
+        inline bool operator==(const Parameter& p) const
         {
             return _name==p._name;
+        }
+        
+        inline const std::string& getName() const
+        {
+            return _name;
         }
 };
 

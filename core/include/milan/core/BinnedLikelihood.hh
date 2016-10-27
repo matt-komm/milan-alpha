@@ -59,20 +59,78 @@ class BinnedLikelihood:
             
             for (sizetype i = 0; i < N; ++i)
             {
+                const double data = _data->getContent(i);
+                if (data<std::numeric_limits<double>::epsilon())
+                {
+                    continue;
+                }
+            
                 const double raw_prediction = _prediction->getContent(i); //no BB variation
                 const double error = std::sqrt(_prediction->getError2(i));
+                
+                if (raw_prediction<std::numeric_limits<double>::epsilon() and error<std::numeric_limits<double>::epsilon())
+                {
+                    continue;
+                }
+                
+                
                 const double prediction = (1+_bbParameters[i]->getValue()*error)*raw_prediction; //with BB variation
-                const double data = _data->getContent(i);
-
+                
                 nll+=data*vdt::fast_log(prediction)-prediction;
                 nll+=0.5*(prediction-raw_prediction)*(prediction-raw_prediction); //Gaussian prior with width=1
             }
             return nll;
         }
         
-        virtual double getNLLDerivative(const Parameter&) const
+        virtual double getNLLDerivative(const Parameter& p) const
         {
-            return 0;
+            const sizetype N = _prediction->size();
+            double diff_nll = 0;
+            
+            for (sizetype i = 0; i < N; ++i)
+            {
+                const double data = _data->getContent(i);
+                if (data<std::numeric_limits<double>::epsilon())
+                {
+                    continue;
+                }
+                
+                const double raw_prediction = _prediction->getContent(i); //no BB variation
+                const double error = std::sqrt(_prediction->getError2(i));
+                
+                if (raw_prediction<std::numeric_limits<double>::epsilon() and error<std::numeric_limits<double>::epsilon())
+                {
+                    continue;
+                }
+                
+                
+                const double raw_prediction_diff = _prediction->getDifferential(i,p); //no BB variation
+                
+                const double prediction = (1+_bbParameters[i]->getValue()*error)*raw_prediction; //with BB variation
+                
+                if ((*_bbParameters[i])==p)
+                {
+                    diff_nll+=error*raw_prediction;
+                }
+                else
+                {
+                    diff_nll+=(1+_bbParameters[i]->getValue()*error)*raw_prediction_diff;
+                }
+                
+                //const double raw_prediction = _prediction->getContent(i); //no BB variation
+                //const double raw_prediction_diff = _prediction->getDifferential(p); //no BB variation
+                
+                
+                //_bbParameters[i]->getDifferential(p)*error*raw_prediction+_bbParameters[i]->getValue()*error*raw_prediction_diff; //with BB variation
+                
+                
+
+                diff_nll+=data*vdt::fast_log(prediction)-prediction;
+                diff_nll+=0.5*(prediction-raw_prediction)*(prediction-raw_prediction); //Gaussian prior with width=1
+            
+            
+            }
+            return diff_nll;
         }
         
         inline operator Likelihood() const

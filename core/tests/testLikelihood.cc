@@ -2,6 +2,7 @@
 #include "milan/core/BinnedLikelihood.hh"
 #include "milan/core/Histogram.hh"
 
+#include "vdt/vdtMath.h"
 #include "gtest/gtest.h"
 
 TEST(BinnedLikelihood, create)
@@ -35,4 +36,37 @@ TEST(BinnedLikelihood, create)
     
     ll3.getNLL();    
 }
+
+TEST(BinnedLikelihood, counting)
+{
+    using namespace milan;
+    
+    Histogram prediction({Binning(1,-1,1)});
+    prediction.setError2(0,0.0);
+    
+    Histogram data({Binning(1,-1,1)});
+    data.setError2(0,1.0);
+    
+    BinnedLikelihood bll(data.ref(),prediction.ref());
+    
+    Likelihood ll = bll.ref();
+    for (unsigned int i = 0; i < 200; ++i)
+    {
+        for (unsigned int j = 0; j < 20; ++j)
+        {
+            prediction.setContent(1,0.1*i);
+            data.setContent(1,1.0*j);
+            double nll = ll.getNLL();
+            if (i==0 || j==0)
+            {
+                EXPECT_DOUBLE_EQ(nll,0.0);
+            }
+            else
+            {
+                EXPECT_DOUBLE_EQ(nll,1.0*j*vdt::fast_log(0.1*i)-0.1*i);
+            }
+        }
+    }
+}
+
 
