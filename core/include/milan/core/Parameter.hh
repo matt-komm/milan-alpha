@@ -33,18 +33,6 @@ class Parameter
         {
         }
         
-        double getDifferential(const Parameter& p) const
-        {
-            if (p==*this)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        
         inline double getValue() const
         {
             return _value;

@@ -76,6 +76,11 @@ class HistogramFunction:
             return _histFct.get()->getBinningVector();
         }
         
+        const inline Ptr<const HistogramInterface>& getPtr() const
+        {
+            return _histFct;
+        }
+        
         HistogramFunction operator+(const HistogramFunction& rhs) const;
         HistogramFunction operator*(const Parameter& rhs) const;
 };

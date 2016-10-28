@@ -2,7 +2,7 @@
 #define __MILAN_CORE_BINNEDLIKELIHOOD_H__
 
 #include "milan/core/LikelihoodInterface.hh"
-#include "milan/core/HistogramInterface.hh"
+#include "milan/core/HistogramFunction.hh"
 #include "milan/core/Ptr.hh"
 #include "milan/core/Types.hh"
 
@@ -21,12 +21,13 @@ class BinnedLikelihood:
         
         std::vector<Ptr<Parameter>> _bbParameters;
     public:
-        BinnedLikelihood(const Ptr<const HistogramInterface>& data, const Ptr<const HistogramInterface>& prediction):
-            _data(data),
-            _prediction(prediction),
-            _bbParameters(data->size())
+        BinnedLikelihood(const HistogramFunction& data, const HistogramFunction& prediction):
+        //BinnedLikelihood(const Ptr<const HistogramInterface>& data, const Ptr<const HistogramInterface>& prediction):
+            _data(data.getPtr()),
+            _prediction(prediction.getPtr()),
+            _bbParameters(data.size())
         {
-            if (data->getBinningVector()!=prediction->getBinningVector())
+            if (data.getBinningVector()!=prediction.getBinningVector())
             {
                 milan_throw("Cannot build BinnedLikelhood: Data and prediction have different binnings");
             }
