@@ -5,6 +5,7 @@
 #include "milan/core/LikelihoodInterface.hh"
 #include "milan/core/Ptr.hh"
 #include "milan/core/Parameter.hh"
+#include "milan/core/FitResult.hh"
 
 #include <vector>
 
@@ -31,6 +32,11 @@ class MLFitter
                 }
             }
             _parameters.push_back(parameter);
+        }
+        
+        void fit()
+        {
+            
         }
 };
 

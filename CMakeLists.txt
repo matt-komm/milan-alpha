@@ -27,15 +27,15 @@ message(STATUS "Compiler id: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Compiler name: ${CMAKE_CXX_COMPILER}")
 message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 
-add_subdirectory(external)
-
 include_directories(
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
-    external/cpx/include
-    external/vdt/include
-    external/fadbad/include
+    SYSTEM external/cpx/include
+    SYSTEM external/vdt/include
+    SYSTEM external/fadbad/include
 )
+
+add_subdirectory(external)
 
 include_directories(core/include)
 include_directories(operators/include)

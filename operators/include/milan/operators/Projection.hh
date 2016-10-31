@@ -21,10 +21,7 @@ class Projection:
             _axes(axes)
         {
         }
-        
-        virtual Histogram getResult() const
-        {
-        }
+
         
         
 };

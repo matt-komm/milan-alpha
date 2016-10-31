@@ -22,6 +22,7 @@ class BinnedLikelihood:
         std::vector<Ptr<Parameter>> _bbParameters;
         
         const std::string _bbPrefix;
+
     public:
         BinnedLikelihood(const HistogramFunction& data, const HistogramFunction& prediction):
             _data(data.getPtr()),
