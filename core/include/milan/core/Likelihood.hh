@@ -46,6 +46,11 @@ class Likelihood:
             return *this;
         }
         
+        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
+        {
+            return _llInterface->getLagrangeParameters();
+        }
+        
         virtual double getNLL() const
         {
             return _llInterface->getNLL();

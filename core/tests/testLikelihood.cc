@@ -36,65 +36,84 @@ TEST(BinnedLikelihood, create)
     
     ll3.getNLL();    
 }
-
-/*
-TEST(BinnedLikelihood, speed)
-{
+    
+void speed(unsigned int bins)
+{    
     using namespace milan;
+    Histogram prediction1({Binning(bins,-1,1)});
+    Histogram data1({Binning(bins,-1,1)});
+    Likelihood ll1 = BinnedLikelihood(data1.ref(),prediction1.ref());
     
-    for (unsigned int bins = 10; bins<=200; bins+=10)
+    Histogram prediction2({Binning(bins,-1,1)});
+    Histogram data2({Binning(bins,-1,1)});
+    Likelihood ll2 = BinnedLikelihood(data2.ref(),prediction2.ref());
+    
+    Histogram prediction3({Binning(bins,-1,1)});
+    Histogram data3({Binning(bins,-1,1)});
+    Likelihood ll3 = BinnedLikelihood(data3.ref(),prediction3.ref());
+    
+    for (unsigned int i = 0; i < bins; ++i)
     {
-    
-        Histogram prediction1({Binning(bins,-1,1)});
-        Histogram data1({Binning(bins,-1,1)});
-        Likelihood ll1 = BinnedLikelihood(data1.ref(),prediction1.ref());
+        prediction1.setContent(i,3.0+i*0.1);
+        prediction1.setError2(i,1.5+std::sqrt(i*0.025));
         
-        Histogram prediction2({Binning(bins,-1,1)});
-        Histogram data2({Binning(bins,-1,1)});
-        Likelihood ll2 = BinnedLikelihood(data2.ref(),prediction2.ref());
-        
-        Histogram prediction3({Binning(bins,-1,1)});
-        Histogram data3({Binning(bins,-1,1)});
-        Likelihood ll3 = BinnedLikelihood(data3.ref(),prediction3.ref());
-        
-        for (unsigned int i = 0; i < bins; ++i)
-        {
-            prediction1.setContent(i,3.0+i*0.1);
-            prediction1.setError2(i,1.5+std::sqrt(i*0.025));
-            
-            data1.setContent(i,2.0+i*0.1);
-            data1.setError2(i,std::sqrt(2.0+i*0.1));
-            
-            
-            prediction2.setContent(i,3.0+i*0.25);
-            prediction2.setError2(i,1.5+std::sqrt(i*0.25));
-            
-            data2.setContent(i,1.5+i*0.2);
-            data2.setError2(i,std::sqrt(2.0+i*0.01));
-            
-            
-            prediction3.setContent(i,3.0+i*0.01);
-            prediction3.setError2(i,1.1+std::sqrt(i*0.01));
-            
-            data3.setContent(i,3.5-1.*i/bins);
-            data3.setError2(i,std::sqrt(1.*i/bins));
-        }
+        data1.setContent(i,2.0+i*0.1);
+        data1.setError2(i,std::sqrt(2.0+i*0.1));
         
         
+        prediction2.setContent(i,3.0+i*0.25);
+        prediction2.setError2(i,1.5+std::sqrt(i*0.25));
         
-        Likelihood tot_ll = ll1*ll2*ll3;
+        data2.setContent(i,1.5+i*0.2);
+        data2.setError2(i,std::sqrt(2.0+i*0.01));
         
-        std::cout<<"testing "<<bins<<" ...";
-        double sum = 0.0;
-        for (unsigned int toy = 0; toy < 10000; ++toy)
-        {
-            double x = tot_ll.getNLL();    
-            sum+=x;
-        }
-        std::cout<<"done ("<<sum<<")"<<std::endl;
         
+        prediction3.setContent(i,3.0+i*0.01);
+        prediction3.setError2(i,1.1+std::sqrt(i*0.01));
+        
+        data3.setContent(i,3.5-1.*i/bins);
+        data3.setError2(i,std::sqrt(1.*i/bins));
     }
+    
+    
+    
+    Likelihood tot_ll = ll1*ll2*ll3;
+    
+    std::cout<<"testing "<<bins<<" ...";
+    double sum = 0.0;
+    for (unsigned int toy = 0; toy < 10000; ++toy)
+    {
+        double x = tot_ll.getNLL();    
+        sum+=x;
+    }
+    std::cout<<"done ("<<sum<<")"<<std::endl;
 }
+/*
+TEST(BinnedLikelihood, speed20)
+{
+    speed(20);
+}
+
+TEST(BinnedLikelihood, speed40)
+{
+    speed(40);
+}
+
+TEST(BinnedLikelihood, speed80)
+{
+    speed(80);
+}
+
+TEST(BinnedLikelihood, speed160)
+{
+    speed(160);
+}
+
+TEST(BinnedLikelihood, speed320)
+{
+    speed(320);
+}
+
 */
 
 TEST(BinnedLikelihood, counting)
@@ -141,7 +160,7 @@ TEST(BinnedLikelihood, withParameter)
     Parameter strength("mu",1.0);
     
     Histogram nominalSignal({Binning(1,-1,1)});
-    nominalSignal.setError2(0,0.0);
+    nominalSignal.setError2(0,1.0);
     
     HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
     
@@ -165,7 +184,7 @@ TEST(BinnedLikelihood, withParameter)
                 data.setContent(1,d);
                 
                 double nll = ll.getNLL();
-                if (d<std::numeric_limits<double>::epsilon() || (p*s)<std::numeric_limits<double>::epsilon())
+                if (d<std::numeric_limits<double>::epsilon() || p<std::numeric_limits<double>::epsilon())
                 {
                     EXPECT_DOUBLE_EQ(nll,0.0);
                 }
@@ -177,4 +196,113 @@ TEST(BinnedLikelihood, withParameter)
         }
     }
 }
+
+TEST(BinnedLikelihood, diffParameter)
+{
+    using namespace milan;
+    
+    Parameter strength("mu",1.0);
+    
+    Histogram nominalSignal({Binning(1,-1,1)});
+    nominalSignal.setError2(1,1.0);
+    
+    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
+    
+    Histogram data({Binning(1,-1,1)});
+    
+    Likelihood ll = BinnedLikelihood(data.ref(),prediction);
+    
+    for (unsigned int i = 0; i < 20; ++i)
+    {
+        for (unsigned int j = 0; j < 20; ++j)
+        {
+            for (unsigned int k = 0; k < 20; ++k)
+            {
+                const double s = k*0.1+1.0;
+                const double d = 1.0*j;
+                const double p = 1.0+0.1*i;
+                
+                strength.setValue(s);
+                nominalSignal.setContent(1,p);
+                data.setContent(1,d);
+                
+                double diffNll_analytical = ll.getNLLDerivative(strength);
+                
+                const double h = 0.000001;
+                strength.setValue(s-h);
+                double nll1 = ll.getNLL();
+                strength.setValue(s+h);
+                double nll2 = ll.getNLL();
+                
+                double diffNll_numerical = (-0.5*nll1+0.5*nll2)/h;
+                
+                EXPECT_TRUE(std::fabs(diffNll_analytical-diffNll_numerical)<h)<< 
+                    "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
+            }
+        }
+    }
+}
+
+TEST(BinnedLikelihood, diffBB)
+{
+    using namespace milan;
+    
+    Parameter strength("mu",1.0);
+    
+    Histogram nominalSignal({Binning(1,-1,1)});
+    nominalSignal.setError2(1,1.0);
+    
+    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
+    
+    Histogram data({Binning(1,-1,1)});
+    data.setError2(1,0.0);
+    
+    Likelihood ll = BinnedLikelihood(data.ref(),prediction);
+    std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
+    EXPECT_EQ(bbParameters.size(),(unsigned int)3);
+    
+    for (unsigned int i = 0; i < 20; ++i)
+    {
+        for (unsigned int j = 0; j < 20; ++j)
+        {
+            for (unsigned int k = 0; k < 20; ++k)
+            {   
+                Parameter& bb = *bbParameters[1];
+                
+                const double s = 1.0;//k*0.1+1.0;
+                const double d = 1.0+1.0*j;
+                const double p = 2.0+0.1*i;
+                const double b = (j*3.+i*7.-k*11.+0.5)/(j*3.-i*7.+k*11.+1.0);
+                
+                strength.setValue(s);
+                nominalSignal.setContent(1,p);
+                data.setContent(1,d);
+                bb.setValue(b);
+                
+                double diffNll_analytical = ll.getNLLDerivative(bb);
+                
+                const double h = 0.000001;
+                bb.setValue(b-h);
+                double nll1 = ll.getNLL();
+                
+                bb.setValue(b+h);
+                double nll2 = ll.getNLL();
+
+                double diffNll_numerical = (-0.5*nll1+0.5*nll2)/h;
+
+                if (std::isnan(diffNll_numerical)) //is infinite number -> difference would be nan
+                {
+                    EXPECT_DOUBLE_EQ(std::numeric_limits<double>::infinity(),diffNll_analytical);
+                }
+                else
+                {
+                    //EXPECT_DOUBLE_EQ(diffNll_numerical,diffNll_analytical);
+                    EXPECT_TRUE(std::fabs(diffNll_analytical-diffNll_numerical)<h) << 
+                        "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
+                }
+            }
+        }
+    }
+}
+
 

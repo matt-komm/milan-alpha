@@ -18,10 +18,7 @@ class LikelihoodInterface
         
         
         //returns pointers to potential lagrange parameters (e.g. for Barlow-Beeston) for additional minimizations
-        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
-        {
-            return std::vector<Ptr<Parameter>>(0);
-        }
+        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const = 0;
         
         virtual ~LikelihoodInterface()
         {
