@@ -31,9 +31,9 @@ class Parameter
         {
         }
         
-        inline void differentiate(sizetype index, sizetype N)
+        inline double differentiate()
         {
-            _value.diff(index,N);
+            return _value.get_gradient();
         }
         
         inline const Ftype& getFtype() const
@@ -43,7 +43,7 @@ class Parameter
         
         inline double getValue() const
         {
-            return _value.val();
+            return _value.value();
         }
         
         inline void setValue(double value)

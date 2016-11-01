@@ -123,10 +123,10 @@ TEST(HistogramFunction, diff)
     HistogramFunction1D histFct1 = hist1.ref();
     HistogramFunction1D histFct2 = hist2.ref();
     
-    HistogramFunction1D result1 = histFct1+histFct2*p1; 
-    p1.differentiate(0,1);
+    HistogramFunction1D result1 = histFct1+histFct2*p1;
+    
     Ftype result = result1.getContentFtype(1);
-    EXPECT_DOUBLE_EQ(result.d(0),2);
+    EXPECT_DOUBLE_EQ(p1.differentiate(),2);
     /*
     //1+2*p
     EXPECT_DOUBLE_EQ(result1.getDifferential(1,p1),2);

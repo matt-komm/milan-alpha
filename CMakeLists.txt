@@ -31,6 +31,7 @@ include_directories(
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
     SYSTEM external/cpx/include
+    SYSTEM external/adept/include
     SYSTEM external/vdt/include
     SYSTEM external/fadbad/include
 )

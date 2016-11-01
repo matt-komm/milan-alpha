@@ -1,7 +1,8 @@
 #ifndef __MILAN_CORE_TYPES_H__
 #define __MILAN_CORE_TYPES_H__
 
-#include "fadbad/fadiff.h"
+//#include "fadbad/fadiff.h"
+#include "adept/adept.h"
 
 #include <inttypes.h>
 #include <cstddef>
@@ -25,7 +26,7 @@ typedef long double float128;
 
 typedef std::size_t sizetype;
 
-typedef fadbad::F<double> Ftype;
+typedef adept::adouble Ftype;
 
 
 static_assert(sizeof(int8)==1, "int8 is not of required size: 1");
