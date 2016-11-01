@@ -29,15 +29,16 @@ class MultiplyLikelihoodOperator:
             return parameters;
         }
         
-        virtual double getNLL() const
+        virtual double getNLLValue() const
         {
-            return _lhs->getNLL()+_rhs->getNLL();
+            return _lhs->getNLLValue()+_rhs->getNLLValue();
         }
         
-        virtual double getNLLDerivative(const Parameter& p) const
+        virtual Ftype getNLLFtype() const
         {
-            return _lhs->getNLLDerivative(p)+_rhs->getNLLDerivative(p);
+            return _lhs->getNLLFtype()+_rhs->getNLLFtype();
         }
+        
 };
 
 }

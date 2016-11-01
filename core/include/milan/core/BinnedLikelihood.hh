@@ -56,20 +56,20 @@ class BinnedLikelihood:
             return _bbParameters;
         }
         
-        virtual double getNLL() const
+        virtual double getNLLValue() const
         {
             const sizetype N = _prediction->size();
             double nll = 0;
             
             for (sizetype i = 0; i < N; ++i)
             {
-                const double data = _data->getContent(i);
+                const double data = _data->getContentValue(i);
                 if (data<std::numeric_limits<double>::epsilon())
                 {
                     continue;
                 }
             
-                const double raw_prediction = _prediction->getContent(i); //no BB variation
+                const double raw_prediction = _prediction->getContentValue(i); //no BB variation
                 const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_prediction->getError2(i)));
                 
                 if (raw_prediction<std::numeric_limits<double>::epsilon())
@@ -91,56 +91,39 @@ class BinnedLikelihood:
             return nll;
         }
         
-        virtual double getNLLDerivative(const Parameter& p) const
+        virtual Ftype getNLLFtype() const
         {
             const sizetype N = _prediction->size();
-            double diff_nll = 0;
+            Ftype nll = 0;
             
             for (sizetype i = 0; i < N; ++i)
             {
-                const double data = _data->getContent(i);
+                const Ftype data = _data->getContentFtype(i);
                 if (data<std::numeric_limits<double>::epsilon())
                 {
                     continue;
                 }
+            
+                Ftype raw_prediction = _prediction->getContentFtype(i); //no BB variation
+                const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_prediction->getError2(i)));
                 
-                if (p.getName().find(_bbPrefix)!=std::string::npos)
+                if (raw_prediction.x()<std::numeric_limits<double>::epsilon())
                 {
-                    if (p==*_bbParameters[i])
-                    {
-                        const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_prediction->getError2(i)));
-                        const double raw_prediction = _prediction->getContent(i); //no BB variation
-                        const double bbValue = _bbParameters[i]->getValue();
-                        const double prediction = (1.+bbValue*error)*raw_prediction; //with BB variation
-                        if (prediction<0)
-                        {
-                            //cut off negative prediction, use infinity here since difference of finite values may be small again
-                            return std::numeric_limits<double>::infinity();
-                        }
-                        diff_nll+=data*error/(1.+bbValue*error)-error*raw_prediction+bbValue;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    continue;
                 }
-                else
+                
+                const Ftype bbValue = _bbParameters[i]->getFtype();
+                Ftype prediction = (1.+bbValue*error)*raw_prediction; //with BB variation
+                if (prediction.x()<0)
                 {
-                    const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_prediction->getError2(i)));
-                    const double raw_prediction = _prediction->getContent(i); //no BB variation
-                    const double raw_prediction_diff = _prediction->getDifferential(i,p);
-                    const double bbValue = _bbParameters[i]->getValue();
-                    const double prediction = (1.+bbValue*error)*raw_prediction; //with BB variation
-                    if (prediction<0)
-                    {
-                        //cut off negative prediction, use infinity here since difference of finite values may be small again
-                        return std::numeric_limits<double>::infinity();
-                    }
-                    
-                    diff_nll+=(-1-bbValue*error)*raw_prediction_diff+data*raw_prediction_diff/raw_prediction;
+                    //cut off negative prediction, use infinity here since difference of finite values may be small again
+                    return std::numeric_limits<double>::infinity();
                 }
+
+                nll+=data*fadbad::log(prediction)-prediction;
+                nll+=0.5*bbValue*bbValue; //Gaussian prior with width=1
             }
-            return diff_nll;
+            return nll;
         }
         
         inline operator Likelihood() const

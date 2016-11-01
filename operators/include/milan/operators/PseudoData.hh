@@ -29,7 +29,7 @@ class PseudoData:
         {
             for (unsigned int ibin = 0; ibin < _generatedHistogram.size(); ++ibin)
             {
-                _generatedHistogram.setContent(ibin,_source.get()->getContent(ibin));
+                _generatedHistogram.setContent(ibin,_source.get()->getContentValue(ibin));
                 _generatedHistogram.setError2(ibin,_source.get()->getError2(ibin));
             }
         }
@@ -44,9 +44,14 @@ class PseudoData:
             return _generatedHistogram.size();
         }
         
-        virtual double getContent(sizetype index) const
+        virtual double getContentValue(sizetype index) const
         {
-            return _generatedHistogram.getContent(index);
+            return _generatedHistogram.getContentValue(index);
+        }
+        
+        virtual Ftype getContentFtype(sizetype index) const
+        {
+            return _generatedHistogram.getContentValue(index);
         }
         
         virtual double getError2(sizetype index) const

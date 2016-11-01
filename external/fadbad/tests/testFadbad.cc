@@ -21,6 +21,6 @@ TEST(fadbad,diff)
     x[0].diff(0,1);
 
     Ftype res = myFct(x);
-    std::cout<<"value="<<res.x()<<", diff="<<res.d(0)<<std::endl;
+    std::cout<<x[0].x()<<", value="<<res.x()<<", diff="<<res.d(0)<<std::endl;
 }
 

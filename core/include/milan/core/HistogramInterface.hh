@@ -17,9 +17,8 @@ class HistogramInterface
     public:
         
         virtual sizetype size() const = 0; //this refers to the resulting type in case of operations!
-        virtual double getContent(sizetype index) const = 0;
-        
-        virtual double getDifferential(sizetype index, const Parameter& p) const = 0;
+        virtual double getContentValue(sizetype index) const = 0;
+        virtual Ftype getContentFtype(sizetype index) const = 0;
         virtual double getError2(sizetype index) const = 0;
         
         //TODO: make binning const

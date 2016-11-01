@@ -37,14 +37,14 @@ class HistogramAddOperator:
             return _lhs.get()->getBinningVector();
         }
         
-        virtual double getContent(sizetype index) const
+        virtual double getContentValue(sizetype index) const
         {
-            return _lhs.get()->getContent(index)+_rhs.get()->getContent(index);
+            return _lhs.get()->getContentValue(index)+_rhs.get()->getContentValue(index);
         }
         
-        virtual double getDifferential(sizetype index, const Parameter& p) const
+        virtual Ftype getContentFtype(sizetype index) const
         {
-            return _lhs.get()->getDifferential(index,p)+_rhs.get()->getDifferential(index,p);
+            return _lhs.get()->getContentFtype(index)+_rhs.get()->getContentFtype(index);
         }
         
         virtual double getError2(sizetype index) const
@@ -78,21 +78,14 @@ class ParameterHistogramMultiplicationOperator:
             return _histogram->getBinningVector();
         }
         
-        virtual double getContent(sizetype index) const
+        virtual double getContentValue(sizetype index) const
         {
-            return _histogram.get()->getContent(index)*_parameter.get()->getValue();
+            return _histogram.get()->getContentValue(index)*_parameter.get()->getValue();
         }
         
-        virtual double getDifferential(sizetype index, const Parameter& p) const
+        virtual Ftype getContentFtype(sizetype index) const
         {
-            if (p==(*_parameter.get()))
-            {
-                return 1.0*_histogram->getContent(index)+p.getValue()*_histogram->getDifferential(index,p);
-            }
-            else
-            {
-                return p.getValue()*_histogram->getDifferential(index,p);
-            }
+            return _histogram.get()->getContentFtype(index)*_parameter.get()->getFtype();
         }
         
         virtual double getError2(sizetype index) const

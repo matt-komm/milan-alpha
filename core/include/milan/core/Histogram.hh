@@ -74,7 +74,12 @@ class Histogram:
             return _content.size();
         }
         
-        inline double getContent(const std::vector<sizetype>& index) const
+        inline double getContentValue(const std::vector<sizetype>& index) const
+        {
+            return _content[getGlobalBinFromIndex(index)];
+        }
+        
+        inline Ftype getContentFtype(const std::vector<sizetype>& index) const
         {
             return _content[getGlobalBinFromIndex(index)];
         }
@@ -159,16 +164,16 @@ class Histogram:
             return getGlobalBinFromIndex(findIndexFromValue(value));
         }
         
-        virtual double getContent(sizetype index) const
+        virtual double getContentValue(sizetype index) const
         {
             return _content[index];
         }
         
-        virtual double getDifferential(sizetype, const Parameter&) const
+        virtual Ftype getContentFtype(sizetype index) const
         {
-            return 0.0;
+            return _content[index];
         }
-        
+
         virtual double getError2(sizetype index) const
         {
             return _error2[index];

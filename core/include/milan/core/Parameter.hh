@@ -16,7 +16,7 @@ class Parameter
         constexpr static double MAX = std::numeric_limits<float64>::max();
     protected:
         const std::string _name;
-        double _value;
+        Ftype _value;
         double _min;
         double _max;
         double _step;
@@ -31,9 +31,19 @@ class Parameter
         {
         }
         
-        inline double getValue() const
+        inline void differentiate(sizetype index, sizetype N)
+        {
+            _value.diff(index,N);
+        }
+        
+        inline const Ftype& getFtype() const
         {
             return _value;
+        }
+        
+        inline double getValue() const
+        {
+            return _value.val();
         }
         
         inline void setValue(double value)

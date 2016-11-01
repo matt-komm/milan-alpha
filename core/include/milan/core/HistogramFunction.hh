@@ -56,14 +56,14 @@ class HistogramFunction:
             return _histFct.get()->size();
         }
         
-        virtual double getContent(sizetype index) const
+        virtual double getContentValue(sizetype index) const
         {
-            return _histFct.get()->getContent(index);
+            return _histFct.get()->getContentValue(index);
         }
         
-        virtual double getDifferential(sizetype index, const Parameter& p) const
+        virtual Ftype getContentFtype(sizetype index) const
         {
-            return _histFct.get()->getDifferential(index,p);
+            return _histFct.get()->getContentFtype(index);
         }
         
         virtual double getError2(sizetype index) const

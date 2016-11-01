@@ -51,14 +51,14 @@ class Likelihood:
             return _llInterface->getLagrangeParameters();
         }
         
-        virtual double getNLL() const
+        virtual double getNLLValue() const
         {
-            return _llInterface->getNLL();
+            return _llInterface->getNLLValue();
         }
         
-        virtual double getNLLDerivative(const Parameter& p) const
+        virtual Ftype getNLLFtype() const
         {
-            return _llInterface->getNLLDerivative(p);
+            return _llInterface->getNLLFtype();
         }
         
         Likelihood operator*(const Likelihood& rhs) const;
