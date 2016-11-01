@@ -90,15 +90,15 @@ void speed(unsigned int bins)
     for (unsigned int toy = 0; toy < 10000; ++toy)
     {
         signalStrength.differentiate(0,2);
-        backgroundYield.differentiate(1,2);
+        //backgroundYield.differentiate(1,2);
         double x = tot_ll.getNLLFtype().x();    
         double signaldiff = tot_ll.getNLLFtype().d(0);  
-        double backgrounddiff = tot_ll.getNLLFtype().d(0);  
-        sum+=x-signaldiff+backgrounddiff;
+        //double backgrounddiff = tot_ll.getNLLFtype().d(1);  
+        sum+=x-signaldiff;//+backgrounddiff;
     }
     std::cout<<"done ("<<sum<<")"<<std::endl;
 }
-/*
+
 TEST(BinnedLikelihood, speed20)
 {
     speed(20);
@@ -123,7 +123,7 @@ TEST(BinnedLikelihood, speed320)
 {
     speed(320);
 }
-*/
+
 
 
 TEST(BinnedLikelihood, counting)
