@@ -38,6 +38,17 @@ class MultiplyLikelihoodOperator:
         {
             return _lhs->getNLLDerivative(p)+_rhs->getNLLDerivative(p);
         }
+        
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& p) const
+        {
+            std::vector<double> resultLhs(_lhs->getNLLValueAndDerivatives(p));
+            std::vector<double> resultRhs(_rhs->getNLLValueAndDerivatives(p));
+            for (sizetype i = 0; i < resultLhs.size(); ++i)
+            {
+                resultLhs[i]+=resultRhs[i];
+            }
+            return resultLhs;
+        }
 };
 
 }

@@ -61,6 +61,11 @@ class Likelihood:
             return _llInterface->getNLLDerivative(p);
         }
         
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& p) const
+        {
+            return _llInterface->getNLLValueAndDerivatives(p);
+        }
+        
         Likelihood operator*(const Likelihood& rhs) const;
         
         
