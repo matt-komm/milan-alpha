@@ -89,9 +89,10 @@ void speed(unsigned int bins)
     double sum = 0.0;
     for (unsigned int toy = 0; toy < 10000; ++toy)
     {
-        signalStrength.differentiate(0,2);
+        signalStrength.differentiate(0,1);
         //backgroundYield.differentiate(1,2);
         double x = tot_ll.getNLLFtype().x();    
+        //double x = tot_ll.getNLLValue();
         double signaldiff = tot_ll.getNLLFtype().d(0);  
         //double backgrounddiff = tot_ll.getNLLFtype().d(1);  
         sum+=x-signaldiff;//+backgrounddiff;

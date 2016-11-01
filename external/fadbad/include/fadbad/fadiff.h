@@ -966,6 +966,27 @@ INLINE2 FTypeName<T,0> exp (const FTypeName<T,0>& a)
 }
 
 template <typename T, unsigned int N>
+INLINE2 FTypeName<T,N> fastexp (const FTypeName<T,N>& a)
+{
+	FTypeName<T,N> c(Op<T>::myFastExp(a.val()));
+	if (!a.depend()) return c;
+	c.setDepend(a);
+	const T& cval(c.val());
+	for(unsigned int i=0;i<N;++i) c[i]=a[i]*cval;
+	return c;
+}
+template <typename T>
+INLINE2 FTypeName<T,0> fastexp (const FTypeName<T,0>& a)
+{
+	FTypeName<T,0> c(Op<T>::myFastExp(a.val()));
+	if (!a.depend()) return c;
+	c.setDepend(a);
+	const T& cval(c.val());
+	for(unsigned int i=0;i<c.size();++i) c[i]=a[i]*cval;
+	return c;
+}
+
+template <typename T, unsigned int N>
 INLINE2 FTypeName<T,N> log (const FTypeName<T,N>& a)
 {
 	FTypeName<T,N> c(Op<T>::myLog(a.val()));
@@ -979,6 +1000,26 @@ template <typename T>
 INLINE2 FTypeName<T,0> log (const FTypeName<T,0>& a)
 {
 	FTypeName<T,0> c(Op<T>::myLog(a.val()));
+	if (!a.depend()) return c;
+	c.setDepend(a);
+	const T& aval(a.val());
+	for(unsigned int i=0;i<c.size();++i) c[i]=a[i]/aval;
+	return c;
+}
+template <typename T, unsigned int N>
+INLINE2 FTypeName<T,N> fastlog (const FTypeName<T,N>& a)
+{
+	FTypeName<T,N> c(Op<T>::myFastLog(a.val()));
+	if (!a.depend()) return c;
+	c.setDepend(a);
+	const T& aval(a.val());
+	for(unsigned int i=0;i<N;++i) c[i]=a[i]/aval;
+	return c;
+}
+template <typename T>
+INLINE2 FTypeName<T,0> fastlog (const FTypeName<T,0>& a)
+{
+	FTypeName<T,0> c(Op<T>::myFastLog(a.val()));
 	if (!a.depend()) return c;
 	c.setDepend(a);
 	const T& aval(a.val());

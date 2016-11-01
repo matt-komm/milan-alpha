@@ -120,7 +120,7 @@ class BinnedLikelihood:
                     return std::numeric_limits<double>::infinity();
                 }
 
-                nll+=data*fadbad::log(prediction)-prediction;
+                nll+=data*fadbad::fastlog(prediction)-prediction;
                 nll+=0.5*bbValue*bbValue; //Gaussian prior with width=1
             }
             return nll;

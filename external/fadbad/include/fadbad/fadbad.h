@@ -30,6 +30,8 @@
 #ifndef _FADBAD_H
 #define _FADBAD_H
 
+#include "vdt/vdtMath.h"
+
 #include <math.h>
 
 namespace fadbad
@@ -55,6 +57,7 @@ namespace fadbad
 		template <typename U> static T& myCdiv(T& x, const U& y) { return x/=y; }
 		static T myInv(const T& x) { return myOne()/x; }
 		static T mySqr(const T& x) { return x*x; }
+		
 		template <typename X, typename Y>
 		static T myPow(const X& x, const Y& y) { return ::pow(x,y); }
 		static T mySqrt(const T& x) { return ::sqrt(x); }
@@ -66,6 +69,10 @@ namespace fadbad
 		static T myAsin(const T& x) { return ::asin(x); }
 		static T myAcos(const T& x) { return ::acos(x); }
 		static T myAtan(const T& x) { return ::atan(x); }
+
+		static T myFastLog(const T& x) { return vdt::fast_log(x); }
+		static T myFastExp(const T& x) { return vdt::fast_exp(x); }
+		
 		static bool myEq(const T& x, const T& y) { return x==y; }
 		static bool myNe(const T& x, const T& y) { return x!=y; }
 		static bool myLt(const T& x, const T& y) { return x<y; }
