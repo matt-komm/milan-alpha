@@ -40,13 +40,19 @@ TEST(BinnedLikelihood, create)
 void speed(unsigned int bins)
 {    
     using namespace milan;
-    Histogram prediction1({Binning(bins,-1,1)});
-    Histogram data1({Binning(bins,-1,1)});
-    Likelihood ll1 = BinnedLikelihood(data1.ref(),prediction1.ref());
+    Parameter signalStrength("signalStrength",1.0);
     
-    Histogram prediction2({Binning(bins,-1,1)});
+    Histogram signalTemplate({Binning(bins,-1,1)});
+    HistogramFunction signalPrediction = HistogramFunction(signalTemplate.ref())*signalStrength;
+    Histogram data1({Binning(bins,-1,1)});
+    Likelihood ll1 = BinnedLikelihood(data1.ref(),signalPrediction);
+    
+    Parameter backgroundYield("backgroundYield",1.0);
+    
+    Histogram backgroundTemplate1({Binning(bins,-1,1)});
+    HistogramFunction backgroundPrediction = HistogramFunction(backgroundTemplate1.ref())*backgroundYield;
     Histogram data2({Binning(bins,-1,1)});
-    Likelihood ll2 = BinnedLikelihood(data2.ref(),prediction2.ref());
+    Likelihood ll2 = BinnedLikelihood(data2.ref(),backgroundPrediction);
     
     Histogram prediction3({Binning(bins,-1,1)});
     Histogram data3({Binning(bins,-1,1)});
@@ -54,15 +60,15 @@ void speed(unsigned int bins)
     
     for (unsigned int i = 0; i < bins; ++i)
     {
-        prediction1.setContent(i,3.0+i*0.1);
-        prediction1.setError2(i,1.5+std::sqrt(i*0.025));
+        signalTemplate.setContent(i,3.0+i*0.1);
+        signalTemplate.setError2(i,1.5+std::sqrt(i*0.025));
         
         data1.setContent(i,2.0+i*0.1);
         data1.setError2(i,std::sqrt(2.0+i*0.1));
         
         
-        prediction2.setContent(i,3.0+i*0.25);
-        prediction2.setError2(i,1.5+std::sqrt(i*0.25));
+        backgroundTemplate1.setContent(i,3.0+i*0.25);
+        backgroundTemplate1.setError2(i,1.5+std::sqrt(i*0.25));
         
         data2.setContent(i,1.5+i*0.2);
         data2.setError2(i,std::sqrt(2.0+i*0.01));
@@ -83,8 +89,12 @@ void speed(unsigned int bins)
     double sum = 0.0;
     for (unsigned int toy = 0; toy < 10000; ++toy)
     {
-        double x = tot_ll.getNLLValue();    
-        sum+=x;
+        signalStrength.differentiate(0,2);
+        backgroundYield.differentiate(1,2);
+        double x = tot_ll.getNLLFtype().x();    
+        double signaldiff = tot_ll.getNLLFtype().d(0);  
+        double backgrounddiff = tot_ll.getNLLFtype().d(0);  
+        sum+=x-signaldiff+backgrounddiff;
     }
     std::cout<<"done ("<<sum<<")"<<std::endl;
 }
@@ -113,8 +123,8 @@ TEST(BinnedLikelihood, speed320)
 {
     speed(320);
 }
-
 */
+
 
 TEST(BinnedLikelihood, counting)
 {
