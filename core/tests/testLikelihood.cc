@@ -2,8 +2,6 @@
 #include "milan/core/BinnedLikelihood.hh"
 #include "milan/core/Histogram.hh"
 
-#include "close_match.h"
-
 #include "vdt/vdtMath.h"
 #include "gtest/gtest.h"
 
