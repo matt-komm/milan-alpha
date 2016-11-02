@@ -87,7 +87,7 @@ class ParameterHistogramMultiplicationOperator:
         {
             if (p==(*_parameter.get()))
             {
-                return 1.0*_histogram->getContent(index)+p.getValue()*_histogram->getDifferential(index,p);
+                return _histogram->getContent(index)+p.getValue()*_histogram->getDifferential(index,p);
             }
             else
             {

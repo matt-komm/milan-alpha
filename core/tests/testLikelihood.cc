@@ -2,6 +2,8 @@
 #include "milan/core/BinnedLikelihood.hh"
 #include "milan/core/Histogram.hh"
 
+#include "close_match.h"
+
 #include "vdt/vdtMath.h"
 #include "gtest/gtest.h"
 
@@ -137,24 +139,51 @@ TEST(BinnedLikelihood, counting)
     BinnedLikelihood bll(data.ref(),prediction.ref());
     
     Likelihood ll = bll.ref();
-    for (unsigned int i = 0; i < 20; ++i)
+    std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
+    
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        for (unsigned int j = 0; j < 20; ++j)
+        for (unsigned int j = 0; j < 10; ++j)
         {
-            const double d = 1.0*j;
-            const double p = 0.1*i;
-            prediction.setContent(1,p);
-            data.setContent(1,d);
-            
-            double nll = ll.getNLL();
-            
-            if (d<std::numeric_limits<double>::epsilon())
+            for (unsigned int k = 0; k < 10; ++k)
             {
-                EXPECT_DOUBLE_EQ(nll,0.0);
-            }
-            else
-            {
-                EXPECT_DOUBLE_EQ(nll,d*vdt::fast_log(p)-p);
+                for (unsigned int l = 0; l < 10; ++l)
+                {
+                    Parameter& bb = *bbParameters[1];
+                    
+                    const double e = k*0.1+0.01;
+                    const double d = 1.0*j;
+                    const double b = -2.0+0.2*l;
+                    const double raw_p = 1.3*i;
+                    const double s = 1.;
+                    const double p = raw_p*s+b*std::fabs(e*s);
+                    
+                    prediction.setContent(1,raw_p);
+                    prediction.setError2(1,e*e);
+                    data.setContent(1,d);
+                    bb.setValue(b);
+                    
+                    const double nll = ll.getNLL();
+                    const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
+                    
+                    const double num_nll = d*vdt::fast_log(p)-p+0.5*b*b;
+                    
+                    if (d<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_DOUBLE_EQ(nll,0.0);
+                        EXPECT_DOUBLE_EQ(nll_alt,0.0);
+                    }
+                    else if (std::isnan(num_nll) || p<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_TRUE(std::isnan(nll));
+                        EXPECT_TRUE(std::isnan(nll_alt));
+                    }
+                    else
+                    {
+                        EXPECT_DOUBLE_EQ(nll,num_nll);
+                        EXPECT_DOUBLE_EQ(nll_alt,num_nll);
+                    }
+                }
             }
         }
     }
@@ -176,37 +205,51 @@ TEST(BinnedLikelihood, withParameter)
     data.setError2(0,1.0);
     
     Likelihood ll = BinnedLikelihood(data.ref(),prediction);
+    std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
     
-    for (unsigned int i = 0; i < 20; ++i)
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        for (unsigned int j = 0; j < 20; ++j)
+        for (unsigned int j = 0; j < 10; ++j)
         {
-            for (unsigned int k = 0; k < 20; ++k)
+            for (unsigned int k = 0; k < 10; ++k)
             {
-                const double s = k*0.1-0.1;
-                const double d = 1.0*j-0.1;
-                const double p = 0.1*i-0.1;
-                
-                strength.setValue(s);
-                nominalSignal.setContent(1,p);
-                data.setContent(1,d);
-                
-                double nll = ll.getNLL();
-                double nll_alt = ll.getNLLValueAndDerivatives({})[0];
-                if (d<std::numeric_limits<double>::epsilon())
+                for (unsigned int l = 0; l < 10; ++l)
                 {
-                    EXPECT_DOUBLE_EQ(nll,0.0);
-                    EXPECT_DOUBLE_EQ(nll_alt,0.0);
-                }
-                else if (std::isnan(d*vdt::fast_log(p*s)-p*s))
-                {
-                    EXPECT_TRUE(std::isnan(nll));
-                    EXPECT_TRUE(std::isnan(nll_alt));
-                }
-                else
-                {
-                    EXPECT_DOUBLE_EQ(nll,d*vdt::fast_log(p*s)-p*s);
-                    EXPECT_DOUBLE_EQ(nll_alt,d*vdt::fast_log(p*s)-p*s);
+                    Parameter& bb = *bbParameters[1];
+                    
+                    const double e = k*0.1+0.01;
+                    const double d = 1.0*j;
+                    const double b = -2.0+0.2*l;
+                    const double raw_p = 1.3*i;
+                    const double s = d*0.1+0.3*e+std::fabs(b);
+                    const double p = raw_p*s+b*std::fabs(e*s);
+                    
+                    nominalSignal.setContent(1,raw_p);
+                    nominalSignal.setError2(1,e*e);
+                    data.setContent(1,d);
+                    bb.setValue(b);
+                    strength.setValue(s);
+                    
+                    const double nll = ll.getNLL();
+                    const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
+                    
+                    const double num_nll = d*vdt::fast_log(p)-p+0.5*b*b;
+                    
+                    if (d<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_DOUBLE_EQ(nll,0.0);
+                        EXPECT_DOUBLE_EQ(nll_alt,0.0);
+                    }
+                    else if (std::isnan(num_nll) || p<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_TRUE(std::isnan(nll)) << "Value is "<<nll<<" prediction="<<p;
+                        EXPECT_TRUE(std::isnan(nll_alt)) << "Value is "<<nll<<" prediction="<<p;
+                    }
+                    else
+                    {
+                        EXPECT_FLOAT_EQ(nll,num_nll);
+                        EXPECT_FLOAT_EQ(nll_alt,num_nll);
+                    }
                 }
             }
         }
@@ -227,49 +270,51 @@ TEST(BinnedLikelihood, diffParameter)
     Histogram data({Binning(1,-1,1)});
     
     Likelihood ll = BinnedLikelihood(data.ref(),prediction);
+    std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
     
-    for (unsigned int i = 0; i < 20; ++i)
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        for (unsigned int j = 0; j < 20; ++j)
+        for (unsigned int j = 0; j < 10; ++j)
         {
-            for (unsigned int k = 0; k < 20; ++k)
+            for (unsigned int k = 0; k < 10; ++k)
             {
-                const double s = k*0.1-0.1;
-                const double d = 1.0*j-0.1;
-                const double p = 0.1*i-0.1;
-                
-                strength.setValue(s);
-                nominalSignal.setContent(1,p);
-                data.setContent(1,d);
-                
-                double diffNll_analytical = ll.getNLLDerivative(strength);
-                double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({strength})[1];
-                const double h = 0.000001;
-                strength.setValue(s-h);
-                double nll1 = ll.getNLL();
-                strength.setValue(s+h);
-                double nll2 = ll.getNLL();
-                
-                double diffNll_numerical = (-0.5*nll1+0.5*nll2)/h;
-                
-                if (d<std::numeric_limits<double>::epsilon())
+                for (unsigned int l = 0; l < 10; ++l)
                 {
-                    EXPECT_DOUBLE_EQ(diffNll_analytical,0.0);
-                    EXPECT_DOUBLE_EQ(diffNll_analytical_alt,0.0);
-                }
-                else if (std::isnan(diffNll_numerical))
-                {
-                    EXPECT_TRUE(std::isnan(diffNll_analytical))<< 
-                        "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";;
-                    EXPECT_TRUE(std::isnan(diffNll_analytical_alt))<< 
-                        "analytical alternative ("<<diffNll_analytical_alt<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
-                }
-                else if (!std::isnan(diffNll_analytical) || !std::isnan(diffNll_analytical_alt))
-                {
-                    EXPECT_TRUE(std::fabs(diffNll_analytical-diffNll_numerical)<h)<< 
-                        "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
-                    EXPECT_TRUE(std::fabs(diffNll_analytical_alt-diffNll_numerical)<h)<< 
-                        "analytical alternative ("<<diffNll_analytical_alt<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
+                    Parameter& bb = *bbParameters[1];
+                    
+                    const double e = k*0.1+0.01;
+                    const double d = 1.0*j;
+                    const double b = -2.0+0.2*l;
+                    const double raw_p = 1.3*i;
+                    const double s = d*0.1+0.3*e+std::fabs(b);
+                    const double p = raw_p*s+b*std::fabs(e*s);
+                    
+                    nominalSignal.setContent(1,raw_p);
+                    nominalSignal.setError2(1,e*e);
+                    data.setContent(1,d);
+                    bb.setValue(b);
+                    strength.setValue(s);
+                    
+                    double diffNll_analytical = ll.getNLLDerivative(strength);
+                    double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({strength})[1];
+                    
+                    const double diffNll_numerical = d*raw_p/p-raw_p;
+                    
+                    if (d<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_DOUBLE_EQ(diffNll_analytical,0.0);
+                        EXPECT_DOUBLE_EQ(diffNll_analytical_alt,0.0);
+                    }
+                    else if (std::isnan(diffNll_numerical) || p<std::numeric_limits<double>::epsilon())
+                    {
+                        EXPECT_TRUE(std::isnan(diffNll_analytical)) << "Value is "<<diffNll_analytical<<" prediction="<<p;
+                        EXPECT_TRUE(std::isnan(diffNll_analytical_alt)) << "Value is "<<diffNll_analytical_alt<<" prediction="<<p;
+                    }
+                    else
+                    {
+                        EXPECT_FLOAT_EQ(diffNll_analytical,diffNll_numerical);
+                        EXPECT_FLOAT_EQ(diffNll_analytical_alt,diffNll_numerical);
+                    }
                 }
             }
         }
@@ -288,68 +333,56 @@ TEST(BinnedLikelihood, diffBB)
     HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
     
     Histogram data({Binning(1,-1,1)});
-    data.setError2(1,0.0);
     
     Likelihood ll = BinnedLikelihood(data.ref(),prediction);
     std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
-    EXPECT_EQ(bbParameters.size(),(unsigned int)3);
     
-    for (unsigned int i = 0; i < 2; ++i)
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        for (unsigned int j = 0; j < 2; ++j)
+        for (unsigned int j = 0; j < 10; ++j)
         {
-            for (unsigned int k = 0; k < 2; ++k)
-            {   
-                for (unsigned int l = 0; l < 2; ++l)
-                {   
-                  
+            for (unsigned int k = 0; k < 10; ++k)
+            {
+                for (unsigned int l = 0; l < 10; ++l)
+                {
                     Parameter& bb = *bbParameters[1];
                     
-                    const double s = k*0.1-0.1;
-                    const double d = 1.0*j-0.1;
-                    const double p = 0.1*i-0.1;
-                    const double b = 0;//-2.0+0.2*l;
+                    const double e = k*0.1+0.01;
+                    const double d = 1.0*j;
+                    const double b = -2.0+0.2*l;
+                    const double raw_p = 1.3*i;
+                    const double s = d*0.1+0.3*e+std::fabs(b);
+                    const double p = raw_p*s+b*std::fabs(e*s);
                     
-                    strength.setValue(s);
-                    nominalSignal.setContent(1,p);
+                    nominalSignal.setContent(1,raw_p);
+                    nominalSignal.setError2(1,e*e);
                     data.setContent(1,d);
                     bb.setValue(b);
+                    strength.setValue(s);
                     
                     double diffNll_analytical = ll.getNLLDerivative(bb);
                     double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({bb})[1];
                     
-                    const double h = 0.00001;
-                    bb.setValue(b-h);
-                    double nll1 = ll.getNLL();
+                    const double diffNll_numerical = d*e*s/p-e*s+b;
                     
-                    bb.setValue(b+h);
-                    double nll2 = ll.getNLL();
-
-                    double diffNll_numerical = (-0.5*nll1/h+0.5*nll2/h);
-
                     if (d<std::numeric_limits<double>::epsilon())
                     {
                         EXPECT_DOUBLE_EQ(diffNll_analytical,0.0);
                         EXPECT_DOUBLE_EQ(diffNll_analytical_alt,0.0);
                     }
-                    else if (std::isnan(diffNll_numerical))
+                    else if (std::isnan(diffNll_numerical) || p<std::numeric_limits<double>::epsilon())
                     {
-                        EXPECT_TRUE(std::isnan(diffNll_analytical))<< 
-                            "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";;
-                        EXPECT_TRUE(std::isnan(diffNll_analytical_alt))<< 
-                            "analytical alternative ("<<diffNll_analytical_alt<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
+                        EXPECT_TRUE(std::isnan(diffNll_analytical)) << "Value is "<<diffNll_analytical<<" prediction="<<p;
+                        EXPECT_TRUE(std::isnan(diffNll_analytical_alt)) << "Value is "<<diffNll_analytical_alt<<" prediction="<<p;
                     }
-                    else if (!std::isnan(diffNll_analytical) || !std::isnan(diffNll_analytical_alt))
+                    else
                     {
-                        EXPECT_TRUE(std::fabs(diffNll_analytical-diffNll_numerical)<(100.*h))<< 
-                            "analytical ("<<diffNll_analytical<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
-                        EXPECT_TRUE(std::fabs(diffNll_analytical_alt-diffNll_numerical)<(100.*h))<< 
-                            "analytical alternative ("<<diffNll_analytical_alt<<") does not equal numerical ("<<diffNll_numerical<<" = (-0.5*"<<nll1<<"+0.5*"<<nll2<<")/"<<h<<") differentiation result";
+                        EXPECT_FLOAT_EQ(diffNll_analytical,diffNll_numerical);
+                        EXPECT_FLOAT_EQ(diffNll_analytical_alt,diffNll_numerical);
                     }
                 }
             }
         }
     }
 }
-
 

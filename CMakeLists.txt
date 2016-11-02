@@ -33,6 +33,8 @@ include_directories(
     SYSTEM external/cpx/include
     SYSTEM external/vdt/include
     SYSTEM external/fadbad/include
+    
+    tests
 )
 
 add_subdirectory(external)
