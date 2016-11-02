@@ -2,6 +2,7 @@
 #define __MILAN_CORE_PARAMETER_H__
 
 #include "milan/core/Types.hh"
+#include "milan/core/Ptr.hh"
 
 #include <string>
 #include <limits>
@@ -60,6 +61,17 @@ class Parameter
         {
             return _name;
         }
+        
+        inline Ptr<Parameter> ref()
+        {
+            return Ptr<Parameter>(PtrStorage::SHARE,this);
+        }
+        
+        inline operator Ptr<Parameter>()
+        {
+            return ref();
+        }
+        
 };
 
 }

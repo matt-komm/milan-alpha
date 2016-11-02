@@ -15,10 +15,10 @@ class LikelihoodInterface
     public:
         virtual double getNLLDerivative(const Parameter& p) const = 0;
         virtual double getNLL() const = 0;
-        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& p) const = 0;
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const = 0;
         
         //returns pointers to potential lagrange parameters (e.g. for Barlow-Beeston) for additional minimizations
-        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const = 0;
+        virtual const std::vector<Ptr<Parameter>>& getLagrangeParameters() const = 0;
         
         virtual ~LikelihoodInterface()
         {

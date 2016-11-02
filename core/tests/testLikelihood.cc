@@ -17,24 +17,45 @@ TEST(BinnedLikelihood, create)
     data1.setContent(1,2.0);
     data1.setError2(1,1.0);
     
+    Histogram data_fake({Binning(2,-1,1)});
+    data_fake.setContent(1,2.0);
+    data_fake.setError2(1,1.0);
+    
     BinnedLikelihood bll1(data1.ref(),prediction1.ref());
     
+    EXPECT_ANY_THROW(BinnedLikelihood(data_fake,prediction1));
+    
     Likelihood ll1 = bll1.ref();
+    EXPECT_EQ(ll1.getLagrangeParameters().size(),prediction1.size());
     ll1.getNLL();
     
-    Histogram prediction2({Binning(1,-1,1)});
+    Histogram prediction2({Binning(10,-1,1)});
     prediction2.setContent(1,1.0);
     prediction2.setError2(1,0.0);
     
-    Histogram data2({Binning(1,-1,1)});
+    Histogram data2({Binning(10,-1,1)});
     data2.setContent(1,2.0);
     data2.setError2(1,1.0);
     
+    
     Likelihood ll2 = BinnedLikelihood(data2,prediction2.ref());
+    EXPECT_EQ(ll2.getLagrangeParameters().size(),prediction2.size());
     
-    Likelihood ll3 = ll1*ll2;
+    Histogram prediction3({Binning(5,-1,1),Binning(10,-1,1)});
+    prediction3.setContent(1,1.0);
+    prediction3.setError2(1,0.0);
     
-    ll3.getNLL();    
+    Histogram data3({Binning(5,-1,1),Binning(10,-1,1)});
+    data3.setContent(1,2.0);
+    data3.setError2(1,1.0);
+    Likelihood ll3 = BinnedLikelihood(data3,prediction3.ref()); 
+    EXPECT_EQ(ll3.getLagrangeParameters().size(),prediction3.size());
+    
+    Likelihood ll_tot1 = ll1*ll2;
+    EXPECT_EQ(ll_tot1.getLagrangeParameters().size(),ll1.getLagrangeParameters().size()+ll2.getLagrangeParameters().size());
+    
+    Likelihood ll_tot2 = ll1*ll2*ll3;
+    EXPECT_EQ(ll_tot2.getLagrangeParameters().size(),ll1.getLagrangeParameters().size()+ll2.getLagrangeParameters().size()+ll3.getLagrangeParameters().size());
 }
     
 void speed(unsigned int bins)
@@ -84,15 +105,26 @@ void speed(unsigned int bins)
     
     
     Likelihood tot_ll = ll1*ll2*ll3;
+    std::vector<Ptr<Parameter>> bbParameters = tot_ll.getLagrangeParameters();
+    std::cout<<"N(bb)="<<bbParameters.size()<<std::endl;
     
     std::cout<<"testing "<<bins<<" ...";
     double sum = 0.0;
     for (unsigned int toy = 0; toy < 10000; ++toy)
     {
+        //std::vector<double> res = tot_ll.getNLLValueAndDerivatives({signalStrength,backgroundStrength});
+        //double x = res[0]+res[1]+res[2];
+        
+        std::vector<double> res = tot_ll.getNLLValueAndDerivatives(bbParameters);
+        double x = res[0]+res[1];
+        /*
         double x = tot_ll.getNLL();
-        //x+=tot_ll.getNLLDerivative(signalStrength);    
-        //x+=tot_ll.getNLLDerivative(backgroundStrength);    
+        x+=tot_ll.getNLLDerivative(signalStrength);    
+        x+=tot_ll.getNLLDerivative(backgroundStrength);   
+        */
+         
         sum+=x;
+       
     }
     std::cout<<"done ("<<sum<<")"<<std::endl;
 }
@@ -147,7 +179,7 @@ TEST(BinnedLikelihood, counting)
             {
                 for (unsigned int l = 0; l < 10; ++l)
                 {
-                    Parameter& bb = *bbParameters[1];
+                    Ptr<Parameter> bb = bbParameters[1];
                     
                     const double e = k*0.1+0.01;
                     const double d = 1.0*j;
@@ -159,7 +191,7 @@ TEST(BinnedLikelihood, counting)
                     prediction.setContent(1,raw_p);
                     prediction.setError2(1,e*e);
                     data.setContent(1,d);
-                    bb.setValue(b);
+                    bb->setValue(b);
                     
                     const double nll = ll.getNLL();
                     const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
@@ -213,7 +245,7 @@ TEST(BinnedLikelihood, withParameter)
             {
                 for (unsigned int l = 0; l < 10; ++l)
                 {
-                    Parameter& bb = *bbParameters[1];
+                    Ptr<Parameter> bb = bbParameters[1];
                     
                     const double e = k*0.1+0.01;
                     const double d = 1.0*j;
@@ -225,7 +257,7 @@ TEST(BinnedLikelihood, withParameter)
                     nominalSignal.setContent(1,raw_p);
                     nominalSignal.setError2(1,e*e);
                     data.setContent(1,d);
-                    bb.setValue(b);
+                    bb->setValue(b);
                     strength.setValue(s);
                     
                     const double nll = ll.getNLL();
@@ -278,7 +310,7 @@ TEST(BinnedLikelihood, diffParameter)
             {
                 for (unsigned int l = 0; l < 10; ++l)
                 {
-                    Parameter& bb = *bbParameters[1];
+                    Ptr<Parameter> bb = bbParameters[1];
                     
                     const double e = k*0.1+0.01;
                     const double d = 1.0*j;
@@ -290,7 +322,7 @@ TEST(BinnedLikelihood, diffParameter)
                     nominalSignal.setContent(1,raw_p);
                     nominalSignal.setError2(1,e*e);
                     data.setContent(1,d);
-                    bb.setValue(b);
+                    bb->setValue(b);
                     strength.setValue(s);
                     
                     double diffNll_analytical = ll.getNLLDerivative(strength);
@@ -343,7 +375,7 @@ TEST(BinnedLikelihood, diffBB)
             {
                 for (unsigned int l = 0; l < 10; ++l)
                 {
-                    Parameter& bb = *bbParameters[1];
+                    Ptr<Parameter> bb = bbParameters[1];
                     
                     const double e = k*0.1+0.01;
                     const double d = 1.0*j;
@@ -355,7 +387,7 @@ TEST(BinnedLikelihood, diffBB)
                     nominalSignal.setContent(1,raw_p);
                     nominalSignal.setError2(1,e*e);
                     data.setContent(1,d);
-                    bb.setValue(b);
+                    bb->setValue(b);
                     strength.setValue(s);
                     
                     double diffNll_analytical = ll.getNLLDerivative(bb);

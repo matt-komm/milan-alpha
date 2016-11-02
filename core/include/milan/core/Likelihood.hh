@@ -46,7 +46,7 @@ class Likelihood:
             return *this;
         }
         
-        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
+        virtual const std::vector<Ptr<Parameter>>& getLagrangeParameters() const
         {
             return _llInterface->getLagrangeParameters();
         }
@@ -61,9 +61,9 @@ class Likelihood:
             return _llInterface->getNLLDerivative(p);
         }
         
-        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& p) const
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
         {
-            return _llInterface->getNLLValueAndDerivatives(p);
+            return _llInterface->getNLLValueAndDerivatives(parameters);
         }
         
         Likelihood operator*(const Likelihood& rhs) const;

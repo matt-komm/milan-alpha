@@ -52,7 +52,7 @@ class BinnedLikelihood:
             return _template;
         }
         
-        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
+        virtual const std::vector<Ptr<Parameter>>& getLagrangeParameters() const
         {
             return _bbParameters;
         }
@@ -158,7 +158,7 @@ class BinnedLikelihood:
             return diff_nll;
         }
         
-        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& parameters) const
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
         {
             std::vector<double> result(parameters.size()+1,0);
             const sizetype N = _template->size();
@@ -195,7 +195,7 @@ class BinnedLikelihood:
   
                 for (sizetype iparameter = 0; iparameter < parameters.size(); ++iparameter)
                 {
-                    const Parameter& p = parameters[iparameter];
+                    const Parameter& p = *parameters[iparameter];
                     if (p.getName().find(_bbPrefix)!=std::string::npos)
                     {
                         if (p==*_bbParameters[ibin])

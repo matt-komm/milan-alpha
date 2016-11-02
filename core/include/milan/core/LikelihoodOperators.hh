@@ -14,19 +14,20 @@ class MultiplyLikelihoodOperator:
         Ptr<const LikelihoodInterface> _lhs;
         Ptr<const LikelihoodInterface> _rhs;
         
+        std::vector<Ptr<Parameter>> _lagrangeParameters;
+        
     public:
         MultiplyLikelihoodOperator(const Ptr<const LikelihoodInterface>& lhs,const Ptr<const LikelihoodInterface>& rhs):
             _lhs(lhs),
             _rhs(rhs)
         {
+            std::copy(_lhs->getLagrangeParameters().begin(),_lhs->getLagrangeParameters().end(),std::back_inserter(_lagrangeParameters));
+            std::copy(_rhs->getLagrangeParameters().begin(),_rhs->getLagrangeParameters().end(),std::back_inserter(_lagrangeParameters));
         }
         
-        virtual std::vector<Ptr<Parameter>> getLagrangeParameters() const
-        {
-            std::vector<Ptr<Parameter>> parameters;
-            std::copy(_lhs->getLagrangeParameters().begin(),_lhs->getLagrangeParameters().end(),std::back_inserter(parameters));
-            std::copy(_rhs->getLagrangeParameters().begin(),_rhs->getLagrangeParameters().end(),std::back_inserter(parameters));
-            return parameters;
+        virtual const std::vector<Ptr<Parameter>>& getLagrangeParameters() const
+        {            
+            return _lagrangeParameters;
         }
         
         virtual double getNLL() const
@@ -39,10 +40,10 @@ class MultiplyLikelihoodOperator:
             return _lhs->getNLLDerivative(p)+_rhs->getNLLDerivative(p);
         }
         
-        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Parameter>& p) const
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
         {
-            std::vector<double> resultLhs(_lhs->getNLLValueAndDerivatives(p));
-            std::vector<double> resultRhs(_rhs->getNLLValueAndDerivatives(p));
+            std::vector<double> resultLhs(_lhs->getNLLValueAndDerivatives(parameters));
+            std::vector<double> resultRhs(_rhs->getNLLValueAndDerivatives(parameters));
             for (sizetype i = 0; i < resultLhs.size(); ++i)
             {
                 resultLhs[i]+=resultRhs[i];
