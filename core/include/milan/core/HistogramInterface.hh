@@ -20,6 +20,10 @@ class HistogramInterface
         virtual double getContent(sizetype index) const = 0;
         
         virtual double getDifferential(sizetype index, const Ptr<Parameter>& parameter) const = 0;
+        //TODO: implement also 
+        //virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
+        //however speedup may not be large
+        
         virtual double getError2(sizetype index) const = 0;
         
         //TODO: make binning const

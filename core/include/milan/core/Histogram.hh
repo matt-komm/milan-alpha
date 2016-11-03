@@ -222,6 +222,10 @@ class Histogram:
         {
             return copy();
         }
+        
+        virtual ~Histogram()
+        {
+        }
 };
 
 }

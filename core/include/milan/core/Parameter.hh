@@ -96,10 +96,6 @@ class Parameter:
             );
             return result;
         }
-        
-        virtual ~Parameter()
-        {
-        }
 };
 
 }

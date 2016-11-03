@@ -17,6 +17,10 @@ class FunctionInterface
         virtual double getValue() const = 0;
         virtual double getDifferential(const Ptr<Parameter>& parameter) const = 0;
         virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const = 0;
+
+        virtual ~FunctionInterface()
+        {
+        }
 };
 
 }
