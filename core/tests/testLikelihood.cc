@@ -181,7 +181,7 @@ TEST(BinnedLikelihood, counting)
                 {
                     Ptr<Parameter> bb = bbParameters[1];
                     
-                    const double e = k*0.1+0.01;
+                    const double e = k*0.1;
                     const double d = 1.0*j;
                     const double b = -2.0+0.2*l;
                     const double raw_p = 1.3*i;
@@ -247,7 +247,7 @@ TEST(BinnedLikelihood, withParameter)
                 {
                     Ptr<Parameter> bb = bbParameters[1];
                     
-                    const double e = k*0.1+0.01;
+                    const double e = k*0.1;
                     const double d = 1.0*j;
                     const double b = -2.0+0.2*l;
                     const double raw_p = 1.3*i;
@@ -312,7 +312,7 @@ TEST(BinnedLikelihood, diffParameter)
                 {
                     Ptr<Parameter> bb = bbParameters[1];
                     
-                    const double e = k*0.1+0.01;
+                    const double e = k*0.1;
                     const double d = 1.0*j;
                     const double b = -2.0+0.2*l;
                     const double raw_p = 1.3*i;
@@ -377,7 +377,7 @@ TEST(BinnedLikelihood, diffBB)
                 {
                     Ptr<Parameter> bb = bbParameters[1];
                     
-                    const double e = k*0.1+0.01;
+                    const double e = k*0.1;
                     const double d = 1.0*j;
                     const double b = -2.0+0.2*l;
                     const double raw_p = 1.3*i;
@@ -393,7 +393,8 @@ TEST(BinnedLikelihood, diffBB)
                     double diffNll_analytical = ll.getNLLDerivative(bb);
                     double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({bb})[1];
                     
-                    const double diffNll_numerical = d*e*s/p-e*s+b;
+                    //special case if e == 0 then BB is deactivated
+                    const double diffNll_numerical = e<std::numeric_limits<double>::epsilon()?0:d*e*s/p-e*s+b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {

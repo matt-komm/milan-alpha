@@ -71,7 +71,7 @@ class BinnedLikelihood:
                 }
             
                 const double raw_template = _template->getContent(ibin); //no BB variation
-                const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_template->getError2(ibin)));
+                const double error = std::sqrt(_template->getError2(ibin));
                 
                 const double bbValue = _bbParameters[ibin]->getValue();
                 const double prediction = raw_template+bbValue*error; //with BB variation
@@ -110,7 +110,8 @@ class BinnedLikelihood:
                 {
                     if (*parameter==*_bbParameters[ibin])
                     {
-                        const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_template->getError2(ibin)));
+                        const double error = std::sqrt(_template->getError2(ibin));
+                        
                         const double raw_template = _template->getContent(ibin); //no BB variation
                         const double bbValue = _bbParameters[ibin]->getValue();
                         const double prediction = raw_template+bbValue*error; //with BB variation
@@ -119,6 +120,12 @@ class BinnedLikelihood:
                         {
                             //cut off negative prediction, use infinity here since difference of finite values may be small again
                             return std::numeric_limits<double>::quiet_NaN();
+                        }
+                        
+                        if (error<std::numeric_limits<double>::epsilon())
+                        {
+                            //deactivate BB if error == 0
+                            continue;
                         }
                         
                         diff_nll+=data*error/prediction-error+bbValue;
@@ -132,7 +139,7 @@ class BinnedLikelihood:
                 else
                 {
                     
-                    const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_template->getError2(ibin)));
+                    const double error = std::sqrt(_template->getError2(ibin));
                     const double raw_template = _template->getContent(ibin); //no BB variation
                     const double bbValue = _bbParameters[ibin]->getValue();
                     const double prediction = raw_template+bbValue*error; //with BB variation
@@ -173,7 +180,7 @@ class BinnedLikelihood:
                 }
             
                 const double raw_template = _template->getContent(ibin); //no BB variation
-                const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_template->getError2(ibin)));
+                const double error = std::sqrt(_template->getError2(ibin));
                 
                 const double bbValue = _bbParameters[ibin]->getValue();
                 const double prediction = raw_template+bbValue*error; //with BB variation
@@ -198,6 +205,11 @@ class BinnedLikelihood:
                     const Ptr<Parameter>& parameter = parameters[iparameter];
                     if (parameter->getName().find(_bbPrefix)!=std::string::npos)
                     {
+                        if (error<std::numeric_limits<double>::epsilon())
+                        {
+                            //deactivate BB if error == 0
+                            continue;
+                        }
                         if (*parameter==*_bbParameters[ibin])
                         {
                             result[iparameter+1]+=data*error/prediction-error+bbValue;

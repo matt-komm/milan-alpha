@@ -1,5 +1,5 @@
-#ifndef __MILAN_CORE_HISTOGRAM_H__
-#define __MILAN_CORE_HISTOGRAM_H__
+#ifndef __MILAN_CORE_PARAMETRICHISTOGRAM_H__
+#define __MILAN_CORE_PARAMETRICHISTOGRAM_H__
 
 #include "milan/core/Types.hh"
 #include "milan/core/Binning.hh"
@@ -16,17 +16,16 @@
 namespace milan
 {
 
-class Histogram:
+class ParametericHistogram:
     public HistogramInterface,
     public PtrInterface<HistogramInterface,Histogram>
 {
     protected:
         std::vector<Binning> _binning;
         
-        std::vector<double> _content;
-        std::vector<double> _error2;
+        std::vector<Parameter> _content;
     public:
-        Histogram(const std::vector<Binning>& binning):
+        ParametericHistogram(const std::vector<Binning>& binning, const std::string& parameterNamePrefix):
             _binning(binning)
         {   
             sizetype N = 1;
@@ -36,36 +35,31 @@ class Histogram:
                 N*=_binning[idim].size()+2;
             }
             _content = std::vector<double>(N,0);
-            _error2 = std::vector<double>(N,0);
         }
         
-        Histogram(const Histogram& histogram):
+        ParametericHistogram(const ParametericHistogram& histogram):
             _binning(histogram._binning),
-            _content(histogram._content),
-            _error2(histogram._error2)
+            _content(histogram._content)
         {
         }
         
-        Histogram& operator=(const Histogram& histogram)
+        ParametericHistogram& operator=(const ParametericHistogram& histogram)
         {
             _binning = histogram._binning;
             _content = histogram._content;
-            _error2 = histogram._error2;
             return *this;
         }
         
-        Histogram(Histogram&& histogram):
+        ParametericHistogram(ParametericHistogram&& histogram):
             _binning(std::move(histogram._binning)),
-            _content(std::move(histogram._content)),
-            _error2(std::move(histogram._error2))
+            _content(std::move(histogram._content))
         {
         }
         
-        Histogram& operator=(Histogram&& histogram)
+        ParametericHistogram& operator=(ParametericHistogram&& histogram)
         {
             _binning = std::move(histogram._binning);
             _content = std::move(histogram._content);
-            _error2 = std::move(histogram._error2);
             return *this;
         }
         
@@ -81,12 +75,12 @@ class Histogram:
         
         inline void setContent(const std::vector<sizetype>& index, const double& value)
         {
-            _content[getGlobalBinFromIndex(index)] = value;
+            _content[getGlobalBinFromIndex(index)]->setValue(value);
         }
         
         inline void setContent(const sizetype& globalIndex, const double& value)
         {
-            _content[globalIndex] = value;
+            _content[globalIndex]->setValue(value);
         }
         
         inline double getError(const std::vector<sizetype>& index) const
@@ -171,7 +165,7 @@ class Histogram:
         
         virtual double getError2(sizetype index) const
         {
-            return std::max(0.0,_error2[index]);
+            return _error2[index];
         }
         
         Histogram operator+(const Histogram& rhs) const
