@@ -35,9 +35,9 @@ class MultiplyLikelihoodOperator:
             return _lhs->getNLL()+_rhs->getNLL();
         }
         
-        virtual double getNLLDerivative(const Parameter& p) const
+        virtual double getNLLDerivative(const Ptr<Parameter>& parameter) const
         {
-            return _lhs->getNLLDerivative(p)+_rhs->getNLLDerivative(p);
+            return _lhs->getNLLDerivative(parameter)+_rhs->getNLLDerivative(parameter);
         }
         
         virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const

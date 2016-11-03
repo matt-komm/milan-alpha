@@ -13,7 +13,7 @@ class LikelihoodInterface
 {
     protected:
     public:
-        virtual double getNLLDerivative(const Parameter& p) const = 0;
+        virtual double getNLLDerivative(const Ptr<Parameter>& parameter) const = 0;
         virtual double getNLL() const = 0;
         virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const = 0;
         

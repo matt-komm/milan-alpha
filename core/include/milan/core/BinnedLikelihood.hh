@@ -92,7 +92,7 @@ class BinnedLikelihood:
             return nll;
         }
         
-        virtual double getNLLDerivative(const Parameter& p) const
+        virtual double getNLLDerivative(const Ptr<Parameter>& parameter) const
         {
             const sizetype N = _template->size();
             double diff_nll = 0;
@@ -106,9 +106,9 @@ class BinnedLikelihood:
                     continue;
                 }
                 
-                if (p.getName().find(_bbPrefix)!=std::string::npos)
+                if (parameter->getName().find(_bbPrefix)!=std::string::npos)
                 {
-                    if (p==*_bbParameters[ibin])
+                    if (*parameter==*_bbParameters[ibin])
                     {
                         const double error = std::max(std::numeric_limits<double>::epsilon(),std::sqrt(_template->getError2(ibin)));
                         const double raw_template = _template->getContent(ibin); //no BB variation
@@ -144,7 +144,7 @@ class BinnedLikelihood:
                     }
                     
                     //this will be 0 if p is a bb parameter of a different ll
-                    const double raw_template_diff = _template->getDifferential(ibin,p);
+                    const double raw_template_diff = _template->getDifferential(ibin,parameter);
                     
                     
                     diff_nll+=data*raw_template_diff/prediction-raw_template_diff;
@@ -195,10 +195,10 @@ class BinnedLikelihood:
   
                 for (sizetype iparameter = 0; iparameter < parameters.size(); ++iparameter)
                 {
-                    const Parameter& p = *parameters[iparameter];
-                    if (p.getName().find(_bbPrefix)!=std::string::npos)
+                    const Ptr<Parameter>& parameter = parameters[iparameter];
+                    if (parameter->getName().find(_bbPrefix)!=std::string::npos)
                     {
-                        if (p==*_bbParameters[ibin])
+                        if (*parameter==*_bbParameters[ibin])
                         {
                             result[iparameter+1]+=data*error/prediction-error+bbValue;
                             if (std::isinf(result[iparameter+1]) || std::isnan(result[iparameter+1]))
@@ -210,7 +210,7 @@ class BinnedLikelihood:
                     }
                     else
                     {
-                        const double raw_template_diff = _template->getDifferential(ibin,p);
+                        const double raw_template_diff = _template->getDifferential(ibin,parameter);
                         result[iparameter+1]+=data*raw_template_diff/prediction-raw_template_diff;
                         if (std::isinf(result[iparameter+1]) || std::isnan(result[iparameter+1]))
                         {

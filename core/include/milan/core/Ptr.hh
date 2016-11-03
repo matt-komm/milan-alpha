@@ -134,16 +134,6 @@ class Ptr
             return _data!=nullptr;
         }
         
-        inline operator TYPE&()
-        {
-            return *_data;
-        }
-        
-        inline operator const TYPE&() const
-        {
-            return *_data;
-        }
-        
         inline void reset(TYPE* data=nullptr)
         {
             if ((*_refs)==1)

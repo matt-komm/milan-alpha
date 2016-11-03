@@ -164,7 +164,7 @@ class Histogram:
             return _content[index];
         }
         
-        virtual double getDifferential(sizetype, const Parameter&) const
+        virtual double getDifferential(sizetype, const Ptr<Parameter>&) const
         {
             return 0.0;
         }
