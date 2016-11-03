@@ -3,14 +3,17 @@
 
 #include "milan/core/Types.hh"
 #include "milan/core/Ptr.hh"
+#include "milan/core/FunctionInterface.hh"
 
 #include <string>
 #include <limits>
+#include <algorithm>
 
 namespace milan
 {
 
-class Parameter
+class Parameter:
+    public FunctionInterface
 {
     public:
         constexpr static double MIN = std::numeric_limits<float64>::lowest();
@@ -30,11 +33,6 @@ class Parameter
             _max(max),
             _step(step)
         {
-        }
-        
-        inline double getValue() const
-        {
-            return _value;
         }
         
         inline void setValue(double value)
@@ -72,6 +70,36 @@ class Parameter
             return ref();
         }
         
+        
+        virtual double getValue() const
+        {
+            return _value;
+        }
+        
+        virtual double getDifferential(const Ptr<Parameter>& parameter) const
+        {
+            return *parameter==*this?1:0;
+        }
+        
+        virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
+        {
+            std::vector<double> result(parameters.size()+1,0);
+            result[0]=_value;
+            std::transform(
+                parameters.begin(),
+                parameters.end(),
+                result.begin(), 
+                [this](const Ptr<Parameter>& p)
+                { 
+                    return this->getDifferential(p);
+                }
+            );
+            return result;
+        }
+        
+        virtual ~Parameter()
+        {
+        }
 };
 
 }
