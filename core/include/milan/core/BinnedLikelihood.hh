@@ -28,7 +28,7 @@ class BinnedLikelihood:
             _data(data.getPtr()),
             _template(prediction.getPtr()),
             _bbParameters(data.size()),
-            _bbPrefix(std::to_string((sizetype)this)+"@bb") 
+            _bbPrefix(std::to_string((sizetype)this)+"bb@bin") 
         {
             if (data.getBinningVector()!=prediction.getBinningVector())
             {

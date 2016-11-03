@@ -68,6 +68,8 @@ TEST(Binning, wrong_binning)
     
     EXPECT_ANY_THROW(Binning({10,11,12,13.5,13}));
     EXPECT_ANY_THROW(Binning({10,11,13,12,13.5})); 
+    
+    EXPECT_ANY_THROW(Binning({}));
 }
 
 TEST(Binning, compare)

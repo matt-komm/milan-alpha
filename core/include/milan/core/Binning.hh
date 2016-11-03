@@ -39,6 +39,10 @@ class Binning
         Binning(const std::initializer_list<double> binEdges):
             _binEdges(binEdges)
         {
+            if (binEdges.size()==0)
+            {
+                milan_throw("Binning scheme with 0 bins is meaningless");
+            }
             for (sizetype ibin = 0; ibin < _binEdges.size()-1; ++ibin)
             {
                 if (_binEdges[ibin]>=_binEdges[ibin+1])

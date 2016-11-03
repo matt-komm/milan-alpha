@@ -13,6 +13,13 @@ add_gtest(
 )
 
 add_gtest(
+    NAME milan-core-ParametricHistogram 
+    SOURCES testParametricHistogram.cc
+    LIBRARIES milan-core
+    #DEPS
+)
+
+add_gtest(
     NAME milan-core-HistogramFunction
     SOURCES testHistogramFunction.cc
     LIBRARIES milan-core
@@ -39,7 +46,6 @@ add_gtest(
     LIBRARIES vdt
     #DEPS
 )
-
 
 add_gtest(
     NAME milan-core-MLFitter
