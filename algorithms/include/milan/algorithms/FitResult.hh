@@ -1,5 +1,5 @@
-#ifndef __MILAN_CORE_FITRESULT_H__
-#define __MILAN_CORE_FITRESULT_H__
+#ifndef __MILAN_ALGORITHMS_FITRESULT_H__
+#define __MILAN_ALGORITHMS_FITRESULT_H__
 
 #include "milan/core/Types.hh"
 

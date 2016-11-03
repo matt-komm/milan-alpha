@@ -1,11 +1,11 @@
-#ifndef __MILAN_CORE_MLFITTER_H__
-#define __MILAN_CORE_MLFITTER_H__
+#ifndef __MILAN_ALGORITHMS_MLFITTER_H__
+#define __MILAN_ALGORITHMS_MLFITTER_H__
 
 #include "milan/core/Types.hh"
 #include "milan/core/LikelihoodInterface.hh"
 #include "milan/core/Ptr.hh"
 #include "milan/core/Parameter.hh"
-#include "milan/core/FitResult.hh"
+#include "milan/algorithms/FitResult.hh"
 
 #include <vector>
 

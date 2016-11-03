@@ -38,10 +38,12 @@ include_directories(
 add_subdirectory(external)
 
 include_directories(core/include)
+include_directories(algorithms/include)
 include_directories(operators/include)
 include_directories(plugins/include)
 
 add_subdirectory(core)
+add_subdirectory(algorithms)
 add_subdirectory(operators)
 add_subdirectory(plugins)
 

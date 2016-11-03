@@ -95,6 +95,7 @@ HistogramFunction HistogramFunction::operator+(const HistogramFunction& rhs) con
     return res;
 }
 
+//TODO: change Parameter -> FunctionInterface
 HistogramFunction HistogramFunction::operator*(const Parameter& parameter) const
 {
     ParameterHistogramMultiplicationOperator* op = new ParameterHistogramMultiplicationOperator(

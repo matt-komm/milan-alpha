@@ -1,4 +1,4 @@
-#include "milan/core/MLFitter.hh"
+#include "milan/algorithms/MLFitter.hh"
 
 #include "gtest/gtest.h"
 

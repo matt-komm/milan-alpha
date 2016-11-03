@@ -1,5 +1,5 @@
-#ifndef __MILAN_CORE_HMC_H__
-#define __MILAN_CORE_HMC_H__
+#ifndef __MILAN_ALGORITHMS_HMC_H__
+#define __MILAN_ALGORITHMS_HMC_H__
 
 #include "milan/core/Types.hh"
 

@@ -1,5 +1,5 @@
-#ifndef __MILAN_OPERATORS_PROJECTION_H__
-#define __MILAN_OPERATORS_PROJECTION_H__
+#ifndef __MILAN_OPERATORS_LIFTING_H__
+#define __MILAN_OPERATORS_LIFTING_H__
 
 #include "milan/core/Types.hh"
 #include "milan/core/Histogram.hh"
@@ -9,14 +9,14 @@
 namespace milan
 {
 
-class Projection:
+class Lifting: //will make a higher dimensional histogram given N lower ones using provided binning for the new axis
     public HistogramInterface
 {
     protected:
         const Ptr<const HistogramInterface>& _src;
         const std::vector<sizetype>& _axes;
     public:
-        Projection(const Ptr<const HistogramInterface>& src, const std::vector<sizetype>& axes):
+        Lifting(const Binning& binning, const std::vector<Ptr<const HistogramInterface>>& src):
             _src(src),
             _axes(axes)
         {
