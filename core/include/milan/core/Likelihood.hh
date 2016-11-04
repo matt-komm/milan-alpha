@@ -66,6 +66,11 @@ class Likelihood:
             return _llInterface->getNLLValueAndDerivatives(parameters);
         }
         
+        inline const Ptr<const LikelihoodInterface> getPtr() const
+        {
+            return _llInterface;
+        }
+        
         Likelihood operator*(const Likelihood& rhs) const;
         
         

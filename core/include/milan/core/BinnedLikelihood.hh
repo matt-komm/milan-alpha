@@ -2,6 +2,7 @@
 #define __MILAN_CORE_BINNEDLIKELIHOOD_H__
 
 #include "milan/core/LikelihoodInterface.hh"
+#include "milan/core/Likelihood.hh"
 #include "milan/core/HistogramFunction.hh"
 #include "milan/core/Ptr.hh"
 #include "milan/core/Types.hh"
@@ -82,7 +83,8 @@ class BinnedLikelihood:
                     return std::numeric_limits<double>::quiet_NaN();
                 }
                 
-                nll+=data*vdt::fast_log(prediction)-prediction+0.5*bbValue*bbValue; //Gaussian prior with width=1
+                nll+=prediction-data*vdt::fast_log(prediction);
+                nll+=0.5*bbValue*bbValue; //Gaussian prior with width=1
                 
                 if (std::isinf(nll) || std::isnan(nll))
                 {
@@ -127,8 +129,7 @@ class BinnedLikelihood:
                             //deactivate BB if error == 0
                             continue;
                         }
-                        
-                        diff_nll+=data*error/prediction-error+bbValue;
+                        diff_nll+=-data*error/prediction+error-bbValue;
                         
                         if (std::isinf(diff_nll) || std::isnan(diff_nll)) 
                         {
@@ -153,8 +154,7 @@ class BinnedLikelihood:
                     //this will be 0 if p is a bb parameter of a different ll
                     const double raw_template_diff = _template->getDifferential(ibin,parameter);
                     
-                    
-                    diff_nll+=data*raw_template_diff/prediction-raw_template_diff;
+                    diff_nll+=-data*raw_template_diff/prediction+raw_template_diff;
                     
                     if (std::isinf(diff_nll) || std::isnan(diff_nll))
                     {
@@ -169,7 +169,6 @@ class BinnedLikelihood:
         {
             std::vector<double> result(parameters.size()+1,0);
             const sizetype N = _template->size();
-            
             
             for (sizetype ibin = 0; ibin < N; ++ibin)
             {
@@ -192,7 +191,8 @@ class BinnedLikelihood:
                     return result;
                 } 
                 
-                result[0]+=data*vdt::fast_log(prediction)-prediction+0.5*bbValue*bbValue; //Gaussian prior with width=1
+                result[0]+=prediction-data*vdt::fast_log(prediction);
+                result[0]+=0.5*bbValue*bbValue; //Gaussian prior with width=1
                 
                 if (std::isinf(result[0]) || std::isnan(result[0]))
                 {
@@ -212,7 +212,7 @@ class BinnedLikelihood:
                         }
                         if (*parameter==*_bbParameters[ibin])
                         {
-                            result[iparameter+1]+=data*error/prediction-error+bbValue;
+                            result[iparameter+1]+=-data*error/prediction+error-bbValue;
                             if (std::isinf(result[iparameter+1]) || std::isnan(result[iparameter+1]))
                             {
                                 for (sizetype i = 0; i < result.size(); ++i) result[i]=std::numeric_limits<double>::quiet_NaN();
@@ -223,7 +223,7 @@ class BinnedLikelihood:
                     else
                     {
                         const double raw_template_diff = _template->getDifferential(ibin,parameter);
-                        result[iparameter+1]+=data*raw_template_diff/prediction-raw_template_diff;
+                        result[iparameter+1]+=-data*raw_template_diff/prediction+raw_template_diff;
                         if (std::isinf(result[iparameter+1]) || std::isnan(result[iparameter+1]))
                         {
                             for (sizetype i = 0; i < result.size(); ++i) result[i]=std::numeric_limits<double>::quiet_NaN();

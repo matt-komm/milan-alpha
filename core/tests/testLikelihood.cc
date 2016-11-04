@@ -196,7 +196,7 @@ TEST(BinnedLikelihood, counting)
                     const double nll = ll.getNLL();
                     const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
                     
-                    const double num_nll = d*vdt::fast_log(p)-p+0.5*b*b;
+                    const double num_nll = -d*vdt::fast_log(p)+p+0.5*b*b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {
@@ -263,7 +263,7 @@ TEST(BinnedLikelihood, withParameter)
                     const double nll = ll.getNLL();
                     const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
                     
-                    const double num_nll = d*vdt::fast_log(p)-p+0.5*b*b;
+                    const double num_nll = -d*vdt::fast_log(p)+p+0.5*b*b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {
@@ -328,7 +328,7 @@ TEST(BinnedLikelihood, diffParameter)
                     double diffNll_analytical = ll.getNLLDerivative(strength);
                     double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({strength})[1];
                     
-                    const double diffNll_numerical = d*raw_p/p-raw_p;
+                    const double diffNll_numerical = -d*raw_p/p+raw_p;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {
@@ -394,7 +394,7 @@ TEST(BinnedLikelihood, diffBB)
                     double diffNll_analytical_alt = ll.getNLLValueAndDerivatives({bb})[1];
                     
                     //special case if e == 0 then BB is deactivated
-                    const double diffNll_numerical = e<std::numeric_limits<double>::epsilon()?0:d*e*s/p-e*s+b;
+                    const double diffNll_numerical = e<std::numeric_limits<double>::epsilon()?0:-d*e*s/p+e*s-b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {
