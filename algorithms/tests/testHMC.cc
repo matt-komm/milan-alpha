@@ -170,11 +170,11 @@ TEST(HMC, speed)
     double mean2 = 0.0;
     for (unsigned int i = 0; i < BURN; ++i)
     {
-        hmc.step(ll.getPtr(),10);
+        hmc.step(ll.getPtr(),1);
     }
     for (unsigned int i = 0; i < TOYS; ++i)
     {
-        if (hmc.step(ll.getPtr(),10)) accepted++;
+        if (hmc.step(ll.getPtr(),1)) accepted++;
         mean+=signalYield.getValue();
         mean2+=signalYield.getValue()*signalYield.getValue();
     }
