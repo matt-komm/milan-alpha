@@ -6,7 +6,7 @@
 #include "milan/core/BinnedLikelihood.hh"
 
 #include "gtest/gtest.h"
-
+/*
 #include "TH1F.h"
 #include "TGraph.h"
 #include "TCanvas.h"
@@ -14,7 +14,7 @@
 #include "TColor.h"
 #include "Rtypes.h"
 #include "TF1.h"
-
+*/
 TEST(HMC, construction)
 {
     using namespace milan;

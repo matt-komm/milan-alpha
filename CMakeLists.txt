@@ -39,11 +39,11 @@ include_directories(
     SYSTEM external/fadbad/include
 )
 
-find_package(ROOT)
-if (ROOT_FOUND)
-    message(STATUS ${ROOT_INCLUDE_DIR})
-    include_directories(SYSTEM ${ROOT_INCLUDE_DIR})
-endif (ROOT_FOUND)
+#find_package(ROOT)
+#if (ROOT_FOUND)
+#    message(STATUS ${ROOT_INCLUDE_DIR})
+#    include_directories(SYSTEM ${ROOT_INCLUDE_DIR})
+#endif (ROOT_FOUND)
 
 add_subdirectory(external)
 
