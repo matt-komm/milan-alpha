@@ -64,9 +64,9 @@ TEST(HistogramFunction, assign)
     
     Parameter p1("p1",2);
     Parameter p2("p1",3);
-    histFct4 = histFct4*p1;
+    histFct4 = histFct4*p1.ref();
     EXPECT_DOUBLE_EQ(histFct4.getContent(1),22);
-    histFct4 = histFct4*p1*p2;
+    histFct4 = histFct4*p1.ref()*p2.ref();
     EXPECT_DOUBLE_EQ(histFct4.getContent(1),132);
     
     p1.setValue(1);
@@ -94,13 +94,13 @@ TEST(HistogramFunction, precendence)
     HistogramFunction1D histFct1 = hist1.ref();
     HistogramFunction1D histFct2 = hist2.ref();
     
-    HistogramFunction1D result1 = histFct1+histFct2*p1;
+    HistogramFunction1D result1 = histFct1+histFct2*p1.ref();
     EXPECT_DOUBLE_EQ(result1.getContent(1),5);
     
-    HistogramFunction1D result2 = histFct1*p1+histFct2;
+    HistogramFunction1D result2 = histFct1*p1.ref()+histFct2;
     EXPECT_DOUBLE_EQ(result2.getContent(1),4);
     
-    HistogramFunction1D result3 = (histFct1+histFct2)*p1;
+    HistogramFunction1D result3 = (histFct1+histFct2)*p1.ref();
     EXPECT_DOUBLE_EQ(result3.getContent(1),6);
 }
 
@@ -124,15 +124,15 @@ TEST(HistogramFunction, diff)
     HistogramFunction1D histFct1 = hist1.ref();
     HistogramFunction1D histFct2 = hist2.ref();
     
-    HistogramFunction1D result1 = histFct1+histFct2*p1; //1+2*p
+    HistogramFunction1D result1 = histFct1+histFct2*p1.ref(); //1+2*p
     EXPECT_DOUBLE_EQ(result1.getDifferential(1,p1),2);
     
-    HistogramFunction1D result2 = histFct1*p1+histFct2; //1*p+2
+    HistogramFunction1D result2 = histFct1*p1.ref()+histFct2; //1*p+2
     EXPECT_DOUBLE_EQ(result2.getDifferential(1,p1),1);
     
-    HistogramFunction1D result3 = histFct1*p1+histFct2*p1; //1*p+2*p
+    HistogramFunction1D result3 = histFct1*p1.ref()+histFct2*p1.ref(); //1*p+2*p
     EXPECT_DOUBLE_EQ(result3.getDifferential(1,p1),3);
     
-    HistogramFunction1D result4 = histFct1*p1+histFct2*p1*p1; //1*p+2*p*p
+    HistogramFunction1D result4 = histFct1*p1.ref()+histFct2*p1.ref()*p1.ref(); //1*p+2*p*p
     EXPECT_DOUBLE_EQ(result4.getDifferential(1,p1),13); //-> 1 + 2*2*p = 1+2*2*3=13
 }

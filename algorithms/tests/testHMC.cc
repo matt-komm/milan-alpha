@@ -147,7 +147,7 @@ TEST(HMC, speed)
     Histogram signalTemplate({Binning(N,-1,1)});
     for (unsigned int i = 0; i < N; ++i) signalTemplate.setContent(i+1,1);
     for (unsigned int i = 0; i < N; ++i) signalTemplate.setError2(i+1,0.0);
-    HistogramFunction signalPrediction = HistogramFunction(signalTemplate.ref())*signalYield;
+    HistogramFunction signalPrediction = HistogramFunction(signalTemplate.ref())*signalYield.ref();
     
     BinnedLikelihood bll(dataFct,signalPrediction);
     

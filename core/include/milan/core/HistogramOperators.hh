@@ -3,6 +3,7 @@
 
 #include "milan/core/Types.hh"
 #include "milan/core/HistogramInterface.hh"
+#include "milan/core/FunctionInterface.hh"
 #include "milan/core/Parameter.hh"
 #include "milan/core/Ptr.hh"
 
@@ -17,7 +18,10 @@ class HistogramAddOperator:
         const Ptr<const HistogramInterface> _rhs;
         
     public:
-        HistogramAddOperator(const Ptr<const HistogramInterface>& lhs, const Ptr<const HistogramInterface>& rhs):
+        HistogramAddOperator(
+            const Ptr<const HistogramInterface>& lhs, 
+            const Ptr<const HistogramInterface>& rhs
+        ):
             _lhs(lhs),
             _rhs(rhs)
         {
@@ -58,19 +62,21 @@ class ParameterHistogramMultiplicationOperator:
 {
     protected:
         const Ptr<const HistogramInterface> _histogram;
-        const Ptr<const Parameter> _parameter;
-        
+        const Ptr<const FunctionInterface> _function;
         
     public:
-        ParameterHistogramMultiplicationOperator(const Ptr<const HistogramInterface>& histogram,const Ptr<const Parameter>& parameter):
+        ParameterHistogramMultiplicationOperator(
+            const Ptr<const HistogramInterface>& histogram,
+            const Ptr<const FunctionInterface>& function
+        ):
             _histogram(histogram),
-            _parameter(parameter)
+            _function(function)
         {
         }
         
         virtual sizetype size() const
         {
-            return _histogram.get()->size();
+            return _histogram->size();
         }
         
         virtual const std::vector<Binning>& getBinningVector() const
@@ -80,24 +86,22 @@ class ParameterHistogramMultiplicationOperator:
         
         virtual double getContent(sizetype index) const
         {
-            return _histogram.get()->getContent(index)*_parameter.get()->getValue();
+            return _histogram.get()->getContent(index)*_function->getValue();
         }
         
         virtual double getDifferential(sizetype index, const Ptr<Parameter>& parameter) const
         {
-            if (*parameter==(*_parameter.get()))
-            {
-                return _histogram->getContent(index)+parameter->getValue()*_histogram->getDifferential(index,parameter);
-            }
-            else
-            {
-                return parameter->getValue()*_histogram->getDifferential(index,parameter);
-            }
+            double result = 0;
+            const double histContent = _histogram->getContent(index);
+            const double functionValue = _function->getValue();
+            if (histContent>0) result+=_function->getDifferential(parameter)*histContent;
+            if (functionValue>0) result+=functionValue*_histogram->getDifferential(index,parameter);
+            return result;
         }
         
         virtual double getError2(sizetype index) const
         {
-            return _histogram.get()->getError2(index)*_parameter.get()->getValue()*_parameter.get()->getValue();
+            return _histogram->getError2(index)*_function->getValue()*_function->getValue();
         }
 };
 

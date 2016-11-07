@@ -64,14 +64,14 @@ void speed(unsigned int bins)
     Parameter signalStrength("mu",1.0);
     
     Histogram signalTemplate({Binning(bins,-1,1)});
-    HistogramFunction signalPrediction = HistogramFunction(signalTemplate.ref())*signalStrength;
+    HistogramFunction signalPrediction = HistogramFunction(signalTemplate.ref())*signalStrength.ref();
     Histogram data1({Binning(bins,-1,1)});
     Likelihood ll1 = BinnedLikelihood(data1.ref(),signalPrediction);
     
     Parameter backgroundStrength("bg",1.0);
     
     Histogram backgroundTemplate({Binning(bins,-1,1)});
-    HistogramFunction backgroundPrediction = HistogramFunction(backgroundTemplate.ref())*backgroundStrength;
+    HistogramFunction backgroundPrediction = HistogramFunction(backgroundTemplate.ref())*backgroundStrength.ref();
     Histogram data2({Binning(bins,-1,1)});
     Likelihood ll2 = BinnedLikelihood(data2.ref(),backgroundPrediction);
     
@@ -229,7 +229,7 @@ TEST(BinnedLikelihood, withParameter)
     Histogram nominalSignal({Binning(1,-1,1)});
     nominalSignal.setError2(0,1.0);
     
-    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
+    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength.ref();
     
     Histogram data({Binning(1,-1,1)});
     data.setError2(0,1.0);
@@ -295,7 +295,7 @@ TEST(BinnedLikelihood, diffParameter)
     Histogram nominalSignal({Binning(1,-1,1)});
     nominalSignal.setError2(1,1.0);
     
-    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
+    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength.ref();
     
     Histogram data({Binning(1,-1,1)});
     
@@ -360,7 +360,7 @@ TEST(BinnedLikelihood, diffBB)
     Histogram nominalSignal({Binning(1,-1,1)});
     nominalSignal.setError2(1,1.0);
     
-    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength;
+    HistogramFunction prediction = HistogramFunction(nominalSignal.ref())*strength.ref();
     
     Histogram data({Binning(1,-1,1)});
     

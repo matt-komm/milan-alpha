@@ -5,6 +5,7 @@
 #include "milan/core/HistogramInterface.hh"
 #include "milan/core/HistogramOperators.hh"
 #include "milan/core/Ptr.hh"
+#include "milan/core/Function.hh"
 
 #include <iostream>
 #include <memory>
@@ -86,7 +87,7 @@ class HistogramFunction:
         
         
         HistogramFunction operator+(const HistogramFunction& rhs) const;
-        HistogramFunction operator*(const Parameter& rhs) const;
+        HistogramFunction operator*(const Function& rhs) const;
 };
 
 HistogramFunction HistogramFunction::operator+(const HistogramFunction& rhs) const
@@ -99,12 +100,11 @@ HistogramFunction HistogramFunction::operator+(const HistogramFunction& rhs) con
     return res;
 }
 
-//TODO: change Parameter -> FunctionInterface
-HistogramFunction HistogramFunction::operator*(const Parameter& parameter) const
+HistogramFunction HistogramFunction::operator*(const Function& rhs) const
 {
     ParameterHistogramMultiplicationOperator* op = new ParameterHistogramMultiplicationOperator(
-        this->_histFct,
-        Ptr<const Parameter>(PtrStorage::SHARE,&parameter)
+        this->getPtr(),
+        rhs.getPtr()
     );
     Ptr<const HistogramInterface> res(PtrStorage::OWN,op);
     return res;
