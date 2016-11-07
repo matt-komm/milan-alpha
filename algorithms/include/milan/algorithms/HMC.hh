@@ -38,6 +38,11 @@ class HMC
             return _parameters;
         }
         
+        inline void addParameter(Parameter& parameter)
+        {
+            addParameter(Ptr<Parameter>(PtrStorage::SHARE,&parameter));
+        }
+        
         inline void addParameter(const Ptr<Parameter>& parameter)
         {
             for (sizetype i = 0; i < _parameters.size(); ++i)

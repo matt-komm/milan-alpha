@@ -19,9 +19,12 @@ namespace milan
     }
 }
 
-
-#define milan_throw(...) \
-    std::stringstream ss; milan::expandArgs(ss,__VA_ARGS__); throw std::runtime_error(ss.str());
+template<class... ARGS> static void milan_throw(ARGS... args)
+{
+    std::stringstream ss;
+    milan::expandArgs(ss,args...);
+    throw std::runtime_error(ss.str());
+}
 
 
 #endif

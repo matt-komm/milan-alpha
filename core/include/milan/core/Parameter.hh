@@ -13,7 +13,8 @@ namespace milan
 {
 
 class Parameter:
-    public FunctionInterface
+    public FunctionInterface,
+    public PtrInterface<FunctionInterface,Parameter>
 {
     public:
         constexpr static double MIN = std::numeric_limits<float64>::lowest();
@@ -60,17 +61,6 @@ class Parameter:
             return _name;
         }
         
-        inline Ptr<Parameter> ref()
-        {
-            return Ptr<Parameter>(PtrStorage::SHARE,this);
-        }
-        
-        inline operator Ptr<Parameter>()
-        {
-            return ref();
-        }
-        
-        
         virtual double getValue() const
         {
             return _value;
@@ -79,6 +69,11 @@ class Parameter:
         virtual double getDifferential(const Ptr<Parameter>& parameter) const
         {
             return *parameter==*this?1:0;
+        }
+        
+        operator const Ptr<Parameter>()
+        {
+            return Ptr<Parameter>(PtrStorage::SHARE,this);
         }
         
         virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const

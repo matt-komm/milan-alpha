@@ -25,13 +25,13 @@ TEST(HMC, construction)
     Parameter p3("background");
     
     EXPECT_EQ(hmc.getParameters().size(),0);
-    hmc.addParameter(p1.ref());
+    hmc.addParameter(p1);
     EXPECT_EQ(hmc.getParameters().size(),1);
-    EXPECT_ANY_THROW(hmc.addParameter(p1.ref()));
+    EXPECT_ANY_THROW(hmc.addParameter(p1));
     EXPECT_EQ(hmc.getParameters().size(),1);
-    hmc.addParameter(p2.ref());
+    hmc.addParameter(p2);
     EXPECT_EQ(hmc.getParameters().size(),2);
-    EXPECT_ANY_THROW(hmc.addParameter(p3.ref()));
+    EXPECT_ANY_THROW(hmc.addParameter(p3));
     EXPECT_EQ(hmc.getParameters().size(),2);
 }
 

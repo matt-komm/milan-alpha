@@ -41,6 +41,13 @@ add_gtest(
 )
 
 add_gtest(
+    NAME milan-core-Function
+    SOURCES testFunction.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
+
+add_gtest(
     NAME milan-core-Likelihood
     SOURCES testLikelihood.cc
     LIBRARIES vdt

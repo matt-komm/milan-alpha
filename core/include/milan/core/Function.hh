@@ -14,21 +14,59 @@ class Function:
     public FunctionInterface
 {
     protected:
-        Ptr<const FunctionInterface> _function;
+        Ptr<const FunctionInterface> _fctPtr;
     public:
+        Function(const Function& function):
+            _fctPtr(function._fctPtr)
+        {
+        }
+        
+        Function(Function&& function):
+            _fctPtr(std::move(function._fctPtr))
+        {
+        }
+        
+        Function& operator=(const Function& function)
+        {
+            _fctPtr = function._fctPtr;
+            return *this;
+        }
+        
+        Function& operator=(Function&& function)
+        {
+            _fctPtr = std::move(function._fctPtr);
+            return *this;
+        }
+        
+        Function(const Ptr<const FunctionInterface>& fctPtr):
+            _fctPtr(fctPtr)
+        {
+        }
+        
+        Function& operator=(const Ptr<const FunctionInterface>& fctPtr)
+        {
+            _fctPtr = fctPtr;
+            return *this;
+        }
+        
+        const inline Ptr<const FunctionInterface>& getPtr() const
+        {
+            return _fctPtr;
+        }
+    
         virtual double getValue() const
         {
-            return _function->getValue();
+            return _fctPtr->getValue();
         }
         
         virtual double getDifferential(const Ptr<Parameter>& parameter) const
         {
-            return _function->getDifferential(parameter);
+            return _fctPtr->getDifferential(parameter);
         }
         
         virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
         {
-            return _function->getValueAndDerivatives(parameters);
+            return _fctPtr->getValueAndDerivatives(parameters);
         }
 };
 

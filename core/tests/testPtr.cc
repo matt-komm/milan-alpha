@@ -297,6 +297,89 @@ TEST(Ptr_mixed, move)
 }
 
 
+TEST(Ptr_share, upcast)
+{
+    using namespace milan;
+    
+    class BaseClass
+    {
+    };
+    
+    class DerivedClass: public BaseClass
+    {
+    };
+    
+    DerivedClass dobj;
+    Ptr<DerivedClass> ptr(PtrStorage::SHARE,&dobj);
+    EXPECT_EQ(ptr.use_count(),1);
+    
+    Ptr<BaseClass> ptr1(ptr);
+    EXPECT_EQ(ptr.use_count(),2);
+    EXPECT_EQ(ptr1.use_count(),2);
+    Ptr<BaseClass> ptr2=ptr;
+    EXPECT_EQ(ptr.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+    {
+        Ptr<BaseClass> ptr4=ptr;
+        EXPECT_EQ(ptr.use_count(),4);
+        EXPECT_EQ(ptr1.use_count(),4);
+        EXPECT_EQ(ptr2.use_count(),4);
+    }
+    EXPECT_EQ(ptr.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+    
+    Ptr<BaseClass> ptr5(std::move(ptr));
+    EXPECT_EQ(ptr5.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    Ptr<BaseClass> ptr6=std::move(ptr1);
+    EXPECT_EQ(ptr6.use_count(),3);
+    EXPECT_EQ(ptr5.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+}
+
+TEST(Ptr_own, upcast)
+{
+    using namespace milan;
+    
+    class BaseClass
+    {
+    };
+    
+    class DerivedClass: public BaseClass
+    {
+    };
+    
+    Ptr<DerivedClass> ptr(PtrStorage::OWN,new DerivedClass());
+    EXPECT_EQ(ptr.use_count(),1);
+    
+    Ptr<BaseClass> ptr1(ptr);
+    EXPECT_EQ(ptr.use_count(),2);
+    EXPECT_EQ(ptr1.use_count(),2);
+    Ptr<BaseClass> ptr2=ptr;
+    EXPECT_EQ(ptr.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+    {
+        Ptr<BaseClass> ptr4=ptr;
+        EXPECT_EQ(ptr.use_count(),4);
+        EXPECT_EQ(ptr1.use_count(),4);
+        EXPECT_EQ(ptr2.use_count(),4);
+    }
+    EXPECT_EQ(ptr.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+    
+    Ptr<BaseClass> ptr5(std::move(ptr));
+    EXPECT_EQ(ptr5.use_count(),3);
+    EXPECT_EQ(ptr1.use_count(),3);
+    Ptr<BaseClass> ptr6=std::move(ptr1);
+    EXPECT_EQ(ptr6.use_count(),3);
+    EXPECT_EQ(ptr5.use_count(),3);
+    EXPECT_EQ(ptr2.use_count(),3);
+}
+
 
 
 
