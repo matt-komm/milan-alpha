@@ -12,9 +12,11 @@ add_gtest(
     #DEPS
 )
 
-add_gtest(
-    NAME milan-algorithms-HMC
-    SOURCES testHMC.cc
-    #LIBRARIES milan-core
-    #DEPS
-)
+if(ROOT_FOUND)
+    add_gtest(
+        NAME milan-algorithms-HMC
+        SOURCES testHMC.cc
+        LIBRARIES ${ROOT_LIBRARIES}
+        #DEPS
+    )
+endif(ROOT_FOUND)

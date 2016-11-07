@@ -51,6 +51,13 @@ class HistogramFunction:
             return *this;
         }
         
+        const inline Ptr<const HistogramInterface>& getPtr() const
+        {
+            return _histFct;
+        }
+        
+        
+        
         virtual sizetype size() const
         {
             return _histFct.get()->size();
@@ -76,10 +83,7 @@ class HistogramFunction:
             return _histFct.get()->getBinningVector();
         }
         
-        const inline Ptr<const HistogramInterface>& getPtr() const
-        {
-            return _histFct;
-        }
+        
         
         HistogramFunction operator+(const HistogramFunction& rhs) const;
         HistogramFunction operator*(const Parameter& rhs) const;

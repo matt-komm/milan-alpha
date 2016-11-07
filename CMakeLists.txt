@@ -4,6 +4,8 @@ include(cmake/DetectOS.cmake)
 include(cmake/Copy.cmake)
 include(cmake/Tests.cmake)
 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 add_definitions(-DOS_${OSNAME})
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -27,6 +29,8 @@ message(STATUS "Compiler id: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Compiler name: ${CMAKE_CXX_COMPILER}")
 message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 
+
+
 include_directories(
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
     #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
@@ -34,6 +38,12 @@ include_directories(
     SYSTEM external/vdt/include
     SYSTEM external/fadbad/include
 )
+
+find_package(ROOT)
+if (ROOT_FOUND)
+    message(STATUS ${ROOT_INCLUDE_DIR})
+    include_directories(SYSTEM ${ROOT_INCLUDE_DIR})
+endif (ROOT_FOUND)
 
 add_subdirectory(external)
 

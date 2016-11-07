@@ -7,6 +7,14 @@
 
 #include "gtest/gtest.h"
 
+#include "TH1F.h"
+#include "TGraph.h"
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TColor.h"
+#include "Rtypes.h"
+#include "TF1.h"
+
 TEST(HMC, construction)
 {
     using namespace milan;
@@ -143,42 +151,91 @@ TEST(HMC, speed)
     
     BinnedLikelihood bll(dataFct,signalPrediction);
     
-    //Likelihood ll = SimpleGaussianLL(signalYield,-3.0,2.0);
-    Likelihood ll = SimplePoissonLL(signalYield,24.0);
+    //Likelihood ll = SimpleGaussianLL(signalYield,3.0,2.0);
+    Likelihood ll = SimplePoissonLL(signalYield,2.0);
     //Likelihood ll = bll.copy();
-    for (sizetype i = 0; i < 41; ++i)
+    
+    double* x = new double[40];
+    double* nll = new double[40];
+    double sum = 0.0;
+    /*
+    for (sizetype i = 0; i < 40; ++i)
     {
         signalYield.setValue(0.0+0.2*i);
         printf(
-            "nll(s=%2.1f) = %+5.3f\n",// | d=%3.1f | s=%3.1f | p=%3.1f\n",
+            "nll(s=%2.1f) = %+5.3f\n"
             signalYield.getValue(),
-            ll.getNLL()/*,
-            data.getContent(1),
-            signalTemplate.getContent(1),
-            signalPrediction.getContent(1)*/
+            ll.getNLL()
         );
+        x[i]=signalYield.getValue();
+        nll[i]=std::exp(-ll.getNLL());
+        sum+=nll[i];
     }
+    */
+    //TH1F hist("hist","",40,0,8);
+    
     
     HMC hmc;
     hmc.addParameter(signalYield);
     std::vector<Ptr<Parameter>> bbParameters = ll.getLagrangeParameters();
     //for (unsigned int i = 0; i < bbParameters.size(); ++i) hmc.addParameter(bbParameters[i]);
-    const sizetype BURN = 1000;
-    const sizetype TOYS = 100000;
+    const sizetype BURN = 100;
+    const sizetype TOYS = 10000;
+    std::vector<double> posterior(TOYS);
+    
     int accepted = 0;
     double mean = 0.0;
     double mean2 = 0.0;
+    
+    //mean is the value for signalYield that minimizes nll!;
+    double nllMin = ll.getNLL();
+    double signalYieldMin = 0.0;
+    
     for (unsigned int i = 0; i < BURN; ++i)
     {
-        hmc.step(ll.getPtr(),1);
+        hmc.step(ll.getPtr(),10);
     }
     for (unsigned int i = 0; i < TOYS; ++i)
     {
-        if (hmc.step(ll.getPtr(),1)) accepted++;
+        if (hmc.step(ll.getPtr(),10)) accepted++;
         mean+=signalYield.getValue();
         mean2+=signalYield.getValue()*signalYield.getValue();
+        //hist.Fill(signalYield.getValue());
+        posterior[i]=signalYield.getValue();
+        if (nllMin>ll.getNLL())
+        {
+            nllMin = ll.getNLL();
+            signalYieldMin = signalYield.getValue();
+        }
     }
+    std::sort(posterior.begin(), posterior.end());
+    
+    
+    
+    
     std::cout<<"eff="<<1.0*accepted/TOYS<<std::endl;
-    std::cout<<"mean="<<mean/TOYS<<std::endl;
-    std::cout<<"rms="<<std::sqrt(mean2/TOYS-mean*mean/TOYS/TOYS)<<std::endl;
+    std::cout<<"mean="<<mean/TOYS<<", rms="<<std::sqrt(mean2/TOYS-mean*mean/TOYS/TOYS)<<std::endl;
+    std::cout<<"median="<<posterior[TOYS/2]<<" ["<<posterior[(sizetype)TOYS*0.84]<<"; "<<posterior[(sizetype)TOYS*0.16]<<"]"<<std::endl;
+    std::cout<<"signalYield@nllmax="<<signalYieldMin<<std::endl;
+    /*
+    TCanvas cv("cv","",800,600);
+    hist.Scale(sum/hist.Integral());
+    hist.SetLineWidth(2);
+    hist.SetLineColor(kBlue-3);
+    hist.Draw();
+    TGraph g(40,x,nll);
+    g.SetLineWidth(2);
+    g.SetLineColor(kGreen+1);
+    g.SetLineStyle(2);
+    g.Draw("LP");
+    
+    TF1 tf("tf","[0]*TMath::Poisson(2,x)",0,8);
+    tf.SetParameter(0,sum/40*8);
+    tf.Draw("Same");
+    
+    cv.Print("hist.pdf");
+    */
+    delete [] x;
+    delete [] nll;
+    
 }

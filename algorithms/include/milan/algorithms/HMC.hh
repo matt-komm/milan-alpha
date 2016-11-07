@@ -23,6 +23,8 @@ class HMC
         std::normal_distribution<double> _normalDistribution;
         std::uniform_real_distribution<double> _uniformDistribution;
         RandomEngine _randomEngine;
+        //std::default_random_engine _randomEngine;
+        //std::mt19937_64 _randomEngine;
     public:
         HMC(sizetype seed=123):
             _normalDistribution(0,1),

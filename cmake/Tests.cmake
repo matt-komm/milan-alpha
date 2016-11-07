@@ -29,14 +29,12 @@ if (ENABLE_TEST)
         add_executable(gtest-${TEST_NAME}
             ${TEST_SOURCES}
         )
-        if (NOT ${TEST_LIBRARIES} STREQUAL "")
-            target_link_libraries(gtest-${TEST_NAME} ${TEST_LIBRARIES} gtest gtest_main)
-        else (NOT ${TEST_LIBRARIES} STREQUAL "")
-            target_link_libraries(gtest-${TEST_NAME} gtest gtest_main)
-        endif (NOT ${TEST_LIBRARIES} STREQUAL "")
-        if (NOT ${TEST_DEPS} STREQUAL "")
+
+        target_link_libraries(gtest-${TEST_NAME} ${TEST_LIBRARIES} gtest gtest_main)
+        
+        if (TEST_DEPS)
             add_dependencies(gtest-${TEST_NAME} ${TEST_DEPS})
-        endif (NOT ${TEST_DEPS} STREQUAL "")
+        endif (TEST_DEPS)
         add_test(${TEST_NAME} gtest-${TEST_NAME} --gtest_color=yes)
         if (ENABLE_MEMTEST)
             add_test(

@@ -7,7 +7,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.7', 'valgrind']
+          packages: ['g++-4.7', 'valgrind', 'root-system']
       env: COMPILER=g++-4.7 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
 
     - os: linux
@@ -15,7 +15,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9', 'valgrind']
+          packages: ['g++-4.9', 'valgrind', 'root-system']
       env: COMPILER=g++-4.9 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
@@ -23,7 +23,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'valgrind']
+          packages: ['g++-5', 'valgrind','root-system']
       env: COMPILER=g++-5 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
         
     - os: linux
@@ -31,7 +31,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'valgrind']
+          packages: ['g++-5', 'valgrind','root-system']
       env: COMPILER=g++-5 CONFIG=Release OPTIONS=""
       
     - os: linux
@@ -39,7 +39,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind']
+          packages: ['valgrind','root-system']
       env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
@@ -47,7 +47,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind']
+          packages: ['valgrind','root-system']
       env: COMPILER=clang++ CONFIG=Release OPTIONS=""
      
     - os: osx
