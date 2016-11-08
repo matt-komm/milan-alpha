@@ -33,6 +33,13 @@ add_gtest(
     #DEPS
 )
 
+add_compile_ftest(
+    NAME milan-core-Ptr
+    SOURCES testPtr-fail.cc
+    #LIBRARIES milan-core
+    DEFS COPY COPY_ASSIGN MOVE MOVE_ASSIGN
+)
+
 add_gtest(
     NAME milan-core-Parameter
     SOURCES testParameter.cc

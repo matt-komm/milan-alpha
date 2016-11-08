@@ -51,6 +51,43 @@ if (ENABLE_TEST)
         )
     endmacro(add_gtest)
     
+    macro(add_compile_ftest)
+        cmake_parse_arguments(
+            TEST                        #prefix
+            ""                          #options
+            "NAME"                   #one_value_keywords
+            "SOURCES;LIBRARIES;DEPS;DEFS"   #multi_value_keywords
+            ${ARGN} 
+        )
+        
+        foreach(DEF ${TEST_DEFS})
+        
+            add_executable(ftest-${TEST_NAME}-${DEF}
+                ${TEST_SOURCES}
+            )
+            set_target_properties(ftest-${TEST_NAME}-${DEF}
+                PROPERTIES
+                EXCLUDE_FROM_ALL TRUE
+                EXCLUDE_FROM_DEFAULT_BUILD TRUE
+            )
+            target_compile_definitions(ftest-${TEST_NAME}-${DEF} PRIVATE ${DEF})
+
+            target_link_libraries(ftest-${TEST_NAME}-${DEF} ${TEST_LIBRARIES})
+            
+            if (TEST_DEPS)
+                add_dependencies(ftest-${TEST_NAME}-${DEF} ${TEST_DEPS})
+            endif (TEST_DEPS)
+            add_test(NAME ${TEST_NAME}-${DEF}
+                COMMAND ${CMAKE_COMMAND} --build . --target ftest-${TEST_NAME}-${DEF} --config $<CONFIGURATION>
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            )
+            set_tests_properties(${TEST_NAME}-${DEF} PROPERTIES WILL_FAIL TRUE)
+            
+        endforeach(DEF)
+        
+    endmacro(add_compile_ftest)
+    
+    
 else(ENABLE_TEST)
     macro(add_gtest)
         cmake_parse_arguments(
@@ -62,4 +99,17 @@ else(ENABLE_TEST)
         )
         message(STATUS "Testing disabled: Skipping test ... ${TEST_NAME}")
     endmacro(add_gtest)
+    
+    macro(add_compile_ftest)
+        cmake_parse_arguments(
+            TEST                        #prefix
+            ""                          #options
+            "NAME"                   #one_value_keywords
+            "SOURCES;LIBRARIES;DEPS"   #multi_value_keywords
+            ${ARGN} 
+        )
+        message(STATUS "Testing disabled: Skipping test ... ${TEST_NAME}")
+    endmacro(add_compile_ftest)
 endif(ENABLE_TEST)
+
+
