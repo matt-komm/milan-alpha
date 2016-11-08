@@ -51,42 +51,54 @@ if (ENABLE_TEST)
         )
     endmacro(add_gtest)
     
-    macro(add_compile_ftest)
-        cmake_parse_arguments(
-            TEST                        #prefix
-            ""                          #options
-            "NAME"                   #one_value_keywords
-            "SOURCES;LIBRARIES;DEPS;DEFS"   #multi_value_keywords
-            ${ARGN} 
-        )
-        
-        foreach(DEF ${TEST_DEFS})
-        
-            add_executable(ftest-${TEST_NAME}-${DEF}
-                ${TEST_SOURCES}
+    if ( CMAKE_MAJOR_VERSION EQUAL 3)
+        macro(add_compile_ftest)
+            cmake_parse_arguments(
+                TEST                        #prefix
+                ""                          #options
+                "NAME"                   #one_value_keywords
+                "SOURCES;LIBRARIES;DEPS;DEFS"   #multi_value_keywords
+                ${ARGN} 
             )
-            set_target_properties(ftest-${TEST_NAME}-${DEF}
-                PROPERTIES
-                EXCLUDE_FROM_ALL TRUE
-                EXCLUDE_FROM_DEFAULT_BUILD TRUE
-            )
-            target_compile_definitions(ftest-${TEST_NAME}-${DEF} PRIVATE ${DEF})
+            
+            foreach(DEF ${TEST_DEFS})
+            
+                add_executable(ftest-${TEST_NAME}-${DEF}
+                    ${TEST_SOURCES}
+                )
+                set_target_properties(ftest-${TEST_NAME}-${DEF}
+                    PROPERTIES
+                    EXCLUDE_FROM_ALL TRUE
+                    EXCLUDE_FROM_DEFAULT_BUILD TRUE
+                )
+                target_compile_definitions(ftest-${TEST_NAME}-${DEF} PRIVATE ${DEF})
 
-            target_link_libraries(ftest-${TEST_NAME}-${DEF} ${TEST_LIBRARIES})
+                target_link_libraries(ftest-${TEST_NAME}-${DEF} ${TEST_LIBRARIES})
+                
+                if (TEST_DEPS)
+                    add_dependencies(ftest-${TEST_NAME}-${DEF} ${TEST_DEPS})
+                endif (TEST_DEPS)
+                add_test(NAME ${TEST_NAME}-${DEF}
+                    COMMAND ${CMAKE_COMMAND} --build . --target ftest-${TEST_NAME}-${DEF} --config $<CONFIGURATION>
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                )
+                set_tests_properties(${TEST_NAME}-${DEF} PROPERTIES WILL_FAIL TRUE)
+                
+            endforeach(DEF)
             
-            if (TEST_DEPS)
-                add_dependencies(ftest-${TEST_NAME}-${DEF} ${TEST_DEPS})
-            endif (TEST_DEPS)
-            add_test(NAME ${TEST_NAME}-${DEF}
-                COMMAND ${CMAKE_COMMAND} --build . --target ftest-${TEST_NAME}-${DEF} --config $<CONFIGURATION>
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        endmacro(add_compile_ftest)
+    else ( CMAKE_MAJOR_VERSION EQUAL 3)
+        macro(add_compile_ftest)
+            cmake_parse_arguments(
+                TEST                        #prefix
+                ""                          #options
+                "NAME"                   #one_value_keywords
+                "SOURCES;LIBRARIES;DEPS"   #multi_value_keywords
+                ${ARGN} 
             )
-            set_tests_properties(${TEST_NAME}-${DEF} PROPERTIES WILL_FAIL TRUE)
-            
-        endforeach(DEF)
-        
-    endmacro(add_compile_ftest)
-    
+            message(STATUS "Compile failure testing disabled (requires cmake 3): Skipping test ... ${TEST_NAME}")
+        endmacro(add_compile_ftest)
+    endif ( CMAKE_MAJOR_VERSION EQUAL 3)
     
 else(ENABLE_TEST)
     macro(add_gtest)
