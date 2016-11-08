@@ -4,18 +4,19 @@
 #include "gtest/gtest.h"
 
 #include <limits>
+#include <cmath>
 
 namespace milan
 {
 
 template<class T> inline bool approximatelyEqual(const T& a, const T& b, const T& epsilon=std::numeric_limits<T>::epsilon())
 {
-    return fabs(a - b) <= ( (std::fabs(a) < std::fabs(b) ? std::fabs(b) : std::fabs(a)) * epsilon);
+    return std::fabs(a - b) <= ( (std::fabs(a) < std::fabs(b) ? std::fabs(b) : std::fabs(a)) * epsilon);
 }
 
 template<class T> inline bool essentiallyEqual(const T& a, const T& b, const T& epsilon=std::numeric_limits<T>::epsilon())
 {
-    return fabs(a - b) <= ( (std::fabs(a) > std::fabs(b) ? std::fabs(b) : std::fabs(a)) * epsilon);
+    return std::fabs(a - b) <= ( (std::fabs(a) > std::fabs(b) ? std::fabs(b) : std::fabs(a)) * epsilon);
 }
 
 template<class T> inline bool definitelyGreaterThan(const T& a, const T& b, const T& epsilon=std::numeric_limits<T>::epsilon())
