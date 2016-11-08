@@ -41,6 +41,13 @@ add_gtest(
 )
 
 add_gtest(
+    NAME milan-core-ScalarConstant
+    SOURCES testScalarConstant.cc
+    #LIBRARIES milan-core
+    #DEPS
+)
+
+add_gtest(
     NAME milan-core-Function
     SOURCES testFunction.cc
     #LIBRARIES milan-core
