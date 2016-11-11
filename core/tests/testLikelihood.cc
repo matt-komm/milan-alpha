@@ -1,8 +1,8 @@
 #include "milan/core/Likelihood.hh"
 #include "milan/core/BinnedLikelihood.hh"
 #include "milan/core/Histogram.hh"
+#include "milan/core/Math.hh"
 
-#include "vdt/vdtMath.h"
 #include "gtest/gtest.h"
 
 TEST(BinnedLikelihood, create)
@@ -196,7 +196,7 @@ TEST(BinnedLikelihood, counting)
                     const double nll = ll.getNLL();
                     const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
                     
-                    const double num_nll = -d*vdt::fast_log(p)+p+0.5*b*b;
+                    const double num_nll = -d*milan::log(p)+p+0.5*b*b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {
@@ -263,7 +263,7 @@ TEST(BinnedLikelihood, withParameter)
                     const double nll = ll.getNLL();
                     const double nll_alt = ll.getNLLValueAndDerivatives({})[0];
                     
-                    const double num_nll = -d*vdt::fast_log(p)+p+0.5*b*b;
+                    const double num_nll = -d*milan::log(p)+p+0.5*b*b;
                     
                     if (d<std::numeric_limits<double>::epsilon())
                     {

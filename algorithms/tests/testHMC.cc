@@ -109,7 +109,7 @@ class SimplePoissonLL:
         }
         virtual double getNLL() const
         {
-            return -_obs*vdt::fast_log(_p->getValue())+_p->getValue(); //Poisson with mean=p
+            return -_obs*milan::log(_p->getValue())+_p->getValue(); //Poisson with mean=p
         }
         virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<milan::Ptr<milan::Parameter>>& parameters) const
         {

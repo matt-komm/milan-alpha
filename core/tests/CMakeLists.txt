@@ -64,7 +64,7 @@ add_gtest(
 add_gtest(
     NAME milan-core-Likelihood
     SOURCES testLikelihood.cc
-    LIBRARIES vdt
+    #LIBRARIES milan-core
     #DEPS
 )
 

@@ -4,10 +4,8 @@
 #include "milan/core/Types.hh"
 #include "milan/core/Parameter.hh"
 #include "milan/core/LikelihoodInterface.hh"
-
+#include "milan/core/Math.hh"
 #include "milan/algorithms/RandomEngine.hh"
-
-#include "vdt/vdtMath.h"
 
 #include <vector>
 #include <random>
@@ -128,7 +126,7 @@ class HMC
             }
 
             //reset parameters if not accepted
-            if (std::isnan(newEnergy) or _uniformDistribution(_randomEngine)>vdt::fast_exp(oldEnergy-newEnergy))
+            if (std::isnan(newEnergy) or _uniformDistribution(_randomEngine)>milan::exp(oldEnergy-newEnergy))
             {
                 for (sizetype i = 0; i < N; ++i)
                 {

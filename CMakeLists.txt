@@ -25,6 +25,11 @@ if (ENABLE_TEST)
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
 endif (ENABLE_TEST)
 
+option(FAST_MATH "Substitute standard math functions with faster versions were applicable" ON)
+if (FAST_MATH)
+    add_definitions(-DFAST_MATH)
+endif(FAST_MATH)
+
 message(STATUS "Compiler id: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Compiler name: ${CMAKE_CXX_COMPILER}")
 message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")

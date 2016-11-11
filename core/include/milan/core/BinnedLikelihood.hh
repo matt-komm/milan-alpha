@@ -7,7 +7,7 @@
 #include "milan/core/Ptr.hh"
 #include "milan/core/Types.hh"
 
-#include "vdt/vdtMath.h"
+#include "milan/core/Math.hh"
 
 namespace milan
 {
@@ -83,7 +83,7 @@ class BinnedLikelihood:
                     return std::numeric_limits<double>::quiet_NaN();
                 }
                 
-                nll+=prediction-data*vdt::fast_log(prediction);
+                nll+=prediction-data*milan::log(prediction);
                 nll+=0.5*bbValue*bbValue; //Gaussian prior with width=1
                 
                 if (std::isinf(nll) || std::isnan(nll))
@@ -191,7 +191,7 @@ class BinnedLikelihood:
                     return result;
                 } 
                 
-                result[0]+=prediction-data*vdt::fast_log(prediction);
+                result[0]+=prediction-data*milan::log(prediction);
                 result[0]+=0.5*bbValue*bbValue; //Gaussian prior with width=1
                 
                 if (std::isinf(result[0]) || std::isnan(result[0]))

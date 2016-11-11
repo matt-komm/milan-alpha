@@ -7,7 +7,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.7', 'valgrind', 'root-system']
+          packages: ['g++-4.7', 'valgrind']
       env: COMPILER=g++-4.7 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
 
     - os: linux
@@ -15,7 +15,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9', 'valgrind', 'root-system']
+          packages: ['g++-4.9', 'valgrind']
       env: COMPILER=g++-4.9 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
@@ -23,15 +23,23 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'valgrind','root-system']
+          packages: ['g++-5', 'valgrind']
       env: COMPILER=g++-5 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
+      
+    - os: linux
+      compiler: gcc-5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5', 'valgrind']
+      env: COMPILER=g++-5 CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON -D FAST_MATH=OFF"
         
     - os: linux
       compiler: gcc-5
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'valgrind','root-system']
+          packages: ['g++-5', 'valgrind']
       env: COMPILER=g++-5 CONFIG=Release OPTIONS=""
       
     - os: linux
@@ -39,7 +47,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind','root-system']
+          packages: ['valgrind']
       env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D ENABLE_MEMTEST=ON"
       
     - os: linux
@@ -47,12 +55,16 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['valgrind','root-system']
+          packages: ['valgrind']
       env: COMPILER=clang++ CONFIG=Release OPTIONS=""
      
     - os: osx
       compiler: clang
       env: COMPILER=clang++ CONFIG=Debug OPTIONS=""
+      
+    - os: osx
+      compiler: clang
+      env: COMPILER=clang++ CONFIG=Debug OPTIONS="-D FAST_MATH=OFF"
       
     - os: osx
       compiler: clang
