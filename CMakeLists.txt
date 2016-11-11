@@ -37,11 +37,8 @@ message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 include_directories(tests)
 
 include_directories(
-    #SYSTEM ${PROJECT_SOURCE_DIR}/external/vectorclass
-    #SYSTEM ${PROJECT_SOURCE_DIR}/external/Eigen/include
     SYSTEM external/cpx/include
     SYSTEM external/vdt/include
-    SYSTEM external/fadbad/include
 )
 
 #find_package(ROOT)
