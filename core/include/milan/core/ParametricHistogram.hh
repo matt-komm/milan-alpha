@@ -94,17 +94,17 @@ class ParametricHistogram:
             return _content[getGlobalBinFromIndex(index)]->getValue();
         }
         
-        inline Ptr<Parameter> getParameter(const std::vector<sizetype>& index) const
+        inline const Ptr<Parameter>& getParameter(const std::vector<sizetype>& index) const
         {
             return _content[getGlobalBinFromIndex(index)];
         }
         
-        inline Ptr<Parameter> getParameter(sizetype index) const
+        inline const Ptr<Parameter>& getParameter(sizetype index) const
         {
             return _content[index];
         }
         
-        inline std::vector<Ptr<Parameter>> getParameters() const
+        inline const std::vector<Ptr<Parameter>>& getParameters() const
         {
             return _content;
         }
@@ -171,9 +171,9 @@ class ParametricHistogram:
             return _content[index]->getValue();
         }
         
-        virtual double getDifferential(sizetype, const Ptr<Parameter>&) const
+        virtual double getDerivative(sizetype index, const Ptr<Parameter>& parameter) const
         {
-            return 0.0;
+            return _content[index].get()==parameter.get();
         }
         
         virtual double getError2(sizetype) const

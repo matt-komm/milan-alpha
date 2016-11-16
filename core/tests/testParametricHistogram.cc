@@ -164,4 +164,18 @@ TEST(ParametricHistogram, add)
     }
 }
 
+TEST(ParametricHistogram, derivative)
+{
+    using namespace milan;
+    ParametricHistogram pHist({Binning(10,-1,1)},"signal");
+    const std::vector<Ptr<Parameter>>& parameters = pHist.getParameters();
+    EXPECT_EQ(pHist.size(),parameters.size());
+    for (sizetype i = 0; i < pHist.size(); ++i)
+    {
+        for (sizetype j = 0; j < pHist.size(); ++j)
+        {
+            EXPECT_DOUBLE_EQ(pHist.getDerivative(i,parameters[j]),i==j?1:0);
+        } 
+    }
+}
 

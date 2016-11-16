@@ -25,7 +25,7 @@ class ScalarConstant:
             return _value;
         }
         
-        virtual double getDifferential(const Ptr<Parameter>&) const
+        virtual double getDerivative(const Ptr<Parameter>&) const
         {
             return 0;
         }
@@ -60,7 +60,29 @@ class ScalarConstant:
             _value/=scalar._value;
             return *this;
         }
+        
+        inline ScalarConstant operator+(const ScalarConstant& scalar)
+        {
+            return ScalarConstant(_value+scalar._value);
+        }
+
+        inline ScalarConstant operator-(const ScalarConstant& scalar)
+        {
+            return ScalarConstant(_value-scalar._value);
+        }
+
+        inline ScalarConstant operator*(const ScalarConstant& scalar)
+        {
+            return ScalarConstant(_value*scalar._value);
+        }
+
+        inline ScalarConstant operator/(const ScalarConstant& scalar)
+        {
+            return ScalarConstant(_value/scalar._value);
+        }
 };
+
+
 
 }
 

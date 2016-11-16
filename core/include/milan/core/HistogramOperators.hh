@@ -46,9 +46,9 @@ class HistogramAddOperator:
             return _lhs.get()->getContent(index)+_rhs.get()->getContent(index);
         }
         
-        virtual double getDifferential(sizetype index, const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(sizetype index, const Ptr<Parameter>& parameter) const
         {
-            return _lhs.get()->getDifferential(index,parameter)+_rhs.get()->getDifferential(index,parameter);
+            return _lhs.get()->getDerivative(index,parameter)+_rhs.get()->getDerivative(index,parameter);
         }
         
         virtual double getError2(sizetype index) const
@@ -89,13 +89,13 @@ class ParameterHistogramMultiplicationOperator:
             return _histogram.get()->getContent(index)*_function->getValue();
         }
         
-        virtual double getDifferential(sizetype index, const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(sizetype index, const Ptr<Parameter>& parameter) const
         {
             double result = 0;
             const double histContent = _histogram->getContent(index);
             const double functionValue = _function->getValue();
-            if (histContent>0) result+=_function->getDifferential(parameter)*histContent;
-            if (functionValue>0) result+=functionValue*_histogram->getDifferential(index,parameter);
+            if (histContent>0) result+=_function->getDerivative(parameter)*histContent;
+            if (functionValue>0) result+=functionValue*_histogram->getDerivative(index,parameter);
             return result;
         }
         

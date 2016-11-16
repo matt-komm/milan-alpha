@@ -13,7 +13,7 @@ TEST(ScalarConstant, construction)
         Parameter fakeParameter("fake");
         
         EXPECT_DOUBLE_EQ(x.getValue(),0.5*i-2);
-        EXPECT_DOUBLE_EQ(x.getDifferential(fakeParameter),0);
+        EXPECT_DOUBLE_EQ(x.getDerivative(fakeParameter),0);
         EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({})[0],0.5*i-2);
         EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[0],0.5*i-2);
         EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[1],0);
@@ -38,7 +38,7 @@ TEST(ScalarConstant, add)
             Parameter fakeParameter("fake");
             
             EXPECT_DOUBLE_EQ(x.getValue(),result);
-            EXPECT_DOUBLE_EQ(x.getDifferential(fakeParameter),0);
+            EXPECT_DOUBLE_EQ(x.getDerivative(fakeParameter),0);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[1],0);
@@ -62,7 +62,7 @@ TEST(ScalarConstant, sub)
             Parameter fakeParameter("fake");
             
             EXPECT_DOUBLE_EQ(x.getValue(),result);
-            EXPECT_DOUBLE_EQ(x.getDifferential(fakeParameter),0);
+            EXPECT_DOUBLE_EQ(x.getDerivative(fakeParameter),0);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[1],0);
@@ -86,7 +86,7 @@ TEST(ScalarConstant, mul)
             Parameter fakeParameter("fake");
             
             EXPECT_APPROX_FLOAT_EQ(x.getValue(),result);
-            EXPECT_DOUBLE_EQ(x.getDifferential(fakeParameter),0);
+            EXPECT_DOUBLE_EQ(x.getDerivative(fakeParameter),0);
             EXPECT_APPROX_FLOAT_EQ(x.getValueAndDerivatives({})[0],result);
             EXPECT_APPROX_FLOAT_EQ(x.getValueAndDerivatives({fakeParameter})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[1],0);
@@ -111,7 +111,7 @@ TEST(ScalarConstant, div)
             Parameter fakeParameter("fake");
             
             EXPECT_DOUBLE_EQ(x.getValue(),result);
-            EXPECT_DOUBLE_EQ(x.getDifferential(fakeParameter),0);
+            EXPECT_DOUBLE_EQ(x.getDerivative(fakeParameter),0);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[0],result);
             EXPECT_DOUBLE_EQ(x.getValueAndDerivatives({fakeParameter})[1],0);

@@ -32,9 +32,9 @@ class FunctionAddOperator:
             return _lhs->getValue()+_rhs->getValue();
         }
         
-        virtual double getDifferential(const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(const Ptr<Parameter>& parameter) const
         {
-            return _lhs->getDifferential(parameter)+_rhs->getDifferential(parameter);
+            return _lhs->getDerivative(parameter)+_rhs->getDerivative(parameter);
         }
         
         virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const

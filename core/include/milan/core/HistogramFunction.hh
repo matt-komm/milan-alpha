@@ -69,9 +69,9 @@ class HistogramFunction:
             return _histFct.get()->getContent(index);
         }
         
-        virtual double getDifferential(sizetype index, const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(sizetype index, const Ptr<Parameter>& parameter) const
         {
-            return _histFct.get()->getDifferential(index,parameter);
+            return _histFct.get()->getDerivative(index,parameter);
         }
         
         virtual double getError2(sizetype index) const

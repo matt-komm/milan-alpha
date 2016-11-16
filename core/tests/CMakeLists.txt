@@ -69,3 +69,10 @@ add_gtest(
 )
 
 
+
+add_gtest(
+    NAME milan-core-Prior
+    SOURCES testPrior.cc
+    #LIBRARIES milan-core
+    #DEPS
+)

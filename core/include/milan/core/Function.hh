@@ -59,16 +59,19 @@ class Function:
             return _fctPtr->getValue();
         }
         
-        virtual double getDifferential(const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(const Ptr<Parameter>& parameter) const
         {
-            return _fctPtr->getDifferential(parameter);
+            return _fctPtr->getDerivative(parameter);
         }
         
         virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const
         {
             return _fctPtr->getValueAndDerivatives(parameters);
         }
+       
 };
+
+
 
 }
 

@@ -152,7 +152,7 @@ class BinnedLikelihood:
                     }
                     
                     //this will be 0 if p is a bb parameter of a different ll
-                    const double raw_template_diff = _template->getDifferential(ibin,parameter);
+                    const double raw_template_diff = _template->getDerivative(ibin,parameter);
                     
                     diff_nll+=-data*raw_template_diff/prediction+raw_template_diff;
                     
@@ -222,7 +222,7 @@ class BinnedLikelihood:
                     }
                     else
                     {
-                        const double raw_template_diff = _template->getDifferential(ibin,parameter);
+                        const double raw_template_diff = _template->getDerivative(ibin,parameter);
                         result[iparameter+1]+=-data*raw_template_diff/prediction+raw_template_diff;
                         if (std::isinf(result[iparameter+1]) || std::isnan(result[iparameter+1]))
                         {

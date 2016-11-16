@@ -66,7 +66,7 @@ class Parameter:
             return _value;
         }
         
-        virtual double getDifferential(const Ptr<Parameter>& parameter) const
+        virtual double getDerivative(const Ptr<Parameter>& parameter) const
         {
             return *parameter==*this?1:0;
         }
@@ -86,7 +86,7 @@ class Parameter:
                 result.begin(), 
                 [this](const Ptr<Parameter>& p)
                 { 
-                    return this->getDifferential(p);
+                    return this->getDerivative(p);
                 }
             );
             return result;
