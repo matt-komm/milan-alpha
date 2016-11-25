@@ -19,6 +19,11 @@ class HistogramInterface
         virtual sizetype size() const = 0; //this refers to the resulting type in case of operations!
         virtual double getContent(sizetype index) const = 0;
         
+        //For v2:
+        //virtual void getContent(sizetype index, sizetype length, double_aligned* __restrict__ content)
+        //{
+        //}
+        
         virtual double getDerivative(sizetype index, const Ptr<Parameter>& parameter) const = 0;
         //TODO: implement also 
         //virtual std::vector<double> getValueAndDerivatives(const std::vector<Ptr<Parameter>>& parameters) const

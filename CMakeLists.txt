@@ -11,18 +11,18 @@ add_definitions(-DOS_${OSNAME})
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mavx")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mavx -ftree-vectorizer-verbose=9 -fopt-info-vec-optimized")
 endif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     
-    #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mavx")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Rpass=loop-vectorize -Rpass-analysis=loop-vectorize")
 endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
 
 if (ENABLE_TEST)
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -pedantic ${CMAKE_CXX_FLAGS}")
 endif (ENABLE_TEST)
 
 option(FAST_MATH "Substitute standard math functions with faster versions were applicable" ON)

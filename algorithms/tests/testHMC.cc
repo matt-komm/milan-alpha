@@ -82,7 +82,75 @@ class SimpleGaussianLL:
         {
             return copy();
         }
+};
+
+class CorrelatedGaussianLL:
+    public milan::LikelihoodInterface,
+    public milan::PtrInterface<milan::LikelihoodInterface,CorrelatedGaussianLL>
+{
+    protected:
+        milan::Ptr<milan::Parameter> _p1;
+        milan::Ptr<milan::Parameter> _p2;
+        double _mean1;
+        double _mean2;
+        double _std1;
+        double _std2;
+        double _corr;
+        std::vector<milan::Ptr<milan::Parameter>> _lagrangeParameters;
+    public:
+    
+        CorrelatedGaussianLL(
+            const milan::Ptr<milan::Parameter>& p1,
+            const milan::Ptr<milan::Parameter>& p2,
+            double mean1=0, double mean2=0, 
+            double std1=1, double std2=1,
+            double corr=0
+        ): 
+            _p1(p1),
+            _p2(p2),
+            _mean1(mean1),
+            _mean2(mean2),
+            _std1(std1),
+            _std2(std2),
+            _corr(corr),
+            _lagrangeParameters(0) 
+        {
+        }
         
+        virtual double getNLLDerivative(const milan::Ptr<milan::Parameter>& parameter) const
+        {
+            if (*_p1 == *parameter) return ((_p1->getValue()-_mean1)/_std1/_std1+_corr*(_p2->getValue()-_mean2)/_std1/_std2)/(1-_corr*_corr);
+            if (*_p2 == *parameter) return ((_p2->getValue()-_mean2)/_std2/_std2+_corr*(_p1->getValue()-_mean1)/_std1/_std2)/(1-_corr*_corr);
+            return 0;
+        }
+        virtual double getNLL() const
+        {
+            return  (
+                     0.5*(_p1->getValue()-_mean1)*(_p1->getValue()-_mean1)/_std1/_std1
+                    +0.5*(_p2->getValue()-_mean2)*(_p2->getValue()-_mean2)/_std2/_std2
+                  +_corr*(_p1->getValue()-_mean1)*(_p2->getValue()-_mean2)/_std1/_std2
+                    )/(1-_corr*_corr);
+        }
+        
+        virtual std::vector<double> getNLLValueAndDerivatives(const std::vector<milan::Ptr<milan::Parameter>>& parameters) const
+        {
+            std::vector<double> result(parameters.size()+1,0);
+            result[0] = getNLL();
+            for (milan::sizetype i = 0; i < parameters.size(); ++i) result[i+1] = getNLLDerivative(parameters[i]);
+            return result;
+        }
+        
+        //returns pointers to potential lagrange parameters (e.g. for Barlow-Beeston) for additional minimizations
+        virtual const std::vector<milan::Ptr<milan::Parameter>>& getLagrangeParameters() const
+        {
+            return _lagrangeParameters;
+
+        }
+        
+        operator milan::Likelihood()
+        {
+            return copy();
+        }
 };
 
 class SimplePoissonLL:
@@ -132,6 +200,89 @@ class SimplePoissonLL:
         }
         
 };
+
+TEST(HMC,gauss1D)
+{
+    using namespace milan;
+    
+    const sizetype TOYS =1000;
+    Parameter p("test",1);
+
+    for (sizetype i = 0; i <10;++i)
+    {
+        for (sizetype j = 0; j <10;++j)
+        {
+            const double exp_mean=0.3*i-2;
+            const double exp_sigma=0.15*j+0.1;
+            Likelihood l = SimpleGaussianLL(p,exp_mean,exp_sigma);
+            double mean = 0.0;
+            double mean2 = 0.0;
+            
+            HMC hmc;
+            hmc.addParameter(p);
+            for (unsigned int iter = 0; iter < TOYS; ++iter)
+            {
+                hmc.step(l.getPtr(),10);
+                mean+=p.getValue();
+                mean2+=p.getValue()*p.getValue();
+            }
+            EXPECT_LT(std::fabs(mean/TOYS-exp_mean),5./std::sqrt(TOYS));
+            EXPECT_LT(std::fabs(std::sqrt(mean2/TOYS-mean*mean/TOYS/TOYS)-exp_sigma),5./std::sqrt(TOYS));
+        }
+    }
+}
+
+TEST(HMC,gauss2D)
+{
+    using namespace milan;
+    
+    const sizetype TOYS =1000;
+    Parameter p1("test1",1);
+    Parameter p2("test2",1);
+    
+    for (sizetype i = 0; i <4;++i)
+    {
+        for (sizetype j = 0; j <4;++j)
+        {
+            for (sizetype k = 0; k <1;++k)
+            {   
+                const double exp_mean1=0.43*i-2;
+                const double exp_mean2=1.6-0.55*j;
+                const double exp_sigma1=0.15*j+0.1;
+                const double exp_sigma2=0.2*i+0.12;
+                const double exp_corr=0.0;//.2*k-0.95; //TODO: investigate why this does not work
+                
+                Likelihood l = CorrelatedGaussianLL(p1,p2,exp_mean1,exp_mean2,exp_sigma1,exp_sigma2,exp_corr);
+                double mean1 = 0.0;
+                double mean12 = 0.0;
+                double mean2 = 0.0;
+                double mean22 = 0.0;
+                
+                double corr =0.0;
+                
+                p1.setStep(0.1*(1-exp_corr));
+                p2.setStep(0.1*(1-exp_corr));
+                
+                HMC hmc;
+                hmc.addParameter(p1);
+                hmc.addParameter(p2);
+                for (unsigned int iter = 0; iter < TOYS; ++iter)
+                {
+                    hmc.step(l.getPtr(),10);
+                    mean1+=p1.getValue();
+                    mean12+=p1.getValue()*p1.getValue();
+                    mean2+=p2.getValue();
+                    mean22+=p2.getValue()*p2.getValue();
+                    corr+=p1.getValue()*p2.getValue();
+                }
+                
+                EXPECT_LT(std::fabs(mean1/TOYS-exp_mean1),5./std::sqrt(TOYS));
+                EXPECT_LT(std::fabs(mean2/TOYS-exp_mean2),5./std::sqrt(TOYS));
+                EXPECT_LT(std::fabs((corr/TOYS-mean1/TOYS*mean2/TOYS)/(std::sqrt(mean12/TOYS-mean1*mean1/TOYS/TOYS)*std::sqrt(mean22/TOYS-mean2*mean2/TOYS/TOYS))-exp_corr),5./std::sqrt(TOYS));
+            }
+        }
+    }
+}
 
 
 TEST(HMC, speed)

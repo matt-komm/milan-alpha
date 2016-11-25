@@ -80,57 +80,57 @@ class HMC
             std::vector<double> valueAndGradient = ll->getNLLValueAndDerivatives(_parameters);
             oldEnergy += valueAndGradient[0];
             
-            for (sizetype i = 0; i < N; ++i)
+            for (sizetype iparameter = 0; iparameter < N; ++iparameter)
             {
-                startX[i] = _parameters[i]->getValue();
-                startP[i] = _normalDistribution(_randomEngine);
+                startX[iparameter] = _parameters[iparameter]->getValue();
+                startP[iparameter] = _normalDistribution(_randomEngine);
                 
-                endX[i] = startX[i];
-                endP[i] = startP[i];
+                endX[iparameter] = startX[iparameter];
+                endP[iparameter] = startP[iparameter];
                 
-                eps[i] = _parameters[i]->getStep();
+                eps[iparameter] = _parameters[iparameter]->getStep();
                 
-                oldEnergy += 0.5*startP[i]*startP[i];
+                oldEnergy += 0.5*startP[iparameter]*startP[iparameter];
             }
 
 
             
             //half step in p to start leap frog
-            for (sizetype i = 0; i < N; ++i)
+            for (sizetype iparameter = 0; iparameter < N; ++iparameter)
             {
-                endP[i]=endP[i] - 0.5*eps[i]*valueAndGradient[i+1];
+                endP[iparameter]=endP[iparameter] - 0.5*eps[iparameter]*valueAndGradient[iparameter+1];
             }
             //leap frogging L-1 times
-            for (sizetype i = 0; i < L; ++i)
+            for (sizetype istep = 0; istep < L; ++istep)
             {   
-                for (sizetype i = 0; i < N; ++i)
+                for (sizetype iparameter = 0; iparameter < N; ++iparameter)
                 {
-                    endX[i] = endX[i] + eps[i]*endP[i];
-                    _parameters[i]->setValue(endX[i]);
+                    endX[iparameter] = endX[iparameter] + eps[iparameter]*endP[iparameter];
+                    _parameters[iparameter]->setValue(endX[iparameter]);
                 }
                 valueAndGradient = ll->getNLLValueAndDerivatives(_parameters);
-                if (i!=(L-1))
+                if (istep!=(L-1))
                 {
-                    for (sizetype i = 0; i < N; ++i)
+                    for (sizetype iparameter = 0; iparameter < N; ++iparameter)
                     {
-                        endP[i] = endP[i] - eps[i]*valueAndGradient[i+1];
+                        endP[iparameter] = endP[iparameter] - eps[iparameter]*valueAndGradient[iparameter+1];
                     }
                 }
             }
             newEnergy+=valueAndGradient[0];
             //half step in p to finish leap frog
-            for (sizetype i = 0; i < N; ++i)
+            for (sizetype iparameter= 0; iparameter < N; ++iparameter)
             {
-                endP[i] -= 0.5*eps[i]*valueAndGradient[i+1];
-                newEnergy+=0.5*endP[i]*endP[i];
+                endP[iparameter] -= 0.5*eps[iparameter]*valueAndGradient[iparameter+1];
+                newEnergy+=0.5*endP[iparameter]*endP[iparameter];
             }
 
             //reset parameters if not accepted
-            if (std::isnan(newEnergy) or _uniformDistribution(_randomEngine)>milan::exp(oldEnergy-newEnergy))
+            if (std::isnan(newEnergy) or std::isinf(newEnergy) or _uniformDistribution(_randomEngine)>milan::exp(oldEnergy-newEnergy))
             {
-                for (sizetype i = 0; i < N; ++i)
+                for (sizetype iparameter = 0; iparameter < N; ++iparameter)
                 {
-                    _parameters[i]->setValue(startX[i]);
+                    _parameters[iparameter]->setValue(startX[iparameter]);
                 }
                 return false;
             }
