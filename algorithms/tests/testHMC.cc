@@ -6,15 +6,8 @@
 #include "milan/core/BinnedLikelihood.hh"
 
 #include "gtest/gtest.h"
-/*
-#include "TH1F.h"
-#include "TGraph.h"
-#include "TCanvas.h"
-#include "TROOT.h"
-#include "TColor.h"
-#include "Rtypes.h"
-#include "TF1.h"
-*/
+
+
 TEST(HMC, construction)
 {
     using namespace milan;
@@ -119,8 +112,8 @@ class CorrelatedGaussianLL:
         
         virtual double getNLLDerivative(const milan::Ptr<milan::Parameter>& parameter) const
         {
-            if (*_p1 == *parameter) return ((_p1->getValue()-_mean1)/_std1/_std1+_corr*(_p2->getValue()-_mean2)/_std1/_std2)/(1-_corr*_corr);
-            if (*_p2 == *parameter) return ((_p2->getValue()-_mean2)/_std2/_std2+_corr*(_p1->getValue()-_mean1)/_std1/_std2)/(1-_corr*_corr);
+            if (*_p1 == *parameter) return ((_p1->getValue()-_mean1)/_std1/_std1-_corr*(_p2->getValue()-_mean2)/_std1/_std2)/(1-_corr*_corr);
+            if (*_p2 == *parameter) return ((_p2->getValue()-_mean2)/_std2/_std2-_corr*(_p1->getValue()-_mean1)/_std1/_std2)/(1-_corr*_corr);
             return 0;
         }
         virtual double getNLL() const
@@ -128,7 +121,7 @@ class CorrelatedGaussianLL:
             return  (
                      0.5*(_p1->getValue()-_mean1)*(_p1->getValue()-_mean1)/_std1/_std1
                     +0.5*(_p2->getValue()-_mean2)*(_p2->getValue()-_mean2)/_std2/_std2
-                  +_corr*(_p1->getValue()-_mean1)*(_p2->getValue()-_mean2)/_std1/_std2
+                  -_corr*(_p1->getValue()-_mean1)*(_p2->getValue()-_mean2)/_std1/_std2
                     )/(1-_corr*_corr);
         }
         
@@ -240,35 +233,40 @@ TEST(HMC,gauss2D)
     Parameter p1("test1",1);
     Parameter p2("test2",1);
     
-    for (sizetype i = 0; i <4;++i)
+    for (sizetype i = 0; i <5;++i)
     {
-        for (sizetype j = 0; j <4;++j)
+        for (sizetype j = 0; j <5;++j)
         {
-            for (sizetype k = 0; k <1;++k)
+            for (sizetype k = 0; k <10;++k)
             {   
+                
                 const double exp_mean1=0.43*i-2;
                 const double exp_mean2=1.6-0.55*j;
                 const double exp_sigma1=0.15*j+0.1;
                 const double exp_sigma2=0.2*i+0.12;
-                const double exp_corr=0.0;//.2*k-0.95; //TODO: investigate why this does not work
+                const double exp_corr=.15*k-0.8;
+
                 
                 Likelihood l = CorrelatedGaussianLL(p1,p2,exp_mean1,exp_mean2,exp_sigma1,exp_sigma2,exp_corr);
                 double mean1 = 0.0;
                 double mean12 = 0.0;
                 double mean2 = 0.0;
                 double mean22 = 0.0;
-                
+               
                 double corr =0.0;
                 
-                p1.setStep(0.1*(1-exp_corr));
-                p2.setStep(0.1*(1-exp_corr));
+                p1.setStep(0.1*exp_sigma1);//*(1-exp_corr));
+                p2.setStep(0.1*exp_sigma2);//*(1-exp_corr));
                 
                 HMC hmc;
                 hmc.addParameter(p1);
                 hmc.addParameter(p2);
+                
+                
                 for (unsigned int iter = 0; iter < TOYS; ++iter)
                 {
                     hmc.step(l.getPtr(),10);
+                    
                     mean1+=p1.getValue();
                     mean12+=p1.getValue()*p1.getValue();
                     mean2+=p2.getValue();
@@ -276,9 +274,12 @@ TEST(HMC,gauss2D)
                     corr+=p1.getValue()*p2.getValue();
                 }
                 
+                const double sig1 = std::sqrt(mean12/TOYS-mean1*mean1/TOYS/TOYS);
+                const double sig2 = std::sqrt(mean22/TOYS-mean2*mean2/TOYS/TOYS);
+                            
                 EXPECT_LT(std::fabs(mean1/TOYS-exp_mean1),5./std::sqrt(TOYS));
                 EXPECT_LT(std::fabs(mean2/TOYS-exp_mean2),5./std::sqrt(TOYS));
-                EXPECT_LT(std::fabs((corr/TOYS-mean1/TOYS*mean2/TOYS)/(std::sqrt(mean12/TOYS-mean1*mean1/TOYS/TOYS)*std::sqrt(mean22/TOYS-mean2*mean2/TOYS/TOYS))-exp_corr),5./std::sqrt(TOYS));
+                EXPECT_LT(std::fabs((corr/TOYS-mean1/TOYS*mean2/TOYS)/sig1/sig2-exp_corr),5./std::sqrt(TOYS));
             }
         }
     }
@@ -308,22 +309,7 @@ TEST(HMC, speed)
     
     double* x = new double[40];
     double* nll = new double[40];
-    double sum = 0.0;
-    /*
-    for (sizetype i = 0; i < 40; ++i)
-    {
-        signalYield.setValue(0.0+0.2*i);
-        printf(
-            "nll(s=%2.1f) = %+5.3f\n"
-            signalYield.getValue(),
-            ll.getNLL()
-        );
-        x[i]=signalYield.getValue();
-        nll[i]=std::exp(-ll.getNLL());
-        sum+=nll[i];
-    }
-    */
-    //TH1F hist("hist","",40,0,8);
+    
     
     
     HMC hmc;
@@ -363,11 +349,12 @@ TEST(HMC, speed)
     
     
     
-    
+    /*
     std::cout<<"eff="<<1.0*accepted/TOYS<<std::endl;
     std::cout<<"mean="<<mean/TOYS<<", rms="<<std::sqrt(mean2/TOYS-mean*mean/TOYS/TOYS)<<std::endl;
     std::cout<<"median="<<posterior[TOYS/2]<<" ["<<posterior[(sizetype)TOYS*0.84]<<"; "<<posterior[(sizetype)TOYS*0.16]<<"]"<<std::endl;
     std::cout<<"signalYield@nllmax="<<signalYieldMin<<std::endl;
+    */
     /*
     TCanvas cv("cv","",800,600);
     hist.Scale(sum/hist.Integral());

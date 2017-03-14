@@ -16,7 +16,7 @@ if (ENABLE_TEST)
     add_dependencies(runtests buildtests)
     add_dependencies(buildtests prebuildtests)
     
-    include_directories(BEFORE SYSTEM ${PROJECT_SOURCE_DIR}/external/googletest/include)
+    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/googletest/include)
     
     macro(add_gtest)
         cmake_parse_arguments(
